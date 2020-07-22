@@ -68,3 +68,27 @@ class PollCreateView(generics.CreateAPIView):
             return serializer.save(user=self.request.user)
         else:
             raise PermissionDenied('Авторизуйтесь в системе для ответов на опросник!')
+
+
+class PollDetailView(generics.RetrieveUpdateAPIView):
+    """
+       get:
+       Return single event instance.
+
+       put:
+       Update single event instance.
+       """
+    queryset = Poll.objects.all()
+    serializer_class = PollRetrieveUpdateSerializer
+    permission_classes = (permissions.IsAuthenticated, PollOwner,)
+
+
+class MyPollListView(generics.ListAPIView):
+    """
+    Return list of created polls filtered by user
+    """
+    serializer_class = PollRetrieveUpdateSerializer
+    permission_classes = (permissions.IsAuthenticated, PollOwner,)
+
+    def get_queryset(self):
+        return Poll.objects.filter(user=self.request.user)

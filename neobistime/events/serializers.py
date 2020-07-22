@@ -28,9 +28,26 @@ class PollSerializer(serializers.ModelSerializer):
         """
         Check that poll answered before deadline.
         """
-        if data['event'].deadline < timezone.now():
-            raise serializers.ValidationError("Вы пропустили дедлайн!!!")
-        return data
+        if data['event'].owner.is_staff():
+            if data['event'].deadline < timezone.now():
+                raise serializers.ValidationError("Вы пропустили дедлайн!!!")
+            return data
+        else:
+            raise serializers.ValidationError("Ивент организовал не администратор!")
+
+
+class PollRetrieveUpdateSerializer(serializers.ModelSerializer):
+    """
+    Class for retrieving and updating poll instance.
+    """
+    event = serializers.ReadOnlyField(source='event.title')
+    place = PlaceSerializer(read_only=True,source='event.place')
+    start_date = serializers.ReadOnlyField(source='event.start_date')
+    end_date = serializers.ReadOnlyField(source='event.end_date')
+
+    class Meta:
+        model = Poll
+        fields = ('id', 'answer', 'rejection_reason', 'event','place','start_date','end_date')
 
 
 class EventSerializer(serializers.ModelSerializer):
