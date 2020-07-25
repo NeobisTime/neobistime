@@ -1,6 +1,5 @@
 from rest_framework import generics, status
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.response import Response
 from .serializers import *
 from rest_framework import permissions
 from .permissions import *
