@@ -45,6 +45,6 @@ services:
 #      - backend
 
 volumes:
-  accentuation_data:
+  neobistime_data:
   media:
   static:
