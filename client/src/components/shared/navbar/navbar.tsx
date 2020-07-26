@@ -37,11 +37,11 @@ const Navbar = () => {
             <img src={calendar} className="navbar__list-image navbar__list-image_filter" alt='icon' />
             <li className="navbar__list-item">Календарь</li>
           </NavLink>
-          <NavLink to='/' className="navbar__list-link" >
+          <NavLink to='/today' className="navbar__list-link" >
             <img src={today} className="navbar__list-image navbar__list-image_filter" alt='icon' />
             <li className="navbar__list-item">Расписание дня</li>
           </NavLink>
-          <NavLink to='/' className="navbar__list-link" >
+          <NavLink to='/today' className="navbar__list-link" >
             <img src={interview} className="navbar__list-image navbar__list-image_filter" alt='icon' />
             <li className="navbar__list-item">Опросы</li>
           </NavLink>

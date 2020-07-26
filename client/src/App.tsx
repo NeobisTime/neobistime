@@ -12,6 +12,7 @@ const Authorization = React.lazy(() => import('./components/pages/auth'));
 const Registration = React.lazy(() => import('./components/pages/registration'));
 const RecoveryPassword = React.lazy(() => import('./components/pages/recovery-password'));
 const Notification = React.lazy(() => import('./components/pages/notifications'));
+const TodayTimetable = React.lazy(() => import('./components/pages/today-timetable'));
 
 const App: React.FC = () => {
   return (
@@ -25,6 +26,7 @@ const App: React.FC = () => {
               <Route exact path="/registration" component={Registration} />
               <Route exact path="/recovery_password" component={RecoveryPassword} />
               <Route exact path="/notifications" component={Notification} />
+              <Route exact path="/today" component={TodayTimetable} />
 
               {/* <Route path="*" component={NotFound} /> */}
             </Switch>
