@@ -1,0 +1,35 @@
+.modal {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: rgba(000, 000, 000, 0.95);
+  &__content {
+    width: 550px;
+    position: relative;
+  }
+  &__title{
+    &-text{
+      color: white;
+    }
+  }
+  &__image{
+    width: 340px;
+    box-sizing: border-box;
+    margin: 70px 0;
+  }
+  &_close{
+    position: absolute;
+    background-color: transparent;
+    top: -20px;
+    right: 10px;
+    cursor: pointer;
+    outline: none;
+    width: 0;
+    height: 0;
+    font-size: 40px;
+    transform: rotate(45deg);
+    border: none;
+    opacity: 1;
+    color: white;
+  }
+}

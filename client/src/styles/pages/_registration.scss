@@ -1,0 +1,41 @@
+.registration {
+  &__image {
+    box-sizing: border-box;
+    padding: 0 0 15px 15px;
+    width: 460px;
+    height: 460px;
+  }
+  &__submit {
+    box-sizing: border-box;
+    margin: 30px 0 0 0;
+  }
+  &__section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    margin-top: 10px;
+    &_w_40 {
+      width: 40%;
+    }
+    &_w_60 {
+      width: 60%;
+    }
+  }
+  &__content {
+    display: flex;
+    width: 800px;
+    flex-wrap: wrap;
+  }
+  &__select {
+    // border: 2px solid rgba(208, 205, 225, 0.8);
+    // box-sizing: border-box;
+    // border-radius: 12px;
+  }
+}
+.css-yk16xz-control {
+  border: 2px solid rgba(208, 205, 225, 0.8) !important;
+  box-sizing: border-box !important;
+  border-radius: 12px !important;
+  height: 43px !important;
+}

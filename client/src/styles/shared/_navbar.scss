@@ -1,0 +1,89 @@
+$navbarWidth: 250px;
+$text-color: white;
+$nav-font-size: 20px;
+$imageWidth: 60px;
+
+.navbar {
+  display: flex;
+  flex-basis: $navbarWidth;
+  box-sizing: border-box;
+  flex-direction: column;
+  position: relative;
+  max-width: 260px;
+  min-height: 100vh;
+  &__person-info {
+    box-shadow: 5px 0px 15px rgba(33, 51, 54, 0.25);
+    display: inline-flex;
+    box-sizing: border-box;
+    border-radius: 0px 10px 0px 0px;
+    padding: 5px 0;
+    font-family: "Montserrat", sans-serif;
+    background-color: white;
+    width: 100%;
+    color: rgba(33, 51, 54, 0.8);
+    &-image {
+      box-sizing: border-box;
+      padding: 5px;
+      width: $imageWidth;
+    }
+    &-name {
+      font-weight: bold;
+      padding: 7px 0;
+    }
+    &-text {
+      font-size: 12px;
+      line-height: 1;
+      padding: 2px 2px 0 0;
+      color: rgba(33, 51, 54, 0.5);
+      &:last-of-type {
+        padding-bottom: 14px;
+      }
+      &_wrapper {
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - $imageWidth);
+      }
+    }
+  }
+  &__content {
+    position: relative;
+    background-color: #29b39a;
+    height: 100%;
+    box-shadow: 5px 6px 15px rgba(33, 51, 54, 0.25);
+    border-radius: 0px 0px 10px 0px;
+  }
+  &__list {
+    color: $text-color;
+    list-style: none;
+    text-decoration: none;
+    &-link {
+      display: flex;
+      text-decoration: none;
+      box-sizing: border-box;
+      margin: 10px 0; 
+      cursor: pointer;
+    }
+    &-image {
+      box-sizing: border-box;
+      margin: 0 10px;
+      width: 40px;
+      &_filter {
+        filter: invert(100%) contrast(200%);
+      }
+    }
+    &-item {
+      font-family: "Montserrat";
+      color: $text-color;
+      font-size: $nav-font-size;
+      text-decoration: none;
+      padding: 15px 0;
+    }
+  }
+  &__button {
+    bottom: 40px;
+    background: none;
+    outline: none;
+    cursor: pointer;
+    border: none;
+  }
+}

@@ -1,0 +1,15 @@
+.wrapper {
+  display: flex;
+  box-sizing: border-box;
+  margin: 0 auto;
+  flex-basis: 100%;
+}
+.content__wrapper {
+  display: block;
+  flex-basis: 80%;
+  margin: 5px auto 0 auto;
+}
+.link {
+  text-decoration: none;
+  cursor: pointer;
+}
