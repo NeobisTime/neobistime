@@ -1,56 +1,68 @@
-from rest_framework import generics, status
+from rest_framework import generics, status, viewsets
 from rest_framework.exceptions import PermissionDenied
 from .serializers import *
 from rest_framework import permissions
 from .permissions import *
 
 
-class PlaceListCreateView(generics.ListCreateAPIView):
+class PlaceListView(generics.ListAPIView):
     """
     get:
     Return list of place objects.
 
-    post:
-    Create new place instance.
     """
     queryset = Place.objects.all()
     serializer_class = PlaceSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
 
-class EventListCreateView(generics.ListCreateAPIView):
+class EventViewSet(viewsets.ModelViewSet):
     """
-    get:
-    Return a list of all existing events.
+    list: List of events
 
-    post:
-    Create a new event instance.
+    retrieve: Retrieve single event object
+
+    update: Update single event object
+
+    create: Create single event object
+
+    partial_update: single event object
+
+    destroy: Delete single event object
     """
     queryset = Event.objects.all()
-    serializer_class = EventSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == 'create':
+            permission_classes = [permissions.IsAuthenticated, ]
+        else:
+            permission_classes = [EventOwner, ]
+        return [permission() for permission in permission_classes]
+
+    def get_serializer_class(self):
+        """
+        Method that returns specific serializer for event objects
+        depending on request method
+        :return:
+        """
+        if self.request.method == 'GET':
+            return EventGetSerializer
+        else:
+            return EventCreateUpdateSerializer
 
     def perform_create(self, serializer):
+        """
+        Posting current user in owner og event
+        :param serializer:
+        :return:
+        """
         if self.request.user.is_authenticated:
             return serializer.save(owner=self.request.user)
         else:
             raise PermissionDenied('Авторизуйтесь в системе для добавления ивентов!')
-
-
-class EventDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    get:
-    Return single event instance.
-
-    put:
-    Update single event instance.
-
-    delete:
-    Delete single event instance.
-    """
-    queryset = Event.objects.all()
-    serializer_class = EventSerializer
-    permission_classes = (EventOwner,)
 
 
 class PollCreateView(generics.CreateAPIView):
@@ -74,7 +86,7 @@ class PollDetailView(generics.RetrieveUpdateAPIView):
        get:
        Return single event instance.
 
-       put:
+       patch:
        Update single event instance.
        """
     queryset = Poll.objects.all()

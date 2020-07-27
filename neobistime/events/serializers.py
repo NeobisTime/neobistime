@@ -28,6 +28,8 @@ class PollSerializer(serializers.ModelSerializer):
         """
         Check that poll answered before deadline.
         """
+        # Check that event created by admins, otherwise
+        # return error because usual users can't create polls
         if data['event'].owner.is_staff():
             if data['event'].deadline < timezone.now():
                 raise serializers.ValidationError("Вы пропустили дедлайн!!!")
@@ -41,51 +43,28 @@ class PollRetrieveUpdateSerializer(serializers.ModelSerializer):
     Class for retrieving and updating poll instance.
     """
     event = serializers.ReadOnlyField(source='event.title')
-    place = PlaceSerializer(read_only=True,source='event.place')
+    place = PlaceSerializer(read_only=True, source='event.place')
     start_date = serializers.ReadOnlyField(source='event.start_date')
     end_date = serializers.ReadOnlyField(source='event.end_date')
 
     class Meta:
         model = Poll
-        fields = ('id', 'answer', 'rejection_reason', 'event','place','start_date','end_date')
+        fields = ('id', 'answer', 'rejection_reason', 'event', 'place', 'start_date', 'end_date')
 
 
-class EventSerializer(serializers.ModelSerializer):
+class EventGetSerializer(serializers.ModelSerializer):
     """
-         Class for serializing Event models
+         Class for serializing Event models for get method
      """
     owner = serializers.ReadOnlyField(source='owner.name_surname')
-    place = PlaceSerializer()
     color = serializers.SerializerMethodField()
+    place = PlaceSerializer()
 
     class Meta:
         model = Event
-        fields = ('id', 'owner', 'title', 'description', 'deadline', 'start_date', 'end_date', 'place', 'link', 'color')
-
-    def create(self, validated_data):
-        # creating event instance
-        place_data = validated_data.pop('place')
-        place = Place.objects.create(**place_data)
-        event = Event.objects.create(place=place, **validated_data)
-        return event
-
-    def update(self, instance, validated_data):
-        # updating data about place
-        place_data = validated_data.pop('place', None)
-        place = instance.place
-        if place_data is not None:
-            instance.place.name = place_data.get('name', instance.place.name)
-            instance.place.address = place_data.get('address', instance.place.address)
-        # updating data about event
-        instance.title = validated_data.get('title', instance.title)
-        instance.description = validated_data.get('description', instance.description)
-        instance.start_date = validated_data.get('start_date', instance.start_date)
-        instance.end_date = validated_data.get('end_date', instance.end_date)
-        instance.deadline = validated_data.get('deadline', instance.deadline)
-        instance.link = validated_data.get('link', instance.link)
-        instance.save()
-        place.save()
-        return instance
+        fields = (
+            'id', 'owner', 'title', 'description', 'deadline', 'start_date', 'end_date', 'place', 'link', 'address',
+            'color')
 
     def get_color(self, obj):
         """
@@ -102,3 +81,31 @@ class EventSerializer(serializers.ModelSerializer):
                 return 'red'
         except ObjectDoesNotExist:
             return 'blue'
+        finally:
+            return 'blue'
+
+
+class EventCreateUpdateSerializer(serializers.ModelSerializer):
+    """
+         Class for serializing Event models for post and update methods
+     """
+    owner = serializers.ReadOnlyField(source='owner.name_surname')
+    place = serializers.PrimaryKeyRelatedField(queryset=Place.objects.all())
+
+    class Meta:
+        model = Event
+        fields = (
+            'id', 'owner', 'title', 'description', 'deadline', 'start_date', 'end_date', 'place', 'link', 'address',
+            )
+
+    def update(self, instance, validated_data):
+        instance.title = validated_data.get('title', instance.title)
+        instance.place = validated_data.get('place', instance.place)
+        instance.address = validated_data.get('address', instance.address)
+        instance.description = validated_data.get('description', instance.description)
+        instance.start_date = validated_data.get('start_date', instance.start_date)
+        instance.end_date = validated_data.get('end_date', instance.end_date)
+        instance.deadline = validated_data.get('deadline', instance.deadline)
+        instance.link = validated_data.get('link', instance.link)
+        instance.save()
+        return instance

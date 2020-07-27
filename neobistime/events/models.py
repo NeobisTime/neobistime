@@ -4,7 +4,7 @@ from django.conf import settings
 
 class Place(models.Model):
     """
-    Model for place objects
+    Model for place objects in office
     """
     name = models.CharField('Название', max_length=100)
     address = models.CharField('Адрес', max_length=180)
@@ -21,19 +21,22 @@ class Event(models.Model):
     """
     Model for event objects
     """
+    # if event will be in Neobis office
     place = models.ForeignKey(Place, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Адрес')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
                               verbose_name='Организатор')
-    # link for online meeting if needed
+    # link for online meeting or 2gis location if needed
     link = models.URLField(max_length=250, verbose_name='Ссылка', null=True, blank=True)
     title = models.CharField(max_length=70, verbose_name='Название')
-    description = models.TextField(verbose_name='Описание мероприятия')
+    description = models.TextField(verbose_name='Описание мероприятия', blank=True, null=True)
     start_date = models.DateTimeField(verbose_name='Начало мероприятия')
     end_date = models.DateTimeField(verbose_name='Конец мероприятия')
     deadline = models.DateTimeField(verbose_name='Дедлайн регистрации')
+    # address if event will be outside the Neobis office
+    address = models.CharField(max_length=70, blank=True, null=True,verbose_name='Адрес')
 
     class Meta:
-        ordering=['start_date']
+        ordering = ['start_date']
         verbose_name = 'Ивент'
         verbose_name_plural = 'Ивенты'
 

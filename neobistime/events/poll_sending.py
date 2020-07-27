@@ -2,7 +2,7 @@ from django.core.mail import send_mail
 from django.http import HttpResponse
 from requests import Response
 from rest_framework.exceptions import NotFound
-from neobistime.users.models import CustomUser
+from users.models import CustomUser
 from django.db import IntegrityError
 from .models import *
 from django.core.exceptions import ObjectDoesNotExist
