@@ -17,7 +17,7 @@ const TodayTimetable = () => {
         <p className="today__title">{finalDate}</p>
         <div className="today__list">
 
-          <Link to='/' className="link">
+          <Link to='/today/2' className="link">
             <div className="today__list-item">
               <div className="today__list-item-answer">
                 <div className="today__list-item-answer_circle" style={{ backgroundColor: "var(--neobisColor)" }}></div>
@@ -28,7 +28,6 @@ const TodayTimetable = () => {
               </div>
             </div>
           </Link>
-
 
           <div className="today__list-item">
             <div className="today__list-item-answer">
@@ -49,7 +48,6 @@ const TodayTimetable = () => {
               <p className="today__list-item-time">12:00 - 16:00</p>
             </div>
           </div>
-
 
         </div>
       </div>

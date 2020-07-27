@@ -42,8 +42,8 @@ const Calendar = () => {
     {
       title: "neobis frontend meetup тема: 'Абстрактный классы'",
       description: "митап об императивном программировании",
-      date: "2020-07-20",
-      backgroundColor: "grey",
+      date: "2020-07-30",
+      backgroundColor: "grey"
     },
     {
       title: "neobis PM meetup",
@@ -53,16 +53,16 @@ const Calendar = () => {
     {
       title: "Orientation day",
       // ! date не обязателен если есть start
-      date: "2020-07-21",
+      // date: "2020-07-21",
+      start: "2020-07-28T10:30:00",
       backgroundColor: "red",
-      start: "2020-07-21T10:30:00",
-      end: "2020-07-21T12:30:00",
+      end: "2020-07-28T12:30:00",
     },
     {
       title: "Orientation day part2",
       backgroundColor: "green",
-      start: "2020-07-21T12:30:00",
-      end: "2020-07-21T13:30:00",
+      start: "2020-07-29T12:30:00",
+      end: "2020-07-29T13:30:00",
     },
   ];
 
@@ -77,8 +77,6 @@ const Calendar = () => {
   const handleDateClick = (arg: any) => {
     // bind with an arrow function
     alert(arg.dateStr);
-    console.log(arg);
-    console.log("addd event");
   };
 
   return (
