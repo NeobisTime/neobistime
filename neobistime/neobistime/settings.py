@@ -102,9 +102,10 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 # Rest Framework settings
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
-    ),
+    # TODO: Change def. auth class to
+    # 'DEFAULT_AUTHENTICATION_CLASSES': (
+    #     'rest_framework.authentication.TokenAuthentication',
+    # ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.AllowAny',
     ),
@@ -178,3 +179,9 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'NeobisTime Team <noreply@yourthome.com>'
+
+# Celery configuration
+
+CELERY_BROKER_URL = config("BROKER_URL")
+
+CELERY_TIMEZONE = 'Asia/Bishkek'

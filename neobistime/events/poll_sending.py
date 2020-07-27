@@ -1,19 +1,18 @@
 from django.core.mail import send_mail
 from django.http import HttpResponse
-from requests import Response
 from rest_framework.exceptions import NotFound
-from neobistime.users.models import CustomUser
+from users.models import CustomUser
 from django.db import IntegrityError
 from .models import *
 from django.core.exceptions import ObjectDoesNotExist
 
 
-def notify(request, id, pd=False, pm=False, jd=False, fd=False, ui=False, cd=False, nd=False, ad=False, ios=False,
+def notify(request, event_id, pd=False, pm=False, jd=False, fd=False, ui=False, cd=False, nd=False, ad=False, ios=False,
            individual_persons=None):
     # pd = python Department,pm=Projects Management,jd=Java/Kotlin, fd=Frontend,
     # ios=IOS, cd=C#, ad=Android, nd=NodeJS, ui=UX/UI
     try:
-        event = Event.objects.get(id=id)
+        event = Event.objects.get(id=event_id)
     except ObjectDoesNotExist:
         raise NotFound("Ивент не найден")
     recipients = []

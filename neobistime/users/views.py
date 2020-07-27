@@ -1,9 +1,9 @@
 from django.http import HttpResponse
-from django.shortcuts import render
 from django.core.mail import send_mail
-from .models import CustomUser
 from rest_framework import generics, permissions
+
 from .serializers import *
+from .models import CustomUser
 
 
 class UserListView(generics.ListAPIView):

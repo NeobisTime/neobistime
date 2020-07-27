@@ -1,6 +1,8 @@
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 from django.utils import timezone
+
+from users.models import Department
 from .models import *
 
 
@@ -102,3 +104,19 @@ class EventSerializer(serializers.ModelSerializer):
                 return 'red'
         except ObjectDoesNotExist:
             return 'blue'
+
+
+def populate_choices():
+    choice_tuple = ((i.name, i.name) for i in Department.objects.all())
+
+    return choice_tuple
+
+
+class UserNotificationSerializer(serializers.Serializer):
+    """
+    Serializing email notification data
+    """
+    departments = serializers.MultipleChoiceField(choices=populate_choices())
+
+    def notify(self, event):
+        pass

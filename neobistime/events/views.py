@@ -1,7 +1,12 @@
 from rest_framework import generics, status
 from rest_framework.exceptions import PermissionDenied
-from .serializers import *
 from rest_framework import permissions
+
+from rest_framework.decorators import api_view
+from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
+
+from .serializers import *
 from .permissions import *
 
 
@@ -91,3 +96,21 @@ class MyPollListView(generics.ListAPIView):
 
     def get_queryset(self):
         return Poll.objects.filter(user=self.request.user)
+
+
+@api_view(["POST"])
+def notify_user(request, event_id):
+    """
+    Checking whether event exists or not, then notifying users
+    """
+    get_object_or_404(Event, pk=event_id)
+
+    serializer = UserNotificationSerializer(request.data)
+    serializer.is_valid(raise_exception=True)
+
+    serializer.notify(event_id)
+
+    return Response(
+        {"message": "Members are successfully notified"},
+        status=status.HTTP_200_OK
+    )

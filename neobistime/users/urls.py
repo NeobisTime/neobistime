@@ -1,8 +1,8 @@
-from allauth.account.views import confirm_email, PasswordChangeView, PasswordSetView, PasswordResetView
+from allauth.account.views import PasswordChangeView, PasswordResetView, confirm_email
 from django.conf.urls import url
-from django.contrib import admin
-from django.urls import path, include
-from .views import send_email_notification, UserListView
+from django.urls import include, path
+
+from .views import UserListView, send_email_notification
 
 urlpatterns = [
     path('', UserListView.as_view(), name='list-users'),
