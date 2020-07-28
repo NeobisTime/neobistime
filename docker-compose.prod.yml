@@ -4,7 +4,7 @@ services:
   db:
     image: postgres:12-alpine
     env_file:
-      - .postgres_env
+      - postgres_env.env
     volumes:
       - neobistime_data:/var/lib/postgresql/data/
     restart: always
@@ -14,7 +14,7 @@ services:
       context: neobistime/
       dockerfile: ../compose/django.Dockerfile
     env_file:
-      - .env_example
+      - env_example.env
     volumes:
       - media:/usr/src/backend/media/
       - static:/usr/src/backend/static/

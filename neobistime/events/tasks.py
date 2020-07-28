@@ -1,5 +1,5 @@
-from typing import Dict, List
-
+from typing import List
+from itertools import chain
 from celery import shared_task
 from django.core.mail import send_mail
 from django.db import IntegrityError
@@ -10,9 +10,19 @@ from users.models import CustomUser
 
 @shared_task()
 def notify_users(departments: List, individual_users: List, event_id):
-    recipients = [CustomUser.objects.filter(departments_id__name=department) for department in departments]
+    recipients = [
+        [user for user in CustomUser.objects.filter(department_id__name=department)] for department in departments
+    ]
 
-    recipients += individual_users
+    for email in individual_users:
+        try:
+            recipients.append(CustomUser.objects.get(email=email))
+        except CustomUser.DoesNotExist:
+            continue
+
+    recipients = list(chain(*recipients))
+
+    recipients_emails = [user.email for user in recipients]
 
     event = Event.objects.get(pk=event_id)
 
@@ -20,11 +30,12 @@ def notify_users(departments: List, individual_users: List, event_id):
                    f' новое мероприятие "{event.title}" от {event.owner}' \
                    f' \n Дата {event.start_date}\nМесто {event.place} ' \
                    f'\nС уважением, команда Необис'
+
     # TODO добавить ссылку на ивент в тело сообщения
     send_mail('Новый Ивент от Необиса', body_message,
 
               'neobistime.kg@gmail.com',
-              recipients)
+              recipients_emails)
 
     for user in recipients:
         try:

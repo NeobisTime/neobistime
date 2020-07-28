@@ -105,7 +105,7 @@ def notify_user(request, event_id):
     """
     get_object_or_404(Event, pk=event_id)
 
-    serializer = UserNotificationSerializer(request.data)
+    serializer = UserNotificationSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
     serializer.notify(event_id)
