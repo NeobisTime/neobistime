@@ -1,13 +1,11 @@
 from rest_framework import generics, status
-from rest_framework.exceptions import PermissionDenied
-from rest_framework import permissions
-
 from rest_framework.decorators import api_view
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
-from .serializers import *
 from .permissions import *
+from .serializers import *
 
 
 class PlaceListCreateView(generics.ListCreateAPIView):

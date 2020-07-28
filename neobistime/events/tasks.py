@@ -1,5 +1,6 @@
-from typing import List
 from itertools import chain
+from typing import List
+
 from celery import shared_task
 from django.core.mail import send_mail
 from django.db import IntegrityError

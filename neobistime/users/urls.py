@@ -2,7 +2,7 @@ from allauth.account.views import PasswordChangeView, PasswordResetView, confirm
 from django.conf.urls import url
 from django.urls import include, path
 
-from .views import UserListView, send_email_notification
+from .views import UserListView
 
 urlpatterns = [
     path('', UserListView.as_view(), name='list-users'),
@@ -11,7 +11,6 @@ urlpatterns = [
 
     url(r'^change/password/', PasswordChangeView.as_view(), ),
     url(r'^reset/password/', PasswordResetView.as_view(), ),
-    url('emailing/', send_email_notification, name='email-notification'),
     url(r'^account/', include('allauth.urls')),
     url(r'^accounts-rest/registration/account-confirm-email/(?P<key>.+)/$', confirm_email,
         name='account_confirm_email'),
