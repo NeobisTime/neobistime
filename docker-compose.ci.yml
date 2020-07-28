@@ -1,0 +1,65 @@
+version: '3.7'
+
+services:
+  db:
+    image: postgres:12-alpine
+    env_file:
+      - example.env
+    volumes:
+      - neobistime_data:/var/lib/postgresql/data/
+    restart: always
+
+  backend: &backend
+    build:
+      context: neobistime/
+      dockerfile: ../compose/django.Dockerfile
+    env_file:
+      - example.env
+    volumes:
+      - media:/usr/src/backend/media/
+      - static:/usr/src/backend/static/
+    command: sh -c "python manage.py migrate && python manage.py collectstatic --no-input &&
+                    gunicorn -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 -w 3 --log-level info neobistime.wsgi:application"
+    depends_on:
+      - db
+    restart: always
+
+  nginx:
+    build:
+      context: .
+      dockerfile: compose/nginx.Dockerfile
+    volumes:
+      - media:/usr/media/:ro
+      - static:/usr/static/:ro
+    ports:
+      - 80:80
+    depends_on:
+      - backend
+    restart: always
+
+  rabbitmq:
+    image: rabbitmq:3.8.3-alpine
+    restart: always
+
+  celery-worker:
+    <<: *backend
+    image: celery-worker
+    volumes: []
+    command: ["celery", "worker", "-A", "neobistime", "--loglevel", "INFO"]
+    ports: []
+    depends_on:
+      - rabbitmq
+      - db
+    restart: on-failure
+
+#  front-end:
+#    build:
+#      context: .
+#      dockerfile: ./compose/react.Dockerfile
+#    depends_on:
+#      - backend
+
+volumes:
+  neobistime_data:
+  media:
+  static:
