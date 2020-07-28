@@ -24,6 +24,7 @@ const EventInfo = (props: any) => {
     <div className="wrapper">
       <Navbar />
       <div className="content__wrapper">
+
         <div className="event-info">
           <div className="event-info__content">
             <p className="event-info__content-title">
@@ -75,6 +76,7 @@ const EventInfo = (props: any) => {
             <img src={preview} alt="event" />
           </div>
         </div>
+        
       </div>
     </div>
   );

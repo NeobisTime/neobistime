@@ -1,7 +1,6 @@
 import React from 'react'
 import './confirm.scss'
 import { Link } from 'react-router-dom';
-import ReactDOM from 'react-dom';
 
 type ConfirmProps = {
     onClose: () => void
