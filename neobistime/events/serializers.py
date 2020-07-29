@@ -83,7 +83,7 @@ class EventGetSerializer(serializers.ModelSerializer):
                 return 'red'
         except ObjectDoesNotExist:
             return 'blue'
-        finally:
+        else:
             return 'blue'
 
 
@@ -93,24 +93,28 @@ def available_date_for_event(validated_data):
     :param validated_data:
     :return: information of conflict event
     """
-    start = validated_data['start_date']
-    end = validated_data['end_date']
-    # list contains events that already exist in this time
-    event = []
-    filter_params = dict(start_date__lte=end, end_date__gte=start)
-    # only checking events that take place in the office
-    if 'Маленькая' in validated_data['place'].name:
-        event = Event.objects.filter(Q(place__name='Маленькая комната') | Q(place__name='Весь офис'), **filter_params)
-    elif 'Большая' in validated_data['place'].name:
-        event = Event.objects.filter(Q(place__name='Большая комната') | Q(place__name='Весь офис'), **filter_params)
-    elif 'Весь' in validated_data['place'].name:
-        event = Event.objects.filter(**filter_params).exclude(place__name='Другое')
-    if event:
-        raise serializers.ValidationError({"Error": "place is not empty",
-                                           "Event title": event[0].title,
-                                           "Place": event[0].place.name,
-                                           "start": event[0].start_date,
-                                           "end": event[0].end_date})
+    try:
+        start = validated_data['start_date']
+        end = validated_data['end_date']
+        # list contains events that already exist in this time
+        event = []
+        filter_params = dict(start_date__lte=end, end_date__gte=start)
+        # only checking events that take place in the office
+        if 'Маленькая' in validated_data['place'].name:
+            event = Event.objects.filter(Q(place__name='Маленькая комната') | Q(place__name='Весь офис'),
+                                         **filter_params)
+        elif 'Большая' in validated_data['place'].name:
+            event = Event.objects.filter(Q(place__name='Большая комната') | Q(place__name='Весь офис'), **filter_params)
+        elif 'Весь' in validated_data['place'].name:
+            event = Event.objects.filter(**filter_params).exclude(place__name='Другое')
+        if event:
+            raise serializers.ValidationError({"Error": "place is not empty",
+                                               "Event title": event[0].title,
+                                               "Place": event[0].place.name,
+                                               "start": event[0].start_date,
+                                               "end": event[0].end_date})
+    except KeyError:
+        pass
 
 
 class EventCreateUpdateSerializer(serializers.ModelSerializer):
@@ -143,3 +147,28 @@ class EventCreateUpdateSerializer(serializers.ModelSerializer):
         available_date_for_event(validated_data)
         instance.save()
         return instance
+
+
+class AdminEventListSerializer(serializers.ModelSerializer):
+    """
+         Class for serializing Events that related to admin
+     """
+    owner = serializers.ReadOnlyField(source='owner.name_surname')
+    place = PlaceSerializer()
+
+    class Meta:
+        model = Event
+        fields = (
+            'id', 'owner', 'title', 'description', 'deadline', 'start_date', 'end_date', 'place', 'link', 'address',
+        )
+
+
+class AdminPolls(serializers.ModelSerializer):
+    """
+    Polls for admins to mark who really came to event
+    """
+    user = serializers.StringRelatedField()
+
+    class Meta:
+        model = Poll
+        fields = ('id', 'user', 'was_on_event')

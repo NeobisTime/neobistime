@@ -33,7 +33,7 @@ class Event(models.Model):
     end_date = models.DateTimeField(verbose_name='Конец мероприятия')
     deadline = models.DateTimeField(verbose_name='Дедлайн регистрации')
     # address if event will be outside the Neobis office
-    address = models.CharField(max_length=70, blank=True, null=True,verbose_name='Адрес')
+    address = models.CharField(max_length=70, blank=True, null=True, verbose_name='Адрес')
 
     class Meta:
         ordering = ['start_date']
@@ -57,6 +57,8 @@ class Poll(models.Model):
     answered_date = models.DateTimeField(auto_now=True, verbose_name='Дата ответа')
     rejection_reason = models.CharField(max_length=60, verbose_name='Причина отказа',
                                         null=True, blank=True)
+    was_on_event = models.BooleanField(default=False, blank=True, null=True,
+                                       verbose_name='Действительно был')
 
     class Meta:
         unique_together = ('user', 'event',)

@@ -103,3 +103,36 @@ class MyPollListView(generics.ListAPIView):
 
     def get_queryset(self):
         return Poll.objects.filter(user=self.request.user)
+
+
+
+class MyEventsListView(generics.ListAPIView):
+    """
+    Return list of created events filtered by user
+    """
+    serializer_class = AdminEventListSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+    def get_queryset(self):
+        return Event.objects.filter(owner=self.request.user)
+
+
+class PollsForMyEventView(generics.ListAPIView,):
+    """
+    Return list of polls who agreed to come to event
+    """
+    serializer_class = AdminPolls
+    permission_classes = (permissions.IsAdminUser,)
+
+    def get_queryset(self):
+        return Poll.objects.filter(event=self.kwargs['id'],answer=True)
+
+
+class UpdatePollForMyEventView(generics.RetrieveUpdateAPIView):
+    """
+    Updating polls if person came to event
+    """
+    queryset = Poll.objects.all()
+    serializer_class = AdminPolls
+    permission_classes = (permissions.IsAdminUser,)
+
