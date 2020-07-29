@@ -108,7 +108,11 @@ class EventSerializer(serializers.ModelSerializer):
 
 
 def populate_choices():
-    return tuple((i.name, i.name) for i in Department.objects.all())
+    try:
+        choices = tuple((i.name, i.name) for i in Department.objects.all())
+    except Exception:
+        return ()
+    return choices
 
 
 class UserNotificationSerializer(serializers.Serializer):

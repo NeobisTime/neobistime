@@ -103,7 +103,7 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 # Rest Framework settings
 REST_FRAMEWORK = {
-    # TODO: Change def. auth class to
+    # TODO: Uncomment this part
     # 'DEFAULT_AUTHENTICATION_CLASSES': (
     #     'rest_framework.authentication.TokenAuthentication',
     # ),
@@ -169,7 +169,6 @@ ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = '/?verification=1'
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/?verification=1'
 ACCOUNT_ADAPTER = 'users.adapter.CustomAccountAdapter'
 SITE_ID = 1
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # email notification
 
