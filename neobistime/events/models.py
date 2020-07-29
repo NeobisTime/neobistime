@@ -1,5 +1,5 @@
-from django.db import models
 from django.conf import settings
+from django.db import models
 
 
 class Place(models.Model):
@@ -33,7 +33,7 @@ class Event(models.Model):
     deadline = models.DateTimeField(verbose_name='Дедлайн регистрации')
 
     class Meta:
-        ordering=['start_date']
+        ordering = ['start_date']
         verbose_name = 'Ивент'
         verbose_name_plural = 'Ивенты'
 

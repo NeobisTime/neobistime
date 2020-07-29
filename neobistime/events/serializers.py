@@ -1,7 +1,10 @@
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework import serializers
 from django.utils import timezone
-from .models import *
+from rest_framework import serializers
+
+from users.models import Department
+from .models import Event, Place, Poll
+from .tasks import notify_users
 
 
 class PlaceSerializer(serializers.ModelSerializer):
@@ -41,13 +44,13 @@ class PollRetrieveUpdateSerializer(serializers.ModelSerializer):
     Class for retrieving and updating poll instance.
     """
     event = serializers.ReadOnlyField(source='event.title')
-    place = PlaceSerializer(read_only=True,source='event.place')
+    place = PlaceSerializer(read_only=True, source='event.place')
     start_date = serializers.ReadOnlyField(source='event.start_date')
     end_date = serializers.ReadOnlyField(source='event.end_date')
 
     class Meta:
         model = Poll
-        fields = ('id', 'answer', 'rejection_reason', 'event','place','start_date','end_date')
+        fields = ('id', 'answer', 'rejection_reason', 'event', 'place', 'start_date', 'end_date')
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -102,3 +105,30 @@ class EventSerializer(serializers.ModelSerializer):
                 return 'red'
         except ObjectDoesNotExist:
             return 'blue'
+
+
+def populate_choices():
+    try:
+        choices = tuple((i.name, i.name) for i in Department.objects.all())
+    except Exception:
+        return ()
+    return choices
+
+
+class UserNotificationSerializer(serializers.Serializer):
+    """
+    Serializing email notification data
+    """
+    departments = serializers.MultipleChoiceField(choices=populate_choices())
+    individual_users = serializers.ListField(child=serializers.EmailField(), allow_empty=True)
+
+    def __init__(self, *args, **kwargs):
+        super(UserNotificationSerializer, self).__init__(*args, **kwargs)
+        self.fields["departments"] = serializers.MultipleChoiceField(
+            choices=populate_choices()
+        )
+
+    def notify(self, event_id):
+        departments = self.validated_data["departments"]
+        individual_users = self.validated_data["individual_users"]
+        notify_users.delay(list(departments), individual_users, event_id)
