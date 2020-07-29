@@ -31,19 +31,19 @@ const AdminNavbar = () => {
         <ul className='navbar__list'>
           <NavLink to='/admin/end_events' className="navbar__list-link" >
             <img src={peoples} className="navbar__list-image navbar__list-image_filter" alt='icon' />
-            <li className="navbar__list-item">Законченные мероприятия</li>
+            <li className="navbar__list-item">Мероприятия</li>
           </NavLink>
           <NavLink to='/admin/create_event' className="navbar__list-link" >
             <img src={create_event} className="navbar__list-image navbar__list-image_filter" alt='icon' />
-            <li className="navbar__list-item">Создание событий</li>
+            <li className="navbar__list-item">Бронирование</li>
           </NavLink>
           <NavLink to='/' className="navbar__list-link" >
             <img src={stat} className="navbar__list-image navbar__list-image_filter" alt='icon' />
             <li className="navbar__list-item">Статистика</li>
           </NavLink>
-          <NavLink to='/' className="navbar__list-link" >
+          <NavLink to='/admin/all_events' className="navbar__list-link" >
             <img src={interview} className="navbar__list-image navbar__list-image_filter" alt='icon' />
-            <li className="navbar__list-item">Опросы</li>
+            <li className="navbar__list-item">Все события</li>
           </NavLink>
           <div className="navbar__list-link" onClick={toggleModal}>
             <img src={exit} className="navbar__list-image" alt='icon' />

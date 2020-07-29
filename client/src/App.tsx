@@ -19,6 +19,9 @@ const AdminStat = React.lazy(() => import('./components/pages/admin/admin-statis
 const PersonalOffice = React.lazy(() => import('./components/pages/person-cabinet/person-cabinet'));
 const EndEvents = React.lazy(() => import('./components/pages/admin/admin-end-events/admin-end-events'));
 const EndEventInfo = React.lazy(() => import('./components/pages/admin/admin-end-events/table/end-event-info'));
+const CreateEventPage = React.lazy(() => import('./components/pages/admin/admin-create-event'));
+const EditEventsPage = React.lazy(() => import('./components/pages/admin/admin-edit-events'));
+const RoomsList = React.lazy(() => import('./components/pages/rooms/rooms-list'));
 
 const App: React.FC = () => {
   return (
@@ -36,11 +39,13 @@ const App: React.FC = () => {
               <Route exact path="/today/:id" component={EventInfo} />
               <Route exact path="/change_password" component={ChangePassword} />
               <Route exact path="/personal_office" component={PersonalOffice} />
+              <Route exact path="/rooms" component={RoomsList} />
               <Route exact path="/admin" component={AdminStat} />
               <Route exact path="/admin/end_events" component={EndEvents} />
               <Route exact path="/admin/end_event/:id" component={EndEventInfo} />
-              <Route exact path="/admin/create_event" component={EndEventInfo} />
-              <Route exact path="/admin/create_event/:id" component={EndEventInfo} />
+              <Route exact path="/admin/create_event" component={CreateEventPage} />
+              <Route exact path="/admin/create_event/:id" component={CreateEventPage} />
+              <Route exact path="/admin/all_events" component={EditEventsPage} />
 
               {/* <Route path="*" component={NotFound} /> */}
             </Switch>

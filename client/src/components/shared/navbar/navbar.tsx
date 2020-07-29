@@ -68,6 +68,14 @@ const Navbar = () => {
             />
             <li className="navbar__list-item">Опросы</li>
           </NavLink>
+          <NavLink to="/rooms" className="navbar__list-link">
+            {/* <img
+              src={interview}
+              className="navbar__list-image navbar__list-image_filter"
+              alt="icon"
+            /> */}
+            <li className="navbar__list-item">Комнаты</li>
+          </NavLink>
           <NavLink to="/admin" className="navbar__list-link">
             <img
               src={admin}

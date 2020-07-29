@@ -1,0 +1,140 @@
+$grey-color: rgba(33, 51, 54, 0.6);
+$font-calendar: "IBM Plex Sans", sans-serif;
+$margin-between-blocks: 0 0 40px 0;
+
+.create-event {
+  min-height: 100vh;
+  &__form {
+    box-sizing: border-box;
+    padding: 10px 0 0 0;
+    display: flex;
+    justify-content: space-evenly;
+    &-section {
+      display: flex;
+      flex-direction: column;
+      flex-basis: 27%;
+      box-sizing: border-box;
+      &_calendar {
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        width: 30%;
+      }
+    }
+    &-label {
+      color: $grey-color;
+      font-size: 18px;
+      margin: 10px 0;
+      &_wrapper {
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        // margin: 5px 0 0 0;
+      }
+    }
+    &-input,
+    &-textarea {
+      box-sizing: border-box;
+      background-color: white;
+      border: none;
+      border-radius: 6px;
+      outline: none;
+      font-family: "Montserrat";
+      margin: $margin-between-blocks;
+      font-size: 16;
+    }
+    &-input {
+      padding: 10px 0 10px 10px;
+      &_border {
+        border: 1.5px solid #e5ecff;
+        border-radius: 5px;
+        width: 90%;
+        margin: 0;
+      }
+    }
+    &-textarea {
+      padding: 10px;
+      resize: vertical;
+    }
+    &-file {
+      &-input {
+        width: 0.1px;
+        height: 0.1px;
+        opacity: 0;
+        overflow: hidden;
+        position: absolute;
+        z-index: -1;
+        &-value {
+          display: inline-block;
+          background: rgba(41, 179, 154, 0.6);
+          border-radius: 5px;
+          color: white;
+          cursor: pointer;
+          padding: 10px;
+          & :hover {
+            background-color: var(--neobisColor);
+          }
+        }
+      }
+    }
+    &-radio {
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      border-radius: 5px;
+      box-sizing: border-box;
+      padding: 10px;
+      &-container {
+        display: flex;
+        box-sizing: border-box;
+        margin: 3px 0;
+      }
+    }
+    &-scroll {
+      background: #ffffff;
+      border-radius: 40px;
+      margin: 0 40px 0 0;
+    }
+
+    &-number {
+      display: flex;
+      width: 100%;
+      box-sizing: border-box;
+      margin: 3px 5px 3px 0;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      &_active {
+        color: #1feac5;
+      }
+    }
+    &-submit{
+      font-size: 18px;
+      color: white;
+      border-radius: 50px;
+      box-sizing: border-box;
+      padding: 10px 15px;
+      background: var(--neobisColor) !important;
+      width: 150px;
+      margin: 50px auto;
+    }
+  }
+}
+
+.DayPicker {
+  font-family: $font-calendar;
+  background-color: var(--neobisColor);
+  border-radius: 10px;
+  color: white;
+}
+.DayPicker-Caption {
+  font-family: "Montserrat";
+  font-weight: bold;
+}
+.DayPicker:not(.DayPicker--interactionDisabled)
+  .DayPicker-Day:not(.DayPicker-Day--disabled):not(.DayPicker-Day--selected):not(.DayPicker-Day--outside):hover {
+  color: black;
+}
+.DayPicker-Weekday {
+  color: #eeecf1 !important;
+}

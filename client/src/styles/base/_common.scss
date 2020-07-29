@@ -7,7 +7,14 @@ $font: "Montserrat";
   margin: 0 auto;
   flex-basis: 100%;
   font-family: $font;
+  &_bg_grey {
+    background-color: #f5f7ff;
+  }
 }
+.d-flex {
+  display: flex;
+}
+
 .content__wrapper {
   display: block;
   flex-basis: $flex-basis;
@@ -27,4 +34,8 @@ $font: "Montserrat";
   outline: none;
   cursor: pointer;
   background: none;
+}
+
+.number_active {
+  color: var(--neobisColor);
 }
