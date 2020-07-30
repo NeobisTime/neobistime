@@ -33,7 +33,9 @@ class EventViewSet(viewsets.ModelViewSet):
 
     destroy: Delete single event object
     """
-    queryset = Event.objects.all()
+
+    def get_queryset(self):
+        return Event.objects.filter(owner=self.request.user.is_staff)
 
     def get_permissions(self):
         """
@@ -130,8 +132,8 @@ class MyEventsListView(generics.ListAPIView):
     """
     Return list of created events filtered by user
     """
-    serializer_class = AdminEventListSerializer
-    permission_classes = (permissions.IsAdminUser,)
+    serializer_class = MyEventListSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
         return Event.objects.filter(owner=self.request.user)

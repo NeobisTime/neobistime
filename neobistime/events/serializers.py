@@ -183,9 +183,9 @@ class EventCreateUpdateSerializer(serializers.ModelSerializer):
         return instance
 
 
-class AdminEventListSerializer(serializers.ModelSerializer):
+class MyEventListSerializer(serializers.ModelSerializer):
     """
-         Class for serializing Events that related to admin
+         Class for serializing Events that related to his owner
      """
     owner = serializers.ReadOnlyField(source='owner.name_surname')
     place = PlaceSerializer()
