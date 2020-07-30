@@ -1,10 +1,11 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from rest_framework import serializers
-
 from users.models import Department
 from .models import Event, Place, Poll
 from .tasks import notify_users
+from django.db.models import Q
+
 
 
 class PlaceSerializer(serializers.ModelSerializer):
@@ -31,7 +32,9 @@ class PollSerializer(serializers.ModelSerializer):
         """
         Check that poll answered before deadline.
         """
-        if data['event'].owner.is_staff():
+        # Check that event created by admins, otherwise
+        # return error because usual users can't create polls
+        if data['event'].owner.is_staff:
             if data['event'].deadline < timezone.now():
                 raise serializers.ValidationError("Вы пропустили дедлайн!!!")
             return data
@@ -44,51 +47,30 @@ class PollRetrieveUpdateSerializer(serializers.ModelSerializer):
     Class for retrieving and updating poll instance.
     """
     event = serializers.ReadOnlyField(source='event.title')
+    address = serializers.ReadOnlyField(source='event.address')
     place = PlaceSerializer(read_only=True, source='event.place')
     start_date = serializers.ReadOnlyField(source='event.start_date')
     end_date = serializers.ReadOnlyField(source='event.end_date')
 
     class Meta:
         model = Poll
-        fields = ('id', 'answer', 'rejection_reason', 'event', 'place', 'start_date', 'end_date')
+        fields = ('id', 'answer', 'rejection_reason', 'event', 'address', 'place', 'start_date', 'end_date')
 
 
-class EventSerializer(serializers.ModelSerializer):
+
+class EventGetSerializer(serializers.ModelSerializer):
     """
-         Class for serializing Event models
+         Class for serializing Event models for get method
      """
     owner = serializers.ReadOnlyField(source='owner.name_surname')
-    place = PlaceSerializer()
     color = serializers.SerializerMethodField()
+    place = PlaceSerializer()
 
     class Meta:
         model = Event
-        fields = ('id', 'owner', 'title', 'description', 'deadline', 'start_date', 'end_date', 'place', 'link', 'color')
-
-    def create(self, validated_data):
-        # creating event instance
-        place_data = validated_data.pop('place')
-        place = Place.objects.create(**place_data)
-        event = Event.objects.create(place=place, **validated_data)
-        return event
-
-    def update(self, instance, validated_data):
-        # updating data about place
-        place_data = validated_data.pop('place', None)
-        place = instance.place
-        if place_data is not None:
-            instance.place.name = place_data.get('name', instance.place.name)
-            instance.place.address = place_data.get('address', instance.place.address)
-        # updating data about event
-        instance.title = validated_data.get('title', instance.title)
-        instance.description = validated_data.get('description', instance.description)
-        instance.start_date = validated_data.get('start_date', instance.start_date)
-        instance.end_date = validated_data.get('end_date', instance.end_date)
-        instance.deadline = validated_data.get('deadline', instance.deadline)
-        instance.link = validated_data.get('link', instance.link)
-        instance.save()
-        place.save()
-        return instance
+        fields = (
+            'id', 'owner', 'title', 'description', 'deadline', 'start_date', 'end_date', 'place', 'link', 'address',
+            'color')
 
     def get_color(self, obj):
         """
@@ -105,6 +87,9 @@ class EventSerializer(serializers.ModelSerializer):
                 return 'red'
         except ObjectDoesNotExist:
             return 'blue'
+        else:
+            return 'blue'
+
 
 
 def populate_choices():
@@ -132,3 +117,93 @@ class UserNotificationSerializer(serializers.Serializer):
         departments = self.validated_data["departments"]
         individual_users = self.validated_data["individual_users"]
         notify_users.delay(list(departments), individual_users, event_id)
+
+
+
+
+def available_date_for_event(validated_data):
+    """
+    Checking if event violates someone's scheduled event
+    :param validated_data:
+    :return: information of conflict event
+    """
+    try:
+        start = validated_data['start_date']
+        end = validated_data['end_date']
+        # list contains events that already exist in this time
+        event = []
+        filter_params = dict(start_date__lte=end, end_date__gte=start)
+        # only checking events that take place in the office
+        if 'Маленькая' in validated_data['place'].name:
+            event = Event.objects.filter(Q(place__name='Маленькая комната') | Q(place__name='Весь офис'),
+                                         **filter_params)
+        elif 'Большая' in validated_data['place'].name:
+            event = Event.objects.filter(Q(place__name='Большая комната') | Q(place__name='Весь офис'), **filter_params)
+        elif 'Весь' in validated_data['place'].name:
+            event = Event.objects.filter(**filter_params).exclude(place__name='Другое')
+        if event:
+            raise serializers.ValidationError({"Error": "place is not empty",
+                                               "Event title": event[0].title,
+                                               "Place": event[0].place.name,
+                                               "start": event[0].start_date,
+                                               "end": event[0].end_date})
+    except KeyError:
+        pass
+
+
+class EventCreateUpdateSerializer(serializers.ModelSerializer):
+    """
+         Class for serializing Event models for post and update methods
+     """
+    owner = serializers.ReadOnlyField(source='owner.name_surname')
+    place = serializers.PrimaryKeyRelatedField(queryset=Place.objects.all())
+
+    class Meta:
+        model = Event
+        fields = (
+            'id', 'owner', 'title', 'description', 'deadline', 'start_date', 'end_date', 'place', 'link', 'address',
+        )
+
+    def create(self, validated_data):
+        available_date_for_event(validated_data)
+
+        return Event.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.title = validated_data.get('title', instance.title)
+        instance.place = validated_data.get('place', instance.place)
+        instance.address = validated_data.get('address', instance.address)
+        instance.description = validated_data.get('description', instance.description)
+        instance.start_date = validated_data.get('start_date', instance.start_date)
+        instance.end_date = validated_data.get('end_date', instance.end_date)
+        instance.deadline = validated_data.get('deadline', instance.deadline)
+        instance.link = validated_data.get('link', instance.link)
+        available_date_for_event(validated_data)
+        instance.save()
+        return instance
+
+
+class AdminEventListSerializer(serializers.ModelSerializer):
+    """
+         Class for serializing Events that related to admin
+     """
+    owner = serializers.ReadOnlyField(source='owner.name_surname')
+    place = PlaceSerializer()
+
+    class Meta:
+        model = Event
+        fields = (
+            'id', 'owner', 'title', 'description', 'deadline', 'start_date', 'end_date', 'place', 'link', 'address',
+        )
+
+
+class AdminPolls(serializers.ModelSerializer):
+    """
+    Polls for admins to mark who really came to event
+    """
+    user = serializers.StringRelatedField()
+
+    class Meta:
+        model = Poll
+        fields = ('id', 'user', 'was_on_event')
+
