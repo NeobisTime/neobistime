@@ -11,7 +11,9 @@ from users.models import CustomUser
 
 @shared_task()
 def notify_users(departments: List, individual_users: List, event_id):
-    recipients = [[user for user in CustomUser.objects.filter(department_id__name=department)] for department in departments]
+    recipients = [
+        [user for user in CustomUser.objects.filter(department_id__name=department)] for department in departments
+    ]
 
     for email in individual_users:
         try:
