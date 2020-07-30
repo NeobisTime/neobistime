@@ -172,3 +172,13 @@ class AdminPolls(serializers.ModelSerializer):
     class Meta:
         model = Poll
         fields = ('id', 'user', 'was_on_event')
+
+
+
+class EventsInPlaceSerializer(serializers.ModelSerializer):
+    events = EventGetSerializer(many=True,read_only=True)
+
+
+    class Meta:
+        model = Place
+        fields =('id','name','address','events')
