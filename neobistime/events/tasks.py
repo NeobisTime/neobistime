@@ -11,9 +11,7 @@ from users.models import CustomUser
 
 @shared_task()
 def notify_users(departments: List, individual_users: List, event_id):
-    recipients = [
-        [user for user in CustomUser.objects.filter(department_id__name=department)] for department in departments
-    ]
+    recipients = [[user for user in CustomUser.objects.filter(department_id__name=department)] for department in departments]
 
     for email in individual_users:
         try:
@@ -22,11 +20,9 @@ def notify_users(departments: List, individual_users: List, event_id):
             continue
 
     recipients = list(chain(*recipients))
-
     recipients_emails = [user.email for user in recipients]
 
     event = Event.objects.get(pk=event_id)
-
     body_message = f'Здравствуй, мы организовали' \
                    f' новое мероприятие "{event.title}" от {event.owner}' \
                    f' \n Дата {event.start_date}\nМесто {event.place} ' \
@@ -34,7 +30,6 @@ def notify_users(departments: List, individual_users: List, event_id):
 
     # TODO добавить ссылку на ивент в тело сообщения
     send_mail('Новый Ивент от Необиса', body_message,
-
               'neobistime.kg@gmail.com',
               recipients_emails)
 

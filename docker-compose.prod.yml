@@ -4,7 +4,7 @@ services:
   db:
     image: postgres:12-alpine
     env_file:
-      - postgres.env
+      - .env
     volumes:
       - data:/var/lib/postgresql/data/
     restart: always
@@ -20,7 +20,7 @@ services:
       - media:/usr/src/backend/media/
       - static:/usr/src/backend/static/
     command: sh -c "python manage.py migrate && python manage.py collectstatic --no-input &&
-                    gunicorn -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 -w 3 --log-level info neobistime.wsgi:application"
+                    gunicorn -b 0.0.0.0:8000 -w 3 --log-level info neobistime.wsgi:application"
     depends_on:
       - db
     restart: always

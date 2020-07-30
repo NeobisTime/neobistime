@@ -1,16 +1,16 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from rest_framework import serializers
-
 from users.models import Department
+
 from .models import Event, Place, Poll
 from .tasks import notify_users
 
 
 class PlaceSerializer(serializers.ModelSerializer):
     """
-         Class for serializing Place models
-     """
+    Class for serializing Place models
+    """
 
     class Meta:
         model = Place
@@ -19,8 +19,8 @@ class PlaceSerializer(serializers.ModelSerializer):
 
 class PollSerializer(serializers.ModelSerializer):
     """
-         Class for serializing Poll models
-     """
+    Class for serializing Poll models
+    """
     user = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())
 
     class Meta:
@@ -102,7 +102,7 @@ class EventSerializer(serializers.ModelSerializer):
             if poll.answer:
                 return 'green'
             else:
-                return 'red'
+                return '    red'
         except ObjectDoesNotExist:
             return 'blue'
 
