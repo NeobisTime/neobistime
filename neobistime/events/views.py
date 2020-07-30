@@ -30,7 +30,9 @@ class EventViewSet(viewsets.ModelViewSet):
 
     destroy: Delete single event object
     """
-    queryset = Event.objects.all()
+
+    def get_queryset(self):
+        return Event.objects.filter(owner=self.request.user.is_staff)
 
     def get_permissions(self):
         """
@@ -105,19 +107,18 @@ class MyPollListView(generics.ListAPIView):
         return Poll.objects.filter(user=self.request.user)
 
 
-
 class MyEventsListView(generics.ListAPIView):
     """
     Return list of created events filtered by user
     """
-    serializer_class = AdminEventListSerializer
-    permission_classes = (permissions.IsAdminUser,)
+    serializer_class = MyEventListSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
         return Event.objects.filter(owner=self.request.user)
 
 
-class PollsForMyEventView(generics.ListAPIView,):
+class PollsForMyEventView(generics.ListAPIView, ):
     """
     Return list of polls who agreed to come to event
     """
@@ -125,7 +126,7 @@ class PollsForMyEventView(generics.ListAPIView,):
     permission_classes = (permissions.IsAdminUser,)
 
     def get_queryset(self):
-        return Poll.objects.filter(event=self.kwargs['id'],answer=True)
+        return Poll.objects.filter(event=self.kwargs['id'], answer=True)
 
 
 class UpdatePollForMyEventView(generics.RetrieveUpdateAPIView):
@@ -135,4 +136,3 @@ class UpdatePollForMyEventView(generics.RetrieveUpdateAPIView):
     queryset = Poll.objects.all()
     serializer_class = AdminPolls
     permission_classes = (permissions.IsAdminUser,)
-
