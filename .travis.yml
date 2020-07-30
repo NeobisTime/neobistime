@@ -10,4 +10,4 @@ before_script:
   - docker-compose -f docker-compose.prod.yml build
 
 script:
-  - docker-compose -f docker-compose.prod.yml run backend sh -c "python manage.py test && flake 8"
+  - docker-compose -f docker-compose.prod.yml run backend sh -c "python manage.py test && flake8"
