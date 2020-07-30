@@ -15,7 +15,8 @@ class PlaceListView(generics.ListAPIView):
 
     """
     queryset = Place.objects.all()
-    serializer_class = PlaceSerializer
+    serializer_class = EventsInPlaceSerializer
+    # serializer_class = PlaceSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
 

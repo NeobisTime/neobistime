@@ -7,7 +7,6 @@ from .tasks import notify_users
 from django.db.models import Q
 
 
-
 class PlaceSerializer(serializers.ModelSerializer):
     """
          Class for serializing Place models
@@ -57,7 +56,6 @@ class PollRetrieveUpdateSerializer(serializers.ModelSerializer):
         fields = ('id', 'answer', 'rejection_reason', 'event', 'address', 'place', 'start_date', 'end_date')
 
 
-
 class EventGetSerializer(serializers.ModelSerializer):
     """
          Class for serializing Event models for get method
@@ -91,7 +89,6 @@ class EventGetSerializer(serializers.ModelSerializer):
             return 'blue'
 
 
-
 def populate_choices():
     try:
         choices = tuple((i.name, i.name) for i in Department.objects.all())
@@ -117,8 +114,6 @@ class UserNotificationSerializer(serializers.Serializer):
         departments = self.validated_data["departments"]
         individual_users = self.validated_data["individual_users"]
         notify_users.delay(list(departments), individual_users, event_id)
-
-
 
 
 def available_date_for_event(validated_data):
@@ -207,3 +202,10 @@ class AdminPolls(serializers.ModelSerializer):
         model = Poll
         fields = ('id', 'user', 'was_on_event')
 
+
+class EventsInPlaceSerializer(serializers.ModelSerializer):
+    events = EventGetSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Place
+        fields = ('id', 'name', 'address', 'events')
