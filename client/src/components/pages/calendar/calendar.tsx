@@ -1,20 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../../shared/navbar";
 
 // fullcalendar
 import FullCalendar from "@fullcalendar/react";
 import googleCalendarPlugin from "@fullcalendar/google-calendar";
-
 // imports for view style(month, week, day, list)
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import bootstrapPlugin from "@fullcalendar/bootstrap";
-
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
 
+// modals
+import EventInfoModal from "./modals/event-info";
+import AdminChooseModal from "./modals/admin-choose";
+import PersonalEventCreateModal from "./modals/create-personal-event";
+import AdminEventCreateModal from "./modals/admin-event";
+
+export const CloseModalButton = (props: any) => {
+  return (
+    <div className="event-info-modal__modal">
+      <button
+        onClick={props.onClose}
+        className="event-info-modal__modal-btn button"
+      >
+        &times;
+      </button>
+    </div>
+  );
+};
+
 const Calendar = () => {
-  const serverEvents = [
+  const [serverEvents, setServerEvents] = useState([
     {
       title: "neobis frontend meetup",
       date: "2020-07-08",
@@ -43,7 +60,7 @@ const Calendar = () => {
       title: "neobis frontend meetup тема: 'Абстрактный классы'",
       description: "митап об императивном программировании",
       date: "2020-07-30",
-      backgroundColor: "grey"
+      backgroundColor: "grey",
     },
     {
       title: "neobis PM meetup",
@@ -64,7 +81,7 @@ const Calendar = () => {
       start: "2020-07-29T12:30:00",
       end: "2020-07-29T13:30:00",
     },
-  ];
+  ]);
 
   // google calendar api integration
   const events = {
@@ -74,10 +91,57 @@ const Calendar = () => {
   };
 
   // TODO: here will be modal window open to add event
+
   const handleDateClick = (arg: any) => {
     // bind with an arrow function
     alert(arg.dateStr);
   };
+  // TODO: modal window to see event logic
+  let [isEventInfoOpen, setIsEventInfoOpen] = useState<boolean>(false);
+  const toggleEventInfoOpen = () => {
+    setIsEventInfoOpen(!isEventInfoOpen);
+  };
+  const handleEventClick = () => {
+    toggleEventInfoOpen();
+  };
+
+  // create event
+  let [isEventCreateChooseOpen, setIsEventCreateChooseOpen] = useState<boolean>(
+    false
+  );
+  const toggleEventCreateChoose = () => {
+    setIsEventCreateChooseOpen(!isEventCreateChooseOpen);
+  };
+
+  let [isPersonalEventCreate, setIsPersonalEventCreate] = useState<boolean>(
+    false
+  );
+  const togglePersonalEventCreate = () => {
+    setIsPersonalEventCreate(!isPersonalEventCreate);
+    setIsEventCreateChooseOpen(false);
+  };
+
+  let [isAdminEventCreate, setIsAdminEventCreate] = useState<boolean>(false);
+  const toggleAdminEventCreate = () => {
+    setIsAdminEventCreate(!isAdminEventCreate);
+    setIsEventCreateChooseOpen(false);
+  };
+  const handleDateSelect = (selectInfo: any) => {
+    toggleEventCreateChoose();
+  };
+
+  const handleEvents = (events: any) => {
+    setServerEvents(events);
+  };
+
+  // function renderEventContent(eventInfo: any) {
+  //   return (
+  //     <>
+  //       <b>{eventInfo.timeText}</b>
+  //       <i>{eventInfo.event.title}</i>
+  //     </>
+  //   );
+  // }
 
   return (
     <div className="wrapper">
@@ -91,7 +155,7 @@ const Calendar = () => {
             timeGridPlugin,
             listPlugin,
             googleCalendarPlugin,
-            bootstrapPlugin
+            bootstrapPlugin,
           ]}
           height="610px"
           headerToolbar={{
@@ -100,17 +164,37 @@ const Calendar = () => {
             right: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
           }}
           initialView="dayGridMonth"
-          // events={events}
-          dateClick={handleDateClick}
+          // dateClick={handleDateClick} //TODO: edit
           editable={true}
           firstDay={1}
           googleCalendarApiKey="AIzaSyCqbA_GExr7SrXh3ZVwCvojL_AGSnXN3X8"
           eventSources={[events, serverEvents]}
           dayMaxEventRows={true}
-          // themeSystem="bootstrap"  //minty theme add 
+          selectable={true}
+          selectMirror={true}
+          select={handleDateSelect}
+          // eventContent={renderEventContent} // custom render function //TODO edit
+          eventClick={handleEventClick}
+          // eventsSet={handleEvents} // called after events are initialized/added/changed/removed //TODO edit
         />
-      </div>
 
+        {/* modals start */}
+        {isEventInfoOpen && <EventInfoModal onClose={toggleEventInfoOpen} />}
+        {isEventCreateChooseOpen && (
+          <AdminChooseModal
+            onClose={toggleEventCreateChoose}
+            openPersonalEventCreateWindow={togglePersonalEventCreate}
+            openAdminEventCreateWindow={toggleAdminEventCreate}
+          />
+        )}
+        {isPersonalEventCreate && (
+          <PersonalEventCreateModal onClose={togglePersonalEventCreate} />
+        )}
+        {isAdminEventCreate && (
+          <AdminEventCreateModal onClose={toggleAdminEventCreate} />
+        )}
+        {/* modals end */}
+      </div>
     </div>
   );
 };

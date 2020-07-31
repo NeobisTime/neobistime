@@ -45,8 +45,11 @@ const EventInfo = (props: any) => {
               Адрес: г. Бишкек, ул. Советская 350 (вход со стороны кафе
               МастерФуд)
             </p>
-            <p className="event-info__content-text">
+            <p className="event-info__content-text_m_t">
               Примите ли вы участие в данном событии?
+            </p>
+            <p className="event-info__content-text_deadline">
+                deadline: 23 August 12:00
             </p>
             <form className="event-info__content-form">
               <label className="event-info__content-form-label">

@@ -22,6 +22,7 @@ const EndEventInfo = React.lazy(() => import('./components/pages/admin/admin-end
 const CreateEventPage = React.lazy(() => import('./components/pages/admin/admin-create-event'));
 const EditEventsPage = React.lazy(() => import('./components/pages/admin/admin-edit-events'));
 const RoomsList = React.lazy(() => import('./components/pages/rooms/rooms-list'));
+const RoomsEvent = React.lazy(() => import('./components/pages/rooms/rooms-event'));
 
 const App: React.FC = () => {
   return (
@@ -40,6 +41,7 @@ const App: React.FC = () => {
               <Route exact path="/change_password" component={ChangePassword} />
               <Route exact path="/personal_office" component={PersonalOffice} />
               <Route exact path="/rooms" component={RoomsList} />
+              <Route exact path="/rooms/:id" component={RoomsEvent} />
               <Route exact path="/admin" component={AdminStat} />
               <Route exact path="/admin/end_events" component={EndEvents} />
               <Route exact path="/admin/end_event/:id" component={EndEventInfo} />

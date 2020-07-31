@@ -1,4 +1,8 @@
-$standartFontSize: 24px;
+$standartFontSize: 18px;
+$pictureBlockWidth: 16%;
+$pointsWidth: 16%;
+//  infoContentWidth = 100% - pointsWidth - pictureBlockWidth
+$infoContentWidth: 68%;
 
 .personal-office {
   font-family: "Montserrat";
@@ -9,9 +13,25 @@ $standartFontSize: 24px;
     color: white;
     height: 150px;
     box-sizing: border-box;
-    padding: 10px 20px;
+    padding: 10px 20px 10px 0;
     flex-wrap: wrap;
+    &-picture-block {
+      width: $pictureBlockWidth;
+      height: 100%;
+    }
+    &-avatar {
+      width: 100%;
+      height: 100%;
+    }
+    &-content-wrapper {
+      box-sizing: border-box;
+      padding: 0 15px;
+      display: flex;
+      width: $infoContentWidth;
+      flex-wrap: wrap;
+    }
     &-section {
+      box-sizing: border-box;
       width: 50%;
       height: 70%;
     }
@@ -25,6 +45,23 @@ $standartFontSize: 24px;
         font-size: $standartFontSize;
       }
     }
+    &-points {
+      width: $pointsWidth;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      &-value {
+        width: 80px;
+        height: 80px;
+        background: radial-gradient(#55ddff, #0081b5);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 35px;
+      }
+    }
     &-edit {
       font-family: "Roboto", sans-serif;
       font-weight: bold;
@@ -36,7 +73,7 @@ $standartFontSize: 24px;
       margin: 0;
     }
     &-name {
-      font-size: 32px;
+      font-size: 26px;
     }
     &-dep {
       box-sizing: border-box;
@@ -59,8 +96,13 @@ $standartFontSize: 24px;
         color: #4f4f4f;
         cursor: pointer;
         font-size: 30px;
+        width: 100%;
+        text-align: center;
         &_active {
           border-bottom: 7px solid var(--neobisColor);
+        }
+        &_non_active {
+          color: #a6b1bb;
         }
       }
     }

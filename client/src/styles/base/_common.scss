@@ -2,6 +2,7 @@ $flex-basis: 80%;
 $font: "Montserrat";
 
 .wrapper {
+  position: relative;
   display: flex;
   box-sizing: border-box;
   margin: 0 auto;
@@ -38,4 +39,20 @@ $font: "Montserrat";
 
 .number_active {
   color: var(--neobisColor);
+}
+.w-100 {
+  width: 100%;
+}
+.m-0{
+  margin: 0;
+}
+.modal__wrapper {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  background: #cfcdea;
+  border-radius: 10px;
+  box-sizing: border-box;
 }

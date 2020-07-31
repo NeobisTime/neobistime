@@ -34,6 +34,16 @@ $text-color: rgba(33, 51, 54, 0.8);
     &-text {
       margin: 10px 0;
       font-size: 16px;
+      &_deadline {
+        color: #eb0f0f;
+        font-size: 10px;
+        text-transform: uppercase;
+        margin: 0 0 10px 0;
+      }
+      &_m_t {
+        margin: 10px 0 0 0;
+        font-size: 16px;
+      }
     }
     &-form {
       &-label {

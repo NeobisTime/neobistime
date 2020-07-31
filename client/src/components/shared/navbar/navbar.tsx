@@ -10,6 +10,7 @@ import interview from "../../../images/shared/interview.svg";
 import today from "../../../images/shared/today.svg";
 import admin from "../../../images/shared/admin.svg";
 import exit from "../../../images/shared/exit.svg";
+import rooms from "../../../images/shared/rooms.svg";
 
 const Navbar = () => {
   let [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -19,7 +20,7 @@ const Navbar = () => {
   };
   return (
     <div className="navbar">
-      <Link to="/personal_office" className='link'>
+      <Link to="/personal_office" className="link">
         <div className="navbar__person-info">
           <img
             className="navbar__person-info-image"
@@ -36,7 +37,12 @@ const Navbar = () => {
 
       <div className="navbar__content">
         <ul className="navbar__list">
-          <NavLink to="/notifications" className="navbar__list-link">
+          <NavLink
+            exact
+            to="/notifications"
+            activeStyle={{ backgroundColor: "#1DA48B" }}
+            className="navbar__list-link"
+          >
             <img
               src={notification}
               className="navbar__list-image navbar__list-image_filter"
@@ -44,15 +50,25 @@ const Navbar = () => {
             />
             <li className="navbar__list-item">Уведомления</li>
           </NavLink>
-          <NavLink to="/" className="navbar__list-link">
+          <NavLink
+            exact
+            to="/"
+            activeStyle={{ backgroundColor: "#1DA48B" }}
+            className="navbar__list-link"
+          >
             <img
               src={calendar}
-              className="navbar__list-image navbar__list-image_filter"
+              className="navbar__list-image navbar__list-image_events navbar__list-image_filter"
               alt="icon"
             />
             <li className="navbar__list-item">Календарь</li>
           </NavLink>
-          <NavLink to="/today" className="navbar__list-link">
+          <NavLink
+          exact
+            to="/today"
+            activeStyle={{ backgroundColor: "#1DA48B" }}
+            className="navbar__list-link"
+          >
             <img
               src={today}
               className="navbar__list-image navbar__list-image_filter"
@@ -60,23 +76,25 @@ const Navbar = () => {
             />
             <li className="navbar__list-item">Расписание дня</li>
           </NavLink>
-          <NavLink to="/today" className="navbar__list-link">
+          <NavLink
+          exact
+            to="/rooms"
+            activeStyle={{ backgroundColor: "#1DA48B" }}
+            className="navbar__list-link"
+          >
             <img
-              src={interview}
-              className="navbar__list-image navbar__list-image_filter"
+              src={rooms}
+              className="navbar__list-image navbar__list-image_rooms navbar__list-image_filter"
               alt="icon"
             />
-            <li className="navbar__list-item">Опросы</li>
-          </NavLink>
-          <NavLink to="/rooms" className="navbar__list-link">
-            {/* <img
-              src={interview}
-              className="navbar__list-image navbar__list-image_filter"
-              alt="icon"
-            /> */}
             <li className="navbar__list-item">Комнаты</li>
           </NavLink>
-          <NavLink to="/admin" className="navbar__list-link">
+          <NavLink
+          exact
+            to="/admin"
+            activeStyle={{ backgroundColor: "#1DA48B" }}
+            className="navbar__list-link"
+          >
             <img
               src={admin}
               className="navbar__list-image navbar__list-image_filter"

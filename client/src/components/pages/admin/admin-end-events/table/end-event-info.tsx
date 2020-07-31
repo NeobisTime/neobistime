@@ -81,7 +81,10 @@ const EndEventInfo = () => {
               </tbody>
             </table>
             <div className="end-event-info__pagination">
-              <span className="end-event-info__pagination-text_bold">1-10 &nbsp;</span> of 100
+              <span className="end-event-info__pagination-text_bold">
+                1-10 &nbsp;
+              </span>{" "}
+              of 100
               <div className="end-event-info__pagination-buttons">
                 <img
                   className="end-event-info__pagination-buttons-image"
@@ -97,6 +100,9 @@ const EndEventInfo = () => {
               </div>
             </div>
           </div>
+        </div>
+        <div className="end-event-info__submit">
+          <button className="end-event-info__submit-button button">Сохранить</button>
         </div>
       </div>
     </div>

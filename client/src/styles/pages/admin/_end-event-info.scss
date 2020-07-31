@@ -45,8 +45,8 @@ $height: 45px;
           font-size: $text-size;
           border-bottom: 1px solid #e4e7eb;
         }
-        &:nth-of-type(even){
-            background-color: #fafffd;
+        &:nth-of-type(even) {
+          background-color: #fafffd;
         }
       }
     }
@@ -68,6 +68,23 @@ $height: 45px;
       &-image {
         padding: 10px;
         cursor: pointer;
+      }
+    }
+  }
+  &__submit {
+    display: flex;
+    justify-content: flex-end;
+    &-button {
+      margin: 20px 50px 0 0;
+      background: #1665d8 !important;
+      border-radius: 5px;
+      font-family: "Roboto";
+      color: white;
+      font-size: 18px;
+      padding: 10px 25px;
+      &:hover{
+        box-shadow: 0 0 22px 7px blue;
+        transition: all 0.3s ease-in-out;
       }
     }
   }

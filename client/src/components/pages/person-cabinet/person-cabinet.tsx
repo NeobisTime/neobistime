@@ -1,6 +1,9 @@
 import React from "react";
 import Navbar from "../../shared/navbar";
 
+// default avatar
+import avatar from "../../../images/shared/user.svg";
+
 // fullcalendar
 import FullCalendar from "@fullcalendar/react";
 import googleCalendarPlugin from "@fullcalendar/google-calendar";
@@ -29,6 +32,7 @@ const PersonalOffice = () => {
     { title: "rock party", date: "2020-08-12" },
   ];
 
+  // start function to toogle between calendar and stats
   const openStatistics = () => {
     const calendarAdr = document.getElementsByClassName(
       "personal-office__calendar"
@@ -37,8 +41,16 @@ const PersonalOffice = () => {
     const statAdr = document.getElementsByClassName("personal-office__stat")[0];
     const stat = statAdr as HTMLElement;
 
+    const statId = document.getElementById("personal-office__stat");
+    const statIdFinal = statId as HTMLElement;
+    const calendarId = document.getElementById("personal-office__calendar");
+    const calendarIdFinal = calendarId as HTMLElement;
     calendar.style.display = "none";
     stat.style.display = "block";
+    calendarIdFinal.className =
+      "personal-office__buttons-section-btn personal-office__buttons-section-btn_non_active";
+    statIdFinal.className =
+      "personal-office__buttons-section-btn personal-office__buttons-section-btn_active";
   };
   const openCalendar = () => {
     const calendarAdr = document.getElementsByClassName(
@@ -47,50 +59,76 @@ const PersonalOffice = () => {
     const calendar = calendarAdr as HTMLElement;
     const statAdr = document.getElementsByClassName("personal-office__stat")[0];
     const stat = statAdr as HTMLElement;
+
+    const statId = document.getElementById("personal-office__stat");
+    const statIdFinal = statId as HTMLElement;
+    const calendarId = document.getElementById("personal-office__calendar");
+    const calendarIdFinal = calendarId as HTMLElement;
     stat.style.display = "none";
     calendar.style.display = "block";
+    calendarIdFinal.className =
+      "personal-office__buttons-section-btn personal-office__buttons-section-btn_active";
+    statIdFinal.className =
+      "personal-office__buttons-section-btn personal-office__buttons-section-btn_non_active";
   };
+
+  // end function to toogle between calendar and stats
 
   return (
     <div className="wrapper">
       <Navbar />
       <div className=" content__wrapper content__wrapper_no_margin personal-office">
         <section className="personal-office__info">
-          <div className="personal-office__info-section">
-            <p className="personal-office__info-name">Феруза Асанова</p>
-            <p className="personal-office__info-dep">Frontend Department</p>
+          <div className="personal-office__info-picture-block">
+            <img
+              className="personal-office__info-avatar"
+              src={avatar}
+              alt="personal"
+            />
           </div>
-          <div className="personal-office__info-section">
-            <p className="personal-office__info-text">
-              E-mail:
-              <span className="personal-office__info-text-content">
-                login@example.com
-              </span>
-            </p>
-            <p className="personal-office__info-text">
-              Телефон:
-              <span className="personal-office__info-text-content">
-                +996700123321
-              </span>
-            </p>
+          <div className="personal-office__info-content-wrapper">
+            <div className="personal-office__info-section">
+              <p className="personal-office__info-name">Феруза Асанова</p>
+              <p className="personal-office__info-dep">Frontend Department</p>
+            </div>
+            <div className="personal-office__info-section">
+              <p className="personal-office__info-text">
+                E-mail:
+                <span className="personal-office__info-text-content">
+                  login@example.com
+                </span>
+              </p>
+              <p className="personal-office__info-text">
+                Телефон:
+                <span className="personal-office__info-text-content">
+                  +996700123321
+                </span>
+              </p>
+            </div>
+
+            <button className="button personal-office__info-edit">
+              Редактировать
+            </button>
           </div>
-          <button className="button personal-office__info-edit">
-            Редактировать
-          </button>
+          <div className="personal-office__info-points">
+            <div className="personal-office__info-points-value">10</div>
+          </div>
         </section>
 
         <section className="personal-office__buttons">
           <div className="personal-office__buttons-section ">
             <p
+              id="personal-office__calendar"
               className="personal-office__buttons-section-btn personal-office__buttons-section-btn_active"
               onClick={openCalendar}
             >
               Календарь
             </p>
           </div>
-          <div className="personal-office__buttons-section ">
+          <div className="personal-office__buttons-section">
             <p
-              className="personal-office__buttons-section-btn "
+              id="personal-office__stat"
+              className="personal-office__buttons-section-btn personal-office__buttons-section-btn_non_active"
               onClick={openStatistics}
             >
               Статистика
