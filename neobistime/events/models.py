@@ -22,7 +22,7 @@ class Event(models.Model):
     Model for event objects
     """
     # if event will be in Neobis office
-    place = models.ForeignKey(Place, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Адрес')
+    place = models.ForeignKey(Place, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Адрес',related_name='events')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
                               verbose_name='Организатор')
     # link for online meeting or 2gis location if needed
@@ -49,7 +49,7 @@ class Poll(models.Model):
     Model for poll objects
     """
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
-                             verbose_name='Пользователь', related_name='polls')
+                             verbose_name='Пользователь', related_name='user')
     event = models.ForeignKey(Event, on_delete=models.SET_NULL, null=True,
                               verbose_name='Ивент', related_name='polls')
     answer = models.NullBooleanField(null=True, blank=True,
