@@ -8,7 +8,7 @@ const RoomsEvent = () => {
       <Navbar />
       <div className="content__wrapper">
         <p className="today__title">Маленькая комната</p>
-        <EmptyRoom />
+        {/* <EmptyRoom /> */}
         <div className="notifications__content">
           <table className="notifications__table">
             <colgroup span={4} className="notifications__table-colgroup">

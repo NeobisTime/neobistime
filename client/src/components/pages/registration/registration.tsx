@@ -19,6 +19,7 @@ const options = [
 const Registration = () => {
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
   const [department, setDepartment] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [controlPassword, setControlPassword] = useState<string>("");
@@ -105,6 +106,20 @@ const Registration = () => {
               value={controlPassword}
               onChange={(e) => {
                 setControlPassword(e.target.value);
+              }}
+            />
+
+            <label className="auth__label" htmlFor="phone">
+              Телефон
+            </label>
+            <input
+              className="auth__input"
+              type="text"
+              name="phone"
+              required
+              value={phone}
+              onChange={(e) => {
+                setPhone(e.target.value);
               }}
             />
 

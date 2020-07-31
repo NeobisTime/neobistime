@@ -1,5 +1,6 @@
 import React from "react";
 import Navbar from "../../shared/navbar";
+import { Link } from "react-router-dom";
 
 // default avatar
 import avatar from "../../../images/shared/user.svg";
@@ -106,9 +107,11 @@ const PersonalOffice = () => {
               </p>
             </div>
 
-            <button className="button personal-office__info-edit">
-              Редактировать
-            </button>
+            <Link to="/change_password" className="link">
+              <button className="button personal-office__info-edit">
+                Редактировать
+              </button>
+            </Link>
           </div>
           <div className="personal-office__info-points">
             <div className="personal-office__info-points-value">10</div>

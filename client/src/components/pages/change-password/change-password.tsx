@@ -1,73 +1,108 @@
 import React, { useState } from "react";
 import designPhoto from "../../../images/pages/forgot_password_gi2d.svg";
+import Select from "react-select";
 
 const ChangePassword = () => {
-  const [oldPassword, setOldPassword] = useState<string>("");
-  const [newPassword, setNewPassword] = useState<string>("");
-  const [newPasswordConfirm, setNewPasswordConfirm] = useState<string>("");
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [department, setDepartment] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [controlPassword, setControlPassword] = useState<string>("");
 
-  async function handleSubmit(event: any) {
+  const departments = [
+    { value: "Python", label: "Python" },
+    { value: "Frontend", label: "Frontend" },
+    { value: "PM", label: "PM" },
+    { value: "Design", label: "Design" },
+    { value: "C#", label: "C#" },
+    { value: "Java", label: "Java" },
+    { value: "Android", label: "Android" },
+    { value: "IOS", label: "IOS" },
+    { value: "NodeJS", label: "NodeJS" },
+  ];
+  const handleSubmit = (event: any) => {
     event.preventDefault();
-    // const data = { oldPassword };
-  }
+  };
+
   return (
-    <div className="auth change">
-      <div className="auth__content">
+    <div className="registration auth">
+      <div className="registration__content">
         <div className="auth__title">
-          <p className="auth__title-text">Введите новый пароль</p>
+          <p className="auth__title-text">Измените ваши данные</p>
         </div>
-        <section className="auth__section">
-          <form className="change__form" onSubmit={handleSubmit}>
-            <label className="change__label" htmlFor="old-password">
-              Старый пароль
+
+        <section className="registration__section registration__section_w_40 ">
+          <form className="auth__form" onSubmit={handleSubmit}>
+            <label className="auth__label" htmlFor="name">
+              ФИО
             </label>
             <input
               className="auth__input"
               type="text"
-              name="old-password"
+              name="name"
               required
-              value={oldPassword}
+              value={name}
               onChange={(e) => {
-                setOldPassword(e.target.value);
+                setName(e.target.value);
               }}
             />
 
-            <label className="change__label" htmlFor="new-password">
-              Новый пароль
+            <label className="auth__label" htmlFor="email">
+              E-mail
             </label>
             <input
               className="auth__input"
               type="text"
-              name="new-password"
+              name="email"
               required
-              value={newPassword}
+              value={email}
               onChange={(e) => {
-                setNewPassword(e.target.value);
+                setEmail(e.target.value);
               }}
             />
 
-            <label className="change__label" htmlFor="new-password-confirm">
-              Повторите новый пароль
+            <label className="auth__label" htmlFor="department">
+              Департамент
+            </label>
+            <Select options={departments} className="registration__select" />
+
+            <label className="auth__label" htmlFor="password">
+              Пароль
             </label>
             <input
               className="auth__input"
-              type="text"
-              name="new-password-confirm"
+              type="password"
+              name="password"
               required
-              value={newPasswordConfirm}
+              value={password}
               onChange={(e) => {
-                setNewPasswordConfirm(e.target.value);
+                setPassword(e.target.value);
               }}
             />
-            <button className=" auth__submit change__submit" type="submit">
+
+            <label className="auth__label" htmlFor="email">
+              Телефон
+            </label>
+            <input
+              className="auth__input"
+              type="password"
+              name="email"
+              required
+              value={controlPassword}
+              onChange={(e) => {
+                setControlPassword(e.target.value);
+              }}
+            />
+
+            <button className="auth__submit registration__submit" type="submit">
               Сохранить
             </button>
           </form>
         </section>
-        <section className="auth__section">
+        <section className="registration__section registration__section_w_60">
           <img
             src={designPhoto}
-            className="auth__image"
+            className="registration__image"
             alt="girl introducin login"
           />
         </section>
