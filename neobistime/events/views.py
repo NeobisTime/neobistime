@@ -1,11 +1,12 @@
+from rest_framework import generics, permissions, status
 from rest_framework.decorators import api_view
 from rest_framework import generics, status, viewsets
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
-from .permissions import *
-from .serializers import *
+from . import permissions as custom_permissions, serializers
+from .models import Event, Place, Poll
 
 
 class PlaceListView(generics.ListAPIView):
@@ -38,6 +39,7 @@ class EventViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Event.objects.filter(owner=self.request.user.is_staff)
 
+
     def get_permissions(self):
         """
         Instantiates and returns the list of permissions that this view requires.
@@ -59,6 +61,7 @@ class EventViewSet(viewsets.ModelViewSet):
         else:
             return EventCreateUpdateSerializer
 
+
     def perform_create(self, serializer):
         """
         Posting current user in owner og event
@@ -77,7 +80,7 @@ class PollCreateView(generics.CreateAPIView):
     Create poll
     """
     queryset = Poll.objects.all()
-    serializer_class = PollSerializer
+    serializer_class = serializers.PollSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
     def perform_create(self, serializer):
@@ -96,16 +99,16 @@ class PollDetailView(generics.RetrieveUpdateAPIView):
        Update single event instance.
        """
     queryset = Poll.objects.all()
-    serializer_class = PollRetrieveUpdateSerializer
-    permission_classes = (permissions.IsAuthenticated, PollOwner,)
+    serializer_class = serializers.PollRetrieveUpdateSerializer
+    permission_classes = (permissions.IsAuthenticated, custom_permissions.PollOwner,)
 
 
 class MyPollListView(generics.ListAPIView):
     """
     Return list of created polls filtered by user
     """
-    serializer_class = PollRetrieveUpdateSerializer
-    permission_classes = (permissions.IsAuthenticated, PollOwner,)
+    serializer_class = serializers.PollRetrieveUpdateSerializer
+    permission_classes = (permissions.IsAuthenticated, custom_permissions.PollOwner,)
 
     def get_queryset(self):
         return Poll.objects.filter(user=self.request.user)
@@ -118,7 +121,7 @@ def notify_user(request, event_id):
     """
     get_object_or_404(Event, pk=event_id)
 
-    serializer = UserNotificationSerializer(data=request.data)
+    serializer = serializers.UserNotificationSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
     serializer.notify(event_id)

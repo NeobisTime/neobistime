@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from .models import *
+from . import models
 
 # Register your models here.
-admin.site.register(Poll)
-admin.site.register(Place)
-admin.site.register(Event)
+admin.site.register(models.Poll)
+admin.site.register(models.Place)
+admin.site.register(models.Event)
