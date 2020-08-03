@@ -73,8 +73,8 @@ class EventGetSerializer(serializers.ModelSerializer):
 
     def get_color(self, obj):
         """
-        Method that returns the desired color for calendar
-        depending on user and his answer
+        Method that returns the desired color for a calendar
+        depending on user, and his answer
         :param obj:
         :return color:
         """
@@ -86,7 +86,7 @@ class EventGetSerializer(serializers.ModelSerializer):
                 return '    red'
         except ObjectDoesNotExist:
             return 'blue'
-        else:
+        finally:
             return 'blue'
 
 

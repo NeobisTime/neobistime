@@ -7,6 +7,7 @@ from rest_framework.response import Response
 
 from . import permissions as custom_permissions, serializers
 from .models import Event, Place, Poll
+from .serializers import EventsInPlaceSerializer
 
 
 class PlaceListView(generics.ListAPIView):
