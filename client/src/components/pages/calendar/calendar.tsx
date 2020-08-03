@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Navbar from "../../shared/navbar";
+import withNavbarContainer from "../../../HOC/withNavbar";
 
 // fullcalendar
 import FullCalendar from "@fullcalendar/react";
@@ -34,37 +34,39 @@ const Calendar = () => {
   const [serverEvents, setServerEvents] = useState([
     {
       title: "neobis frontend meetup",
-      date: "2020-07-08",
+      date: "2020-08-08",
       backgroundColor: "green",
     },
     {
       title: "neobis meetup",
       start: "2020-08-01T12:30:00",
       end: "2020-08-01T13:30:00",
-      backgroundColor: "",
     },
     {
       title: "Уборка Стирка Пылесосение Поливка разработка",
-      date: "2020-07-06",
+      date: "2020-09-01",
     },
-    { title: "Уборка", date: "2020-07-06" },
-    { title: "Уборка", date: "2020-07-06" },
-    { title: "Уборка", date: "2020-07-06" },
-    { title: "Уборка", date: "2020-07-06" },
-    { title: "Уборка", date: "2020-07-06" },
-    { title: "Встреча с заказчиком", date: "2020-07-10" },
-    { title: "Праздник", date: "2020-07-02" },
-    { title: "neobis python meetup", date: "2020-07-18" },
-    { title: "rock party", date: "2020-07-12" },
+    { title: "Уборка", date: "2020-08-06" },
+    { title: "Уборка", date: "2020-08-06" },
+    { title: "Уборка", date: "2020-08-06" },
+    { title: "Уборка", date: "2020-08-06" },
+    { title: "Уборка", date: "2020-08-12", backgroundColor: "red" },
+    { title: "Встреча с заказчиком", date: "2020-08-10" },
+    { title: "Праздник", date: "2020-08-02" },
+    {
+      title: "neobis python meetup",
+      date: "2020-08-18",
+      backgroundColor: "green",
+    },
+    { title: "rock party", date: "2020-08-12" },
     {
       title: "neobis frontend meetup тема: 'Абстрактный классы'",
       description: "митап об императивном программировании",
-      date: "2020-07-30",
-      backgroundColor: "grey",
+      date: "2020-08-30",
     },
     {
       title: "neobis PM meetup",
-      date: "2020-07-08",
+      date: "2020-08-08",
       backgroundColor: "red",
     },
     {
@@ -144,59 +146,55 @@ const Calendar = () => {
   // }
 
   return (
-    <div className="wrapper">
-      <Navbar />
+    <>
+      <FullCalendar
+        plugins={[
+          dayGridPlugin,
+          interactionPlugin,
+          timeGridPlugin,
+          listPlugin,
+          googleCalendarPlugin,
+          bootstrapPlugin,
+        ]}
+        height="610px"
+        headerToolbar={{
+          left: "prev,next today",
+          center: "title",
+          right: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
+        }}
+        initialView="dayGridMonth"
+        // dateClick={handleDateClick} //TODO: edit
+        editable={true}
+        firstDay={1}
+        googleCalendarApiKey="AIzaSyCqbA_GExr7SrXh3ZVwCvojL_AGSnXN3X8"
+        eventSources={[events, serverEvents]}
+        dayMaxEventRows={true}
+        selectable={true}
+        selectMirror={true}
+        select={handleDateSelect}
+        // eventContent={renderEventContent} // custom render function //TODO edit
+        eventClick={handleEventClick}
+        // eventsSet={handleEvents} // called after events are initialized/added/changed/removed //TODO edit
+      />
 
-      <div className="content__wrapper">
-        <FullCalendar
-          plugins={[
-            dayGridPlugin,
-            interactionPlugin,
-            timeGridPlugin,
-            listPlugin,
-            googleCalendarPlugin,
-            bootstrapPlugin,
-          ]}
-          height="610px"
-          headerToolbar={{
-            left: "prev,next today",
-            center: "title",
-            right: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
-          }}
-          initialView="dayGridMonth"
-          // dateClick={handleDateClick} //TODO: edit
-          editable={true}
-          firstDay={1}
-          googleCalendarApiKey="AIzaSyCqbA_GExr7SrXh3ZVwCvojL_AGSnXN3X8"
-          eventSources={[events, serverEvents]}
-          dayMaxEventRows={true}
-          selectable={true}
-          selectMirror={true}
-          select={handleDateSelect}
-          // eventContent={renderEventContent} // custom render function //TODO edit
-          eventClick={handleEventClick}
-          // eventsSet={handleEvents} // called after events are initialized/added/changed/removed //TODO edit
+      {/* modals start */}
+      {isEventInfoOpen && <EventInfoModal onClose={toggleEventInfoOpen} />}
+      {isEventCreateChooseOpen && (
+        <AdminChooseModal
+          onClose={toggleEventCreateChoose}
+          openPersonalEventCreateWindow={togglePersonalEventCreate}
+          openAdminEventCreateWindow={toggleAdminEventCreate}
         />
-
-        {/* modals start */}
-        {isEventInfoOpen && <EventInfoModal onClose={toggleEventInfoOpen} />}
-        {isEventCreateChooseOpen && (
-          <AdminChooseModal
-            onClose={toggleEventCreateChoose}
-            openPersonalEventCreateWindow={togglePersonalEventCreate}
-            openAdminEventCreateWindow={toggleAdminEventCreate}
-          />
-        )}
-        {isPersonalEventCreate && (
-          <PersonalEventCreateModal onClose={togglePersonalEventCreate} />
-        )}
-        {isAdminEventCreate && (
-          <AdminEventCreateModal onClose={toggleAdminEventCreate} />
-        )}
-        {/* modals end */}
-      </div>
-    </div>
+      )}
+      {isPersonalEventCreate && (
+        <PersonalEventCreateModal onClose={togglePersonalEventCreate} />
+      )}
+      {isAdminEventCreate && (
+        <AdminEventCreateModal onClose={toggleAdminEventCreate} />
+      )}
+      {/* modals end */}
+    </>
   );
 };
 
-export default Calendar;
+export default withNavbarContainer(Calendar);

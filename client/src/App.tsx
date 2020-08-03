@@ -8,6 +8,7 @@ import ErrorBoundry from "./components/shared/error-boundry";
 
 // pages
 import Calendar from "./components/pages/calendar/calendar";
+import Spinner from "./components/shared/spinner/spinner";
 const Authorization = lazy(() => import('./components/pages/auth'));
 const Registration = lazy(() => import('./components/pages/registration'));
 const RecoveryPassword = lazy(() => import('./components/pages/recovery-password'));
@@ -28,7 +29,7 @@ const App: React.FC = () => {
   return (
     <ErrorBoundry>
       <Router>
-        <Suspense fallback={<p>Loading...</p>}>
+        <Suspense fallback={<Spinner />} >
           <div className="main__wrapper">
             <Switch>
               <Route exact path="/" component={Calendar} />

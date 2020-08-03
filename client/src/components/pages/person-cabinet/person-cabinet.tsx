@@ -1,9 +1,12 @@
-import React from "react";
+import React, {useState,useEffect} from "react";
 import Navbar from "../../shared/navbar";
 import { Link } from "react-router-dom";
 
 // default avatar
 import avatar from "../../../images/shared/user.svg";
+
+// charts
+import { Doughnut } from "react-chartjs-2";
 
 // fullcalendar
 import FullCalendar from "@fullcalendar/react";
@@ -18,8 +21,12 @@ import bootstrapPlugin from "@fullcalendar/bootstrap";
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
 
 const PersonalOffice = () => {
-  const contentEditable = false;
-
+  useEffect(() => {
+    const statAdr = document.getElementsByClassName("personal-office__stat")[0];
+    const stat = statAdr as HTMLElement;
+    stat.style.display = "none";
+  }, [])
+  
   const serverEvents = [
     { title: "Уборка", date: "2020-07-06" },
     { title: "Встреча с заказчиком", date: "2020-07-10" },
@@ -33,7 +40,30 @@ const PersonalOffice = () => {
     { title: "rock party", date: "2020-08-12" },
   ];
 
-  // start function to toogle between calendar and stats
+  // * chart info
+  const data = {
+    datasets: [{
+      data: [10, 20],
+      backgroundColor: [
+        '#36A2EB',
+        '#FFCE56'
+        ],
+    }],
+    labels: [
+      'Посещенных мероприятий',
+      'Всего мероприятий',
+    ],
+    legend: {
+      display: false
+    },
+    options: {
+      legend: {
+        display: false
+      }
+    }
+  }
+
+  //* start function to toogle between calendar and stats
   const openStatistics = () => {
     const calendarAdr = document.getElementsByClassName(
       "personal-office__calendar"
@@ -89,8 +119,8 @@ const PersonalOffice = () => {
           </div>
           <div className="personal-office__info-content-wrapper">
             <div className="personal-office__info-section">
-              <p className="personal-office__info-name">Феруза Асанова</p>
-              <p className="personal-office__info-dep">Frontend Department</p>
+              <p className="personal-office__info-name">Адахан Азизбек уулу</p>
+              <p className="personal-office__info-dep">Ios Department</p>
             </div>
             <div className="personal-office__info-section">
               <p className="personal-office__info-text">
@@ -163,7 +193,20 @@ const PersonalOffice = () => {
           />
         </section>
 
-        <section className="personal-office__stat"></section>
+        <section className="personal-office__stat">
+          <Doughnut
+            data={data}
+            width={300}
+            height={100}
+            options={{
+              responsive: true,
+              maintainAspectRatio: true,
+              legend: {
+                display: false
+              }
+            }}
+          />
+        </section>
       </div>
     </div>
   );

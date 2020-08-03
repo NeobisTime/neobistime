@@ -1,6 +1,6 @@
 import React from "react";
-import Navbar from "../../shared/navbar";
 import { Link } from "react-router-dom";
+import withNavbarContainer from "../../../HOC/withNavbar";
 
 // TODO: todayList нужно сделать переиспользуемым компонентом, он используется на  этой странице и на admin-end-events
 
@@ -53,35 +53,32 @@ export const TodayList = () => {
   );
 };
 
-const TodayTimetable = () => {
-  const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  let today = new Date();
-  let finalDate = `${
-    monthNames[today.getMonth()]
-  }${" "}${today.getDate()}  ${today.getFullYear()}`;
+const monthNames = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+let today = new Date();
+export let finalDate = `${
+  monthNames[today.getMonth()]
+}${" "}${today.getDate()}  ${today.getFullYear()}`;
 
+const TodayTimetable = () => {
   return (
-    <div className="wrapper">
-      <Navbar />
-      <div className="content__wrapper">
-        <p className="today__title">{finalDate}</p>
-        <TodayList />
-      </div>
-    </div>
+    <>
+      <p className="today__title">{finalDate}</p>
+      <TodayList />
+    </>
   );
 };
 
-export default TodayTimetable;
+export default withNavbarContainer(TodayTimetable);

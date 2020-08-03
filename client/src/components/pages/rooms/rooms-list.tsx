@@ -1,45 +1,43 @@
 import React from "react";
-import Navbar from "../../shared/navbar";
 import { Link } from "react-router-dom";
+import withNavbarContainer from "../../../HOC/withNavbar";
 
 const RoomsList = () => {
   return (
-    <div className="wrapper">
-      <Navbar />
-      <div className="content__wrapper">
-        <p className="today__title">Доступные помещения</p>
-        <div className="today__list">
-          <Link to="/rooms/1" className="link">
-            <div className="today__list-item">
-              <div className="today__list-item-answer">
-                <div
-                  className="today__list-item-answer_circle"
-                  style={{ backgroundColor: "var(--neobisColor)" }}
-                ></div>
-              </div>
-              <div className="today__list-item-content">
-                <p className="today__list-item-text">Маленькая комната</p>
-                <p className="today__list-item-time">Советская 70</p>
-              </div>
+    <>
+      <p className="today__title">Доступные помещения</p>
+      <div className="today__list">
+        <Link to="/rooms/1" className="link">
+          <div className="today__list-item">
+            <div className="today__list-item-answer">
+              <div
+                className="today__list-item-answer_circle"
+                style={{ backgroundColor: "var(--neobisColor)" }}
+              ></div>
             </div>
-          </Link>
-
-          <Link to="/rooms/1" className="link">
-            <div className="today__list-item">
-              <div className="today__list-item-answer">
-                <div
-                  className="today__list-item-answer_circle"
-                  style={{ backgroundColor: "var(--neobisColor)" }}
-                ></div>
-              </div>
-              <div className="today__list-item-content">
-                <p className="today__list-item-text">Большая комната</p>
-                <p className="today__list-item-time">Советская 70</p>
-              </div>
+            <div className="today__list-item-content">
+              <p className="today__list-item-text">Маленькая комната</p>
+              <p className="today__list-item-time">Советская 70</p>
             </div>
-          </Link>
+          </div>
+        </Link>
 
-          <Link to="/rooms/1" className="link">
+        <Link to="/rooms/1" className="link">
+          <div className="today__list-item">
+            <div className="today__list-item-answer">
+              <div
+                className="today__list-item-answer_circle"
+                style={{ backgroundColor: "var(--neobisColor)" }}
+              ></div>
+            </div>
+            <div className="today__list-item-content">
+              <p className="today__list-item-text">Большая комната</p>
+              <p className="today__list-item-time">Советская 70</p>
+            </div>
+          </div>
+        </Link>
+
+        <Link to="/rooms/1" className="link">
           <div className="today__list-item">
             <div className="today__list-item-answer">
               <div
@@ -52,11 +50,10 @@ const RoomsList = () => {
               <p className="today__list-item-time">Советская 70</p>
             </div>
           </div>
-          </Link>
-        </div>
+        </Link>
       </div>
-    </div>
+    </>
   );
 };
 
-export default RoomsList;
+export default withNavbarContainer(RoomsList);

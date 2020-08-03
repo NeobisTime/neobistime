@@ -15,7 +15,9 @@ $font: "Montserrat";
 .d-flex {
   display: flex;
 }
-
+.p-1{
+  padding: 1rem;
+}
 .content__wrapper {
   display: block;
   flex-basis: $flex-basis;
