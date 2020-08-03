@@ -1,11 +1,11 @@
-from django.core.mail import send_mail
-from django.http import HttpResponse
-from requests import Response
-from rest_framework.exceptions import NotFound
-from users.models import CustomUser
-from django.db import IntegrityError
-from .models import *
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.mail import send_mail
+from django.db import IntegrityError
+from django.http import HttpResponse
+from rest_framework.exceptions import NotFound
+
+from users.models import CustomUser
+from .models import *
 
 
 def notify(request, id, pd=False, pm=False, jd=False, fd=False, ui=False, cd=False, nd=False, ad=False, ios=False,

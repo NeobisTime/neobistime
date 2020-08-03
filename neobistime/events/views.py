@@ -1,13 +1,14 @@
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions, status, viewsets
 from rest_framework.decorators import api_view
-from rest_framework import generics, status, viewsets
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from . import permissions as custom_permissions, serializers
 from .models import Event, Place, Poll
-from .serializers import EventsInPlaceSerializer
+from .permissions import EventOwner
+from .serializers import AdminPolls, EventCreateUpdateSerializer, EventGetSerializer, EventsInPlaceSerializer, \
+    MyEventListSerializer
 
 
 class PlaceListView(generics.ListAPIView):
@@ -40,7 +41,6 @@ class EventViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Event.objects.filter(owner=self.request.user.is_staff)
 
-
     def get_permissions(self):
         """
         Instantiates and returns the list of permissions that this view requires.
@@ -62,10 +62,9 @@ class EventViewSet(viewsets.ModelViewSet):
         else:
             return EventCreateUpdateSerializer
 
-
     def perform_create(self, serializer):
         """
-        Posting current user in owner og event
+        Posting current user in an owner of event
         :param serializer:
         :return:
         """

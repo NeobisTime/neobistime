@@ -22,7 +22,8 @@ class Event(models.Model):
     Model for event objects
     """
     # if event will be in Neobis office
-    place = models.ForeignKey(Place, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Адрес',related_name='events')
+    place = models.ForeignKey(Place, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Адрес',
+                              related_name='events')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
                               verbose_name='Организатор')
     # link for online meeting or 2gis location if needed
