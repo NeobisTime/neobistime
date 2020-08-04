@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 from .poll_sending import *
 from rest_framework.routers import DefaultRouter
-
+from .statistics import *
 router = DefaultRouter()
 router.register('events', views.EventViewSet, basename='events')
 
@@ -16,6 +16,7 @@ urlpatterns = [
     path('my_events/<int:id>/poll/<int:pk>/', views.UpdatePollForMyEventView().as_view(),
          name='update-poll-for-my-event'),
     path('notify/<int:id>/', notify, name='emailing'),
-
+    path('stats/', statistic_for_all_departments, name='stats'),
+    path('self-statistic/',self_statistic,name='self-stats')
 ]
 urlpatterns += router.urls
