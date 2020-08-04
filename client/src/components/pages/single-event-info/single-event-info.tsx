@@ -47,20 +47,32 @@ const EventInfo = (props: any) => {
             deadline: 23 August 12:00
           </p>
           <form className="event-info__content-form">
-            <label className="event-info__content-form-label">
-              <input type="checkbox" checked={yes} onChange={handleYes} />
+            <label className="event-info-modal__label">
               Да
+              <input
+                className="event-info-modal__input"
+                type="checkbox"
+                checked={yes}
+                onChange={handleYes}
+              />
+              <span className="event-info-modal__checkmark"></span>
             </label>
-            <label>
-              <input type="checkbox" checked={no} onChange={handleNo} />
+            <label className="event-info-modal__label">
               Нет
+              <input
+                className="event-info-modal__input"
+                type="checkbox"
+                checked={no}
+                onChange={handleNo}
+              />
+              <span className="event-info-modal__checkmark"></span>
             </label>
             <p className="event-info__content-text">
               Если нет, то укажите причину:
             </p>
             <textarea
-              cols={40}
-              rows={5}
+              cols={60}
+              rows={4}
               placeholder="Ваш ответ..."
               id="event-info__textarea-disabled"
               className="event-info__content-form-textarea"

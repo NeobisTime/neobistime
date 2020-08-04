@@ -15,7 +15,7 @@ $font: "Montserrat";
 .d-flex {
   display: flex;
 }
-.p-1{
+.p-1 {
   padding: 1rem;
 }
 .content__wrapper {
@@ -39,13 +39,17 @@ $font: "Montserrat";
   background: none;
 }
 
+.bold {
+  font-weight: bold;
+}
+
 .number_active {
   color: var(--neobisColor);
 }
 .w-100 {
   width: 100%;
 }
-.m-0{
+.m-0 {
   margin: 0;
 }
 .modal__wrapper {

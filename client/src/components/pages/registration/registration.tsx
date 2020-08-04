@@ -41,11 +41,11 @@ const Registration = () => {
 
         <section className="registration__section registration__section_w_40 ">
           <form className="auth__form" onSubmit={handleSubmit}>
-            <label className="auth__label" htmlFor="name">
+            <label className="registration__label" htmlFor="name">
               ФИО
             </label>
             <input
-              className="auth__input"
+              className="registration__input"
               type="text"
               name="name"
               required
@@ -55,11 +55,11 @@ const Registration = () => {
               }}
             />
 
-            <label className="auth__label" htmlFor="email">
+            <label className="registration__label" htmlFor="email">
               E-mail
             </label>
             <input
-              className="auth__input"
+              className="registration__input"
               type="text"
               name="email"
               required
@@ -67,7 +67,7 @@ const Registration = () => {
               onChange={handleChangeEmail}
             />
 
-            <label className="auth__label" htmlFor="department">
+            <label className="registration__label" htmlFor="department">
               Департамент
             </label>
             <Select
@@ -81,11 +81,11 @@ const Registration = () => {
               className="registration__select"
             />
 
-            <label className="auth__label" htmlFor="password">
+            <label className="registration__label" htmlFor="password">
               Пароль
             </label>
             <input
-              className="auth__input"
+              className="registration__input"
               type="password"
               name="password"
               required
@@ -95,11 +95,11 @@ const Registration = () => {
               }}
             />
 
-            <label className="auth__label" htmlFor="email">
+            <label className="registration__label" htmlFor="email">
               Повторите пароль
             </label>
             <input
-              className="auth__input"
+              className="registration__input"
               type="password"
               name="email"
               required
@@ -109,11 +109,11 @@ const Registration = () => {
               }}
             />
 
-            <label className="auth__label" htmlFor="phone">
+            <label className="registration__label" htmlFor="phone">
               Телефон
             </label>
             <input
-              className="auth__input"
+              className="registration__input"
               type="text"
               name="phone"
               required
@@ -123,7 +123,7 @@ const Registration = () => {
               }}
             />
 
-            <button className="auth__submit registration__submit" type="submit">
+            <button className="registration__submit" type="submit">
               Зарегистрироваться
             </button>
           </form>

@@ -34,7 +34,7 @@ const RecoveryPassword = () => {
               value={email}
               onChange={(e) => { setEmail(e.target.value) }}
             />
-            <button className=" auth__submit recovery__submit" type="submit">Отправить</button>
+            <button className="button recovery__submit" type="submit">Отправить</button>
           </form>
         </section >
         <section className="auth__section">

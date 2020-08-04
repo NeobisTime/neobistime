@@ -25,45 +25,71 @@ const EndEventInfo = () => {
             </thead>
             <tbody className="end-event-info__table-tbody">
               <tr>
-                <td>Феруза Асанова</td>
-                <td>Frontend</td>
+                <td className='bold'>Феруза Асанова</td>
+                <td className='bold'>Frontend</td>
                 <td className="end-event-info__table-tbody-date">01/12/2020</td>
                 <td>
                   <input type="checkbox" />
                 </td>
               </tr>
               <tr>
-                <td>Феруза Асанова</td>
-                <td>Frontend</td>
+                <td className='bold'>Феруза Асанова</td>
+                <td className='bold'>Frontend</td>
                 <td className="end-event-info__table-tbody-date">01/12/2020</td>
                 <td>
                   <input type="checkbox" />
                 </td>
               </tr>
               <tr>
-                <td>Феруза Асанова</td>
-                <td>Frontend</td>
+                <td className='bold'>Феруза Асанова</td>
+                <td className='bold'>Frontend</td>
                 <td className="end-event-info__table-tbody-date">01/12/2020</td>
                 <td>
                   <input type="checkbox" />
                 </td>
               </tr>
               <tr>
-                <td>Феруза Асанова</td>
-                <td>Frontend</td>
+                <td className='bold'>Феруза Асанова</td>
+                <td className='bold'>Frontend</td>
                 <td className="end-event-info__table-tbody-date">01/12/2020</td>
                 <td>
                   <input type="checkbox" />
                 </td>
               </tr>
               <tr>
-                <td>Феруза Асанова</td>
-                <td>Frontend</td>
+                <td className='bold'>Феруза Асанова</td>
+                <td className='bold'>Frontend</td>
                 <td className="end-event-info__table-tbody-date">01/12/2020</td>
                 <td>
                   <input type="checkbox" />
                 </td>
               </tr>
+              <tr>
+                <td className='bold'>Феруза Асанова</td>
+                <td className='bold'>Frontend</td>
+                <td className="end-event-info__table-tbody-date">01/12/2020</td>
+                <td>
+                  <input type="checkbox" />
+                </td>
+              </tr>
+              <tr>
+                <td className='bold'>Феруза Асанова</td>
+                <td className='bold'>Frontend</td>
+                <td className="end-event-info__table-tbody-date">01/12/2020</td>
+                <td>
+                  <input type="checkbox" />
+                </td>
+              </tr>
+              <tr>
+                <td className='bold'>Феруза Асанова</td>
+                <td className='bold'>Frontend</td>
+                <td className="end-event-info__table-tbody-date">01/12/2020</td>
+                <td>
+                  <input type="checkbox" />
+                </td>
+              </tr>
+              
+            
             </tbody>
           </table>
           <div className="end-event-info__pagination">

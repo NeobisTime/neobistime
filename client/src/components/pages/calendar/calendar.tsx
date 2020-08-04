@@ -4,6 +4,7 @@ import withNavbarContainer from "../../../HOC/withNavbar";
 // fullcalendar
 import FullCalendar from "@fullcalendar/react";
 import googleCalendarPlugin from "@fullcalendar/google-calendar";
+
 // imports for view style(month, week, day, list)
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -175,6 +176,7 @@ const Calendar = () => {
         // eventContent={renderEventContent} // custom render function //TODO edit
         eventClick={handleEventClick}
         // eventsSet={handleEvents} // called after events are initialized/added/changed/removed //TODO edit
+        locale='ru'
       />
 
       {/* modals start */}

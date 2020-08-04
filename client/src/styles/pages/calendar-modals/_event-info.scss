@@ -13,16 +13,42 @@
       font-size: 40px;
       box-sizing: border-box;
       margin: 15px 0 0 0;
+      color: white;
     }
   }
   &__form {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 95%;
+    box-sizing: border-box;
   }
   &__label {
-    box-sizing: border-box;
-    margin: 0 20px 0 0;
+    // display: block;
+    // padding-left: 35px;
+    // margin: 0 30px 0 0;
+    // -webkit-user-select: none;
+    // -moz-user-select: none;
+    // -ms-user-select: none;
+    // user-select: none;
+    // cursor: pointer;
+    // position: relative;
+    // font-size: 18px;
+  }
+  &__input {
+    // position: absolute;
+    // opacity: 0;
+    // cursor: pointer;
+    // height: 0;
+    // width: 0;
+  }
+  &__checkmark {
+    // position: absolute;
+    // top: 0;
+    // left: 0;
+    // height: 25px;
+    // width: 25px;
+    // border-radius: 5px;
   }
   &__change {
     background: #6074fb !important;
@@ -33,4 +59,73 @@
     font-family: "Roboto";
     padding: 5px 10px;
   }
+}
+
+/* Customize the label (the container) */
+.event-info-modal__label {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin: 0 20px 10px 0;
+  cursor: pointer;
+  font-size: 19px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.event-info-modal__label input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.event-info-modal__checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background: #eceeff;
+  border-radius: 5px;
+}
+
+/* On mouse-over, add a grey background color */
+.event-info-modal__label:hover input ~ .event-info-modal__checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.event-info-modal__label input:checked ~ .event-info-modal__checkmark {
+  background-color: #2196f3;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.event-info-modal__checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.event-info-modal__label input:checked ~ .event-info-modal__checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.event-info-modal__label .event-info-modal__checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }

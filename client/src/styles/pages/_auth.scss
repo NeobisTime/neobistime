@@ -67,6 +67,9 @@ $borderRadius: 12px;
     padding: 5px 0;
     &_last {
       width: 70%;
+      box-sizing: border-box;
+      margin: 0 auto;
+      height: 70px;
     }
   }
   &__text_small_grey {
@@ -101,6 +104,8 @@ $borderRadius: 12px;
     border-radius: $borderRadius;
     cursor: pointer;
     font-size: 24px;
+    margin: 0 0 10px 0;
+    box-sizing: border-box;
   }
   &__image {
     box-sizing: border-box;

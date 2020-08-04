@@ -3,6 +3,7 @@ $pictureBlockWidth: 16%;
 $pointsWidth: 16%;
 //  infoContentWidth = 100% - pointsWidth - pictureBlockWidth
 $infoContentWidth: 68%;
+$filterBtnColor: #2C3E50;
 
 .personal-office {
   font-family: "Montserrat";
@@ -103,6 +104,86 @@ $infoContentWidth: 68%;
         }
         &_non_active {
           color: #a6b1bb;
+        }
+      }
+    }
+  }
+  &__stat {
+    &-wrapper {
+      display: flex !important;
+      justify-content: space-evenly;
+      width: 100%;
+    }
+    &-doughnut {
+      width: 500px;
+    }
+    &-content {
+      display: flex;
+      flex-direction: column;
+      width: 35%;
+      justify-content: space-evenly;
+    }
+    &-buttons {
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      &-text {
+        text-align: center;
+      }
+      &-content {
+        box-sizing: border-box;
+        margin: 30px 0 0 0;
+        display: flex;
+        justify-content: space-evenly;
+      }
+    }
+    &-button {
+      box-sizing: border-box;
+      padding: 10px 20px;
+      background-color: $filterBtnColor !important;
+      border-radius: 10px;
+      color: white;
+      font-size: 18px;
+      border: 2px solid $filterBtnColor !important;
+      &:hover {
+        background-color: #1e2b37 !important;
+        color: white;
+      }
+      &_active{
+        background-color: #1e2b37 !important;
+        color: white;
+        box-shadow: 0 0 10px 1px grey;
+      }
+    }
+    &-info {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      &-content {
+        display: flex;
+        justify-content: space-evenly;
+        width: 100%;
+      }
+      &-block {
+        font-family: "Roboto";
+        &-img {
+          box-sizing: border-box;
+          width: 60px;
+          &_small {
+            width: 40px;
+            margin: 10px 0;
+          }
+        }
+        &-text {
+          color: #9ea0a5;
+          font-size: 14px;
+        }
+        &-number {
+          box-sizing: border-box;
+          margin: 5px 0;
+          font-size: 29px;
+          font-weight: bold;
         }
       }
     }

@@ -15,7 +15,7 @@ const Spinner = () => {
     { id: 4, title: "This website offers you cookies in the kitchen :))" },
   ];
   const random = Math.round(Math.random() * 4);
-  const [text, setText] = useState<string>("");
+  let [text, setText] = useState<string>("");
 
   const [show, setShow] = useState(true);
 

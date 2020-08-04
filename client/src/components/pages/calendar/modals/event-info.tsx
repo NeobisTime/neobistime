@@ -20,10 +20,8 @@ const EventInfoModal = (props: any) => {
 
   return (
     <div className="modal__wrapper ">
-
       <div className="event-info-modal">
         <CloseModalButton onClose={props.onClose} />
-
         <div className="event-info__content w-100">
           <p className="event-info__content-title">
             PM meetup - Jira и мониторинг
@@ -48,22 +46,26 @@ const EventInfoModal = (props: any) => {
             deadline: 23 August 12:00
           </p>
           <form className="event-info-modal__form">
-            <div>
+            <div className='d-flex'>
               <label className="event-info-modal__label">
+                Да
                 <input
+                  className="event-info-modal__input"
                   type="checkbox"
                   checked={willGo}
                   onChange={handleWillGo}
                 />
-                Да
+                <span className="event-info-modal__checkmark"></span>
               </label>
               <label className="event-info-modal__label">
+                Нет
                 <input
+                  className="event-info-modal__input"
                   type="checkbox"
                   checked={willNotGo}
                   onChange={handleWillNotGo}
                 />
-                Нет
+                <span className="event-info-modal__checkmark"></span>
               </label>
             </div>
 
@@ -74,7 +76,6 @@ const EventInfoModal = (props: any) => {
         </div>
       </div>
     </div>
-
   );
 };
 

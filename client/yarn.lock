@@ -1202,6 +1202,22 @@
   dependencies:
     tslib "^2.0.0"
 
+"@fullcalendar/common@~5.2.0":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@fullcalendar/common/-/common-5.2.0.tgz#49dff00f5104daaa00a8a556be394cacec3fadb7"
+  integrity sha512-fh2Mp09lzIwlh3AJT5xw1r4jFKMOGRmdpmzJX+qvv3BJrg7P6ze4FLhoIpDRe13wmUpQuQEznk9pY99eFGxVXQ==
+  dependencies:
+    tslib "^2.0.0"
+
+"@fullcalendar/core@^5.2.1":
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/@fullcalendar/core/-/core-5.2.1.tgz#655eb371c74e41715d7fa273079c61cd4c028e17"
+  integrity sha512-5NHy5c9a2NokZkPiSk1+zRh4to/reE2ytu2NA/a/deJG7Ai/nM9oUaJj4TO25R5p9U9I+T9x7D3vM+X8Yu5izw==
+  dependencies:
+    "@fullcalendar/common" "~5.2.0"
+    preact "^10.0.5"
+    tslib "^2.0.0"
+
 "@fullcalendar/daygrid@^5.1.0", "@fullcalendar/daygrid@~5.1.0":
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/@fullcalendar/daygrid/-/daygrid-5.1.0.tgz#4f8cb30e99ff00600f064645942d21e8f668c946"
@@ -8966,6 +8982,11 @@ postcss@^7, postcss@^7.0.0, postcss@^7.0.1, postcss@^7.0.14, postcss@^7.0.16, po
     chalk "^2.4.2"
     source-map "^0.6.1"
     supports-color "^6.1.0"
+
+preact@^10.0.5:
+  version "10.4.6"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-10.4.6.tgz#86cc43396e4bdd755726a2b4b1f0529e78067cd3"
+  integrity sha512-80WJfXH53yyINig5Wza/8MD9n4lMg9G6aN00ws0ptsAaY/Fu/M7xW4zICf7OLfocVltxS30wvNQ8oIbUyZS1tw==
 
 prefix-style@2.0.1:
   version "2.0.1"

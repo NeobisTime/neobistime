@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@fullcalendar/bootstrap": "^5.1.0",
+    "@fullcalendar/core": "^5.2.1",
     "@fullcalendar/daygrid": "^5.1.0",
     "@fullcalendar/google-calendar": "^5.1.0",
     "@fullcalendar/interaction": "^5.1.0",

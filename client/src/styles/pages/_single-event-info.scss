@@ -9,6 +9,7 @@ $text-color: rgba(33, 51, 54, 0.8);
     font-family: "Montserrat";
     color: $text-color;
     box-sizing: border-box;
+    margin-left: 20px;
     &-title {
       color: #6074fb;
       font-size: 36px;
@@ -41,7 +42,7 @@ $text-color: rgba(33, 51, 54, 0.8);
         margin: 0 0 10px 0;
       }
       &_m_t {
-        margin: 10px 0 0 0;
+        // margin: 10px 0 0 0;
         font-size: 16px;
       }
     }
@@ -49,6 +50,8 @@ $text-color: rgba(33, 51, 54, 0.8);
       &-label {
         display: block;
         width: 100%;
+        box-sizing: border-box;
+        margin: 5px 0;
       }
       &-textarea {
         resize: vertical;

@@ -1,9 +1,12 @@
-import React, {useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../../shared/navbar";
 import { Link } from "react-router-dom";
 
-// default avatar
+// images
 import avatar from "../../../images/shared/user.svg";
+import all from "../../../images/shared/all_events.svg";
+import comed from "../../../images/pages/comed_events.svg";
+import missed from "../../../images/pages/missed_events.svg";
 
 // charts
 import { Doughnut } from "react-chartjs-2";
@@ -25,8 +28,8 @@ const PersonalOffice = () => {
     const statAdr = document.getElementsByClassName("personal-office__stat")[0];
     const stat = statAdr as HTMLElement;
     stat.style.display = "none";
-  }, [])
-  
+  }, []);
+
   const serverEvents = [
     { title: "Уборка", date: "2020-07-06" },
     { title: "Встреча с заказчиком", date: "2020-07-10" },
@@ -42,26 +45,22 @@ const PersonalOffice = () => {
 
   // * chart info
   const data = {
-    datasets: [{
-      data: [10, 20],
-      backgroundColor: [
-        '#36A2EB',
-        '#FFCE56'
-        ],
-    }],
-    labels: [
-      'Посещенных мероприятий',
-      'Всего мероприятий',
+    datasets: [
+      {
+        data: [4, 9],
+        backgroundColor: ["#FFCE56", "#EC4C47"],
+      },
     ],
+    labels: ["Посещенных мероприятий", "Пропущенных мероприятий"],
     legend: {
-      display: false
+      display: false,
     },
     options: {
       legend: {
-        display: false
-      }
-    }
-  }
+        display: false,
+      },
+    },
+  };
 
   //* start function to toogle between calendar and stats
   const openStatistics = () => {
@@ -180,6 +179,7 @@ const PersonalOffice = () => {
               bootstrapPlugin,
             ]}
             height="610px"
+            locale="ru"
             headerToolbar={{
               left: "prev,next today",
               center: "title",
@@ -194,18 +194,93 @@ const PersonalOffice = () => {
         </section>
 
         <section className="personal-office__stat">
-          <Doughnut
-            data={data}
-            width={300}
-            height={100}
-            options={{
-              responsive: true,
-              maintainAspectRatio: true,
-              legend: {
-                display: false
-              }
-            }}
-          />
+          <div className="personal-office__stat-wrapper">
+            <div className="personal-office__stat-doughnut">
+              <Doughnut
+                data={data}
+                width={100}
+                height={75}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: true,
+                  legend: {
+                    display: false,
+                  },
+                }}
+              />
+            </div>
+
+            <div className="personal-office__stat-content">
+              <div className="personal-office__stat-buttons">
+                <p className="personal-office__stat-buttons-text">
+                  Сортировать по:
+                </p>
+                <div className="personal-office__stat-buttons-content">
+                  <button className="button personal-office__stat-button button personal-office__stat-button_active">
+                    Недели
+                  </button>
+                  <button className="button personal-office__stat-button">
+                    Месяцу
+                  </button>
+                  <button className="button personal-office__stat-button">
+                    Году
+                  </button>
+                </div>
+              </div>
+              <div className="personal-office__stat-info">
+                <div className="personal-office__stat-info-content">
+                  <div className="personal-office__stat-info-block">
+                    <img
+                      className="personal-office__stat-info-block-img"
+                      src={all}
+                      alt="personal stat logo"
+                    />
+                    <p className="personal-office__stat-info-block-text">
+                      Всего
+                    </p>
+                    <p
+                      style={{ color: "#1070CA" }}
+                      className="personal-office__stat-info-block-number"
+                    >
+                      13
+                    </p>
+                  </div>
+                  <div className="personal-office__stat-info-block">
+                    <img
+                      className="personal-office__stat-info-block-img"
+                      src={comed}
+                      alt="personal stat logo"
+                    />
+                    <p className="personal-office__stat-info-block-text">
+                      Посещено
+                    </p>
+                    <p
+                      style={{ color: "#F7D154" }}
+                      className="personal-office__stat-info-block-number"
+                    >
+                      4
+                    </p>
+                  </div>
+                  <div className="personal-office__stat-info-block">
+                    <img
+                      className="personal-office__stat-info-block-img personal-office__stat-info-block-img_small"
+                      src={missed}
+                      alt="personal stat logo"
+                    />
+                    <p className="personal-office__stat-info-block-text">
+                      Пропущено
+                    </p>
+                    <p
+                      style={{ color: "#EC4C47" }}
+                      className="personal-office__stat-info-block-number"
+                    >
+                      9
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
       </div>
     </div>

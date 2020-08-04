@@ -3,7 +3,12 @@ import { TodayList } from "../../today-timetable/today-timetable";
 import withNavbarContainer from "../../../../HOC/withNavbar";
 
 const EndEvents = () => {
-  return <TodayList />;
+  return (
+    <>
+      <p className="today__title">Закончившиеся Мероприятия</p>
+      <TodayList />
+    </>
+  );
 };
 
 export default withNavbarContainer(EndEvents, "admin");

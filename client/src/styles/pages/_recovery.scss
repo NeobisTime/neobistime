@@ -1,17 +1,23 @@
 .recovery {
   &__form {
-      display: flex;
-      flex-basis: 100%;
-      flex-direction: column;
+    display: flex;
+    flex-basis: 100%;
+    flex-direction: column;
   }
-  &__label{
-      box-sizing: border-box;
-      padding: 30% 0 10% 0;
-      font-size: 24px;
-      color: rgba(33, 51, 54, 0.8);
+  &__label {
+    box-sizing: border-box;
+    padding: 30% 0 10% 0;
+    font-size: 24px;
+    color: rgba(33, 51, 54, 0.8);
   }
-  &__submit{
-      width: 60%;
-      margin: 40px 0;
+  &__submit {
+    padding: 5px 20px;
+    margin: 40px auto;
+    background-color: var(--neobisColor) !important;
+    height: 40px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 24px;
+    color: white;
   }
 }

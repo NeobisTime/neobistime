@@ -1,3 +1,7 @@
+$titleHeight: 77px;
+//* listHeight = 100vh - $titleHeight - topMargin(5px)
+$listHeight: calc(100vh - 77px - 5px);
+
 .today {
   &__title {
     color: var(--neobisColor);
@@ -6,10 +10,11 @@
     font-weight: bold;
     text-align: center;
     box-sizing: border-box;
-    margin: 20px 0;
+    height: $titleHeight;
+    padding: 15px 0 20px;
   }
   &__list {
-    min-height: 500px;
+    min-height: $listHeight;
     background: #f5f7ff;
     border-radius: 10px;
     display: flex;

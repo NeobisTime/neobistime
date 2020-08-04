@@ -28,8 +28,8 @@ const EditEventsPage = () => {
           </thead>
           <tbody className="end-event-info__table-tbody">
             <tr>
-              <td>Orientation day</td>
-              <td>Frontend</td>
+              <td className="bold">Orientation day</td>
+              <td className="bold">Frontend</td>
               <td className="end-event-info__table-tbody-date">01/12/2020</td>
               <td>Маленькая комната</td>
               <td className="all-events__edit-wrapper">
@@ -44,120 +44,146 @@ const EditEventsPage = () => {
             </tr>
 
             <tr>
-              <td>Orientation day</td>
-              <td>Frontend</td>
+              <td className="bold">Orientation day</td>
+              <td className="bold">Frontend</td>
               <td className="end-event-info__table-tbody-date">01/12/2020</td>
               <td>Маленькая комната</td>
               <td className="all-events__edit-wrapper">
-                <img
-                  src={editPen}
-                  alt="edit pen"
-                  className="all-events__edit-image"
-                />
+                <Link to="/admin/create_event/2" className="link">
+                  <img
+                    src={editPen}
+                    alt="edit pen"
+                    className="all-events__edit-image"
+                  />
+                </Link>
               </td>
             </tr>
+
             <tr>
-              <td>Orientation day</td>
-              <td>Frontend</td>
+              <td className="bold">Orientation day</td>
+              <td className="bold">Frontend</td>
               <td className="end-event-info__table-tbody-date">01/12/2020</td>
               <td>Маленькая комната</td>
               <td className="all-events__edit-wrapper">
-                <img
-                  src={editPen}
-                  alt="edit pen"
-                  className="all-events__edit-image"
-                />
+                <Link to="/admin/create_event/2" className="link">
+                  <img
+                    src={editPen}
+                    alt="edit pen"
+                    className="all-events__edit-image"
+                  />
+                </Link>
               </td>
             </tr>
+
             <tr>
-              <td>Orientation day</td>
-              <td>Frontend</td>
+              <td className="bold">Orientation day</td>
+              <td className="bold">Frontend</td>
               <td className="end-event-info__table-tbody-date">01/12/2020</td>
               <td>Маленькая комната</td>
               <td className="all-events__edit-wrapper">
-                <img
-                  src={editPen}
-                  alt="edit pen"
-                  className="all-events__edit-image"
-                />
+                <Link to="/admin/create_event/2" className="link">
+                  <img
+                    src={editPen}
+                    alt="edit pen"
+                    className="all-events__edit-image"
+                  />
+                </Link>
               </td>
             </tr>
+
             <tr>
-              <td>Orientation day</td>
-              <td>Frontend</td>
+              <td className="bold">Orientation day</td>
+              <td className="bold">Frontend</td>
               <td className="end-event-info__table-tbody-date">01/12/2020</td>
               <td>Маленькая комната</td>
               <td className="all-events__edit-wrapper">
-                <img
-                  src={editPen}
-                  alt="edit pen"
-                  className="all-events__edit-image"
-                />
+                <Link to="/admin/create_event/2" className="link">
+                  <img
+                    src={editPen}
+                    alt="edit pen"
+                    className="all-events__edit-image"
+                  />
+                </Link>
               </td>
             </tr>
+
             <tr>
-              <td>Orientation day</td>
-              <td>Frontend</td>
+              <td className="bold">Orientation day</td>
+              <td className="bold">Frontend</td>
               <td className="end-event-info__table-tbody-date">01/12/2020</td>
               <td>Маленькая комната</td>
               <td className="all-events__edit-wrapper">
-                <img
-                  src={editPen}
-                  alt="edit pen"
-                  className="all-events__edit-image"
-                />
+                <Link to="/admin/create_event/2" className="link">
+                  <img
+                    src={editPen}
+                    alt="edit pen"
+                    className="all-events__edit-image"
+                  />
+                </Link>
               </td>
             </tr>
+
             <tr>
-              <td>Orientation day</td>
-              <td>Frontend</td>
+              <td className="bold">Orientation day</td>
+              <td className="bold">Frontend</td>
               <td className="end-event-info__table-tbody-date">01/12/2020</td>
               <td>Маленькая комната</td>
               <td className="all-events__edit-wrapper">
-                <img
-                  src={editPen}
-                  alt="edit pen"
-                  className="all-events__edit-image"
-                />
+                <Link to="/admin/create_event/2" className="link">
+                  <img
+                    src={editPen}
+                    alt="edit pen"
+                    className="all-events__edit-image"
+                  />
+                </Link>
               </td>
             </tr>
+
             <tr>
-              <td>Orientation day</td>
-              <td>Frontend</td>
+              <td className="bold">Orientation day</td>
+              <td className="bold">Frontend</td>
               <td className="end-event-info__table-tbody-date">01/12/2020</td>
               <td>Маленькая комната</td>
               <td className="all-events__edit-wrapper">
-                <img
-                  src={editPen}
-                  alt="edit pen"
-                  className="all-events__edit-image"
-                />
+                <Link to="/admin/create_event/2" className="link">
+                  <img
+                    src={editPen}
+                    alt="edit pen"
+                    className="all-events__edit-image"
+                  />
+                </Link>
               </td>
             </tr>
+
             <tr>
-              <td>Orientation day</td>
-              <td>Frontend</td>
+              <td className="bold">Orientation day</td>
+              <td className="bold">Frontend</td>
               <td className="end-event-info__table-tbody-date">01/12/2020</td>
               <td>Маленькая комната</td>
               <td className="all-events__edit-wrapper">
-                <img
-                  src={editPen}
-                  alt="edit pen"
-                  className="all-events__edit-image"
-                />
+                <Link to="/admin/create_event/2" className="link">
+                  <img
+                    src={editPen}
+                    alt="edit pen"
+                    className="all-events__edit-image"
+                  />
+                </Link>
               </td>
             </tr>
+
             <tr>
-              <td>Orientation day</td>
-              <td>Frontend</td>
+              <td className="bold">Orientation day</td>
+              <td className="bold">Frontend</td>
               <td className="end-event-info__table-tbody-date">01/12/2020</td>
               <td>Маленькая комната</td>
-              <td>
-                <img
-                  src={editPen}
-                  alt="edit pen"
-                  className="all-events__edit-image"
-                />
+              <td className="all-events__edit-wrapper">
+                <Link to="/admin/create_event/2" className="link">
+                  <img
+                    src={editPen}
+                    alt="edit pen"
+                    className="all-events__edit-image"
+                  />
+                </Link>
               </td>
             </tr>
           </tbody>
@@ -186,4 +212,4 @@ const EditEventsPage = () => {
   );
 };
 
-export default withNavbarContainer(EditEventsPage, 'admin');
+export default withNavbarContainer(EditEventsPage, "admin");
