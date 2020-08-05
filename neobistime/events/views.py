@@ -33,7 +33,7 @@ class EventViewSet(viewsets.ModelViewSet):
     """
 
     def get_queryset(self):
-        return Event.objects.filter(owner=self.request.user.is_staff)
+        return Event.objects.filter(owner__is_staff=True)
 
     def get_permissions(self):
         """
