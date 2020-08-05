@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from easy_thumbnails.fields import ThumbnailerImageField
 
 
 class Place(models.Model):
@@ -24,6 +25,8 @@ class Event(models.Model):
     # if event will be in Neobis office
     place = models.ForeignKey(Place, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Адрес',
                               related_name='events')
+    image = ThumbnailerImageField(upload_to="event_imgs/%Y/%m/%d/", resize_source=dict(quality=85),
+                                  default="event_imgs/default.jpg")
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
                               verbose_name='Организатор')
     # link for online meeting or 2gis location if needed

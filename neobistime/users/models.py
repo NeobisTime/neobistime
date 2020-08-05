@@ -2,6 +2,7 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import IntegrityError, models
 from django.utils.translation import ugettext_lazy as _
+from easy_thumbnails.fields import ThumbnailerImageField
 
 
 class CustomUserManager(BaseUserManager):
@@ -66,6 +67,8 @@ class CustomUser(AbstractUser):
     Model for Custom User
     """
     username = None
+    profile_img = ThumbnailerImageField(upload_to="profile_imgs/%department_id/%name_suname/",
+                                        resize_source=dict(quality=85), default="profile_imgs/default.jpg")
     email = models.EmailField(_('email address'), unique=True)
 
     phone = models.CharField(max_length=100)

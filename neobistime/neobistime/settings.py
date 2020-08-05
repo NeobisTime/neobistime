@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'rest_auth.registration',
     'drf_yasg',
 
+    'easy_thumbnails',
 ]
 
 MIDDLEWARE = [
