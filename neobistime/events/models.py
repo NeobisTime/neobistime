@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db.models import signals
 from django.db import models
 
 
@@ -68,3 +69,12 @@ class Poll(models.Model):
 
     def __str__(self):
         return f'{self.user}  {self.answer}'
+
+
+def save_profile(sender, instance, **kwargs):
+    if instance.was_on_event:
+        instance.user.points += 10
+        instance.user.save()
+
+
+signals.post_save.connect(receiver=save_profile, sender=Poll)

@@ -1,6 +1,6 @@
 import math
-from .models import *
-from users.models import *
+from .models import Event, Poll
+from users.models import Department, CustomUser
 from django.http import JsonResponse
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -77,7 +77,7 @@ def self_statistic(request):
     :param request:
     :return: json with statistic data
     """
-    poll_queryset=Poll.objects.all()
+    poll_queryset = Poll.objects.all()
     if request.query_params.get('period') == 'week':
         week_start = timezone.now()
         week_start -= datetime.timedelta(days=week_start.weekday())
