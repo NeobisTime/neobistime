@@ -1,14 +1,17 @@
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework import serializers
-from django.utils import timezone
-from .models import *
 from django.db.models import Q
+from django.utils import timezone
+from rest_framework import serializers
+
+from users.models import Department
+from .models import Event, Place, Poll
+from .tasks import notify_users
 
 
 class PlaceSerializer(serializers.ModelSerializer):
     """
-         Class for serializing Place models
-     """
+    Class for serializing Place models
+    """
 
     class Meta:
         model = Place
@@ -17,8 +20,8 @@ class PlaceSerializer(serializers.ModelSerializer):
 
 class PollSerializer(serializers.ModelSerializer):
     """
-         Class for serializing Poll models
-     """
+    Class for serializing Poll models
+    """
     user = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())
 
     class Meta:
@@ -70,8 +73,8 @@ class EventGetSerializer(serializers.ModelSerializer):
 
     def get_color(self, obj):
         """
-        Method that returns the desired color for calendar
-        depending on user and his answer
+        Method that returns the desired color for a calendar
+        depending on user, and his answer
         :param obj:
         :return color:
         """
@@ -79,12 +82,39 @@ class EventGetSerializer(serializers.ModelSerializer):
             poll = Poll.objects.get(event=obj, user=self.context['request'].user)
             if poll.answer:
                 return 'green'
-            elif poll.answer == False:
-                return 'red'
+            else:
+                return '    red'
         except ObjectDoesNotExist:
             return 'blue'
-        else:
+        finally:
             return 'blue'
+
+
+def populate_choices():
+    try:
+        choices = tuple((i.name, i.name) for i in Department.objects.all())
+    except Exception:
+        return ()
+    return choices
+
+
+class UserNotificationSerializer(serializers.Serializer):
+    """
+    Serializing email notification data
+    """
+    departments = serializers.MultipleChoiceField(choices=populate_choices())
+    individual_users = serializers.ListField(child=serializers.EmailField(), allow_empty=True)
+
+    def __init__(self, *args, **kwargs):
+        super(UserNotificationSerializer, self).__init__(*args, **kwargs)
+        self.fields["departments"] = serializers.MultipleChoiceField(
+            choices=populate_choices()
+        )
+
+    def notify(self, event_id):
+        departments = self.validated_data["departments"]
+        individual_users = self.validated_data["individual_users"]
+        notify_users.delay(list(departments), individual_users, event_id)
 
 
 def available_date_for_event(validated_data):
@@ -174,11 +204,9 @@ class AdminPolls(serializers.ModelSerializer):
         fields = ('id', 'user', 'was_on_event')
 
 
-
 class EventsInPlaceSerializer(serializers.ModelSerializer):
-    events = EventGetSerializer(many=True,read_only=True)
-
+    events = EventGetSerializer(many=True, read_only=True)
 
     class Meta:
         model = Place
-        fields =('id','name','address','events')
+        fields = ('id', 'name', 'address', 'events')
