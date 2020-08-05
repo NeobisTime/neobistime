@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.db.models import signals
 
 
 class Place(models.Model):
@@ -22,7 +23,8 @@ class Event(models.Model):
     Model for event objects
     """
     # if event will be in Neobis office
-    place = models.ForeignKey(Place, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Адрес',related_name='events')
+    place = models.ForeignKey(Place, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Адрес',
+                              related_name='events')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
                               verbose_name='Организатор')
     # link for online meeting or 2gis location if needed
@@ -67,3 +69,12 @@ class Poll(models.Model):
 
     def __str__(self):
         return f'{self.user}  {self.answer}'
+
+
+def save_profile(sender, instance, **kwargs):
+    if instance.was_on_event:
+        instance.user.points += 10
+        instance.user.save()
+
+
+signals.post_save.connect(receiver=save_profile, sender=Poll)

@@ -127,7 +127,7 @@ class PollsForMyEventView(generics.ListAPIView, ):
     permission_classes = (permissions.IsAdminUser,)
 
     def get_queryset(self):
-        return Poll.objects.filter(event=self.kwargs['id'], answer=True)
+        return Poll.objects.filter(event=self.kwargs['id'], answer=True).exclude(was_on_event=True)
 
 
 class UpdatePollForMyEventView(generics.RetrieveUpdateAPIView):

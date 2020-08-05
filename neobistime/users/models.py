@@ -30,6 +30,7 @@ class CustomUser(AbstractUser):
     phone = models.CharField(max_length=100)
     name_surname = models.CharField(blank=True, max_length=120)
     department_id = models.ForeignKey(Department, on_delete=models.SET_NULL, related_name='department', null=True)
+    points = models.SmallIntegerField(verbose_name='Очки', default=0, null=True, blank=True)
 
     def __str__(self):
-        return "{}  ".format(self.name_surname )
+        return "{}  ".format(self.name_surname)
