@@ -82,11 +82,11 @@ class EventGetSerializer(serializers.ModelSerializer):
             poll = Poll.objects.get(event=obj, user=self.context['request'].user)
             if poll.answer:
                 return 'green'
-            else:
-                return '    red'
+            elif poll.answer == False:
+                return 'red'
         except ObjectDoesNotExist:
             return 'blue'
-        finally:
+        else:
             return 'blue'
 
 

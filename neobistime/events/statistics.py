@@ -47,10 +47,10 @@ def statistic_for_all_departments(request):
 
             elif request.query_params.get('period') == 'quarter':
                 quarter_start = timezone.now().month
-                event_queryset = Event.objects.filter(start_date__month__gte=quarter_start,
-                                                      start_date__month__lt=quarter_start + 3)
-                poll_queryset = Poll.objects.filter(answered_date__month__gte=quarter_start,
-                                                    answered_date__month__lt=quarter_start + 3)
+                event_queryset = Event.objects.filter(start_date__month__lte=quarter_start,
+                                                      start_date__month__gte=quarter_start - 3)
+                poll_queryset = Poll.objects.filter(answered_date__month__lte=quarter_start,
+                                                    answered_date__month__gte=quarter_start - 3)
             elif request.query_params.get('period') == 'year':
                 year = timezone.now().year
                 event_queryset = Event.objects.filter(start_date__year=year)
@@ -89,8 +89,9 @@ def self_statistic(request):
 
     elif request.query_params.get('period') == 'quarter':
         quarter_start = timezone.now().month
-        poll_queryset = Poll.objects.filter(answered_date__month__gte=quarter_start,
-                                            answered_date__month__lt=quarter_start + 3)
+        poll_queryset = Poll.objects.filter(answered_date__month__lt=quarter_start,
+                                            answered_date__month__gte=quarter_start - 3)
+        print(quarter_start - 3)
     elif request.query_params.get('period') == 'year':
         year = timezone.now().year
         poll_queryset = Poll.objects.filter(answered_date__year=year)
