@@ -50,12 +50,14 @@ INSTALLED_APPS = [
     'rest_auth.registration',
     'drf_yasg',
 
+    'corsheaders',
     'easy_thumbnails',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -104,10 +106,9 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 # Rest Framework settings
 REST_FRAMEWORK = {
-    # TODO: Uncomment this part
-    # 'DEFAULT_AUTHENTICATION_CLASSES': (
-    #     'rest_framework.authentication.TokenAuthentication',
-    # ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.AllowAny',
     ),
@@ -159,6 +160,10 @@ STATIC_ROOT = "static/"
 
 # Django-allauth settings
 
+MEDIA_ROOT = "media/"
+
+MEDIA_URL = "/media/"
+
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
@@ -179,10 +184,14 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'NeobisTime Team <noreply@yourthome.com>'
+DEFAULT_FROM_EMAIL = 'NeobisTime Team <noreply@calendar.neobis.kg>'
 
 # Celery configuration
 
 CELERY_BROKER_URL = config("BROKER_URL")
 
 CELERY_TIMEZONE = 'Asia/Bishkek'
+
+# CORS
+
+CORS_ORIGIN_ALLOW_ALL = True

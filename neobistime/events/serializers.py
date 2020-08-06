@@ -68,8 +68,8 @@ class EventGetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = (
-            'id', 'owner', 'title', 'description', 'deadline', 'start_date', 'end_date', 'place', 'link', 'address',
-            'color')
+            'id', "image", 'owner', 'title', 'description', 'deadline', 'start_date', 'end_date', 'place', 'link',
+            'address', 'color')
 
     def get_color(self, obj):
         """
@@ -92,7 +92,7 @@ class EventGetSerializer(serializers.ModelSerializer):
 
 def populate_choices():
     try:
-        choices = tuple((i.name, i.name) for i in Department.objects.all())
+        choices = tuple((i.name, i.pk) for i in Department.objects.all())
     except Exception:
         return ()
     return choices
@@ -157,7 +157,8 @@ class EventCreateUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = (
-            'id', 'owner', 'title', 'description', 'deadline', 'start_date', 'end_date', 'place', 'link', 'address',
+            'id', "image", 'owner', 'title', 'description', 'deadline', 'start_date', 'end_date', 'place', 'link',
+            'address',
         )
 
     def create(self, validated_data):
@@ -166,6 +167,7 @@ class EventCreateUpdateSerializer(serializers.ModelSerializer):
         return Event.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
+        instance.profile_img = validated_data.get("image", instance.image)
         instance.title = validated_data.get('title', instance.title)
         instance.place = validated_data.get('place', instance.place)
         instance.address = validated_data.get('address', instance.address)
@@ -189,7 +191,8 @@ class MyEventListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = (
-            'id', 'owner', 'title', 'description', 'deadline', 'start_date', 'end_date', 'place', 'link', 'address',
+            'id', "image", 'owner', 'title', 'description', 'deadline', 'start_date', 'end_date', 'place', 'link',
+            'address',
         )
 
 
