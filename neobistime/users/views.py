@@ -1,7 +1,7 @@
 from rest_framework import generics, permissions
 
 from . import serializers
-from .models import CustomUser,Department
+from .models import CustomUser, Department
 
 
 class UserListView(generics.ListAPIView):

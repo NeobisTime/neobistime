@@ -2,7 +2,7 @@ from allauth.account.views import PasswordChangeView, PasswordResetView, confirm
 from django.conf.urls import url
 from django.urls import include, path
 
-from .views import UserListView,DepartmentListView
+from .views import UserListView, DepartmentListView
 
 urlpatterns = [
     path('', UserListView.as_view(), name='list-users'),
