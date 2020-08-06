@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
-
+from . import statistics
 from . import views
 
 router = DefaultRouter()
@@ -15,7 +15,10 @@ urlpatterns = [
     path('my_events/<int:id>/', views.PollsForMyEventView().as_view(), name='polls-for-my-event'),
     path('my_events/<int:id>/poll/<int:pk>/', views.UpdatePollForMyEventView().as_view(),
          name='update-poll-for-my-event'),
+    path('stats/', statistics.statistic_for_all_departments, name='stats'),
+    path('self-statistic/', statistics.self_statistic, name='self-stats'),
     path('events/<int:event_id>/notify/', views.notify_user, name='notification-email'),
+
 ]
 
 urlpatterns += router.urls
