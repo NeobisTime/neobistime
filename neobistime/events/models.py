@@ -27,7 +27,7 @@ class Event(models.Model):
     place = models.ForeignKey(Place, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Адрес',
                               related_name='events')
     image = ThumbnailerImageField(upload_to="event_imgs/%Y/%m/%d/", resize_source=dict(quality=95, size=(1200, 1200)),
-                                  default="event_imgs/default.jpg")
+                                  default="event_imgs/default.png")
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
                               verbose_name='Организатор')
     # link for online meeting or 2gis location if needed
