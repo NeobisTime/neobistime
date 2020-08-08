@@ -25,7 +25,7 @@ class CustomRegisterSerializer(RegisterSerializer):
         required=False
     )
     department_id = serializers.PrimaryKeyRelatedField(queryset=Department.objects.all())
-    profile_img = serializers.ImageField(allow_empty_file=True, allow_null=True)
+    profile_img = serializers.ImageField(required=False)
 
     def get_cleaned_data(self):
         data_dict = super().get_cleaned_data()
