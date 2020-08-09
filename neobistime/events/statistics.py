@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.utils import timezone
 
 
-@api_view(["GET", "POST"])
+@api_view(["POST"])
 @permission_classes([IsAdminUser])
 def stats_by_department(request):
     """
@@ -19,6 +19,7 @@ def stats_by_department(request):
     2)quantity of students
     3)average attendance
     4)average number of people per event
+
     :param request:
      department_id - Integer (required),
      month - integer (required),
