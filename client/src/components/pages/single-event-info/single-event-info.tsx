@@ -30,7 +30,7 @@ const EventInfo = (props: any) => {
           <p className="event-info__content-date">19.00 Вторник, Июль 31</p>
           <p className="event-info__content-description">
             Очередной MeetUp, организованный Необисом для дальнейшей реализации
-            наших проектов. Делимся знаниями и обязательно приходим!
+            наших проектов.   
           </p>
           <p className="event-info__content-address">
             <img

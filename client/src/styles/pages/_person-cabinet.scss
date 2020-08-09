@@ -1,8 +1,8 @@
 $standartFontSize: 18px;
 $pictureBlockWidth: 16%;
-$pointsWidth: 16%;
+$pointsWidth: 20%;
 //  infoContentWidth = 100% - pointsWidth - pictureBlockWidth
-$infoContentWidth: 68%;
+$infoContentWidth: 64%;
 $filterBtnColor: #2C3E50;
 
 .personal-office {
@@ -46,23 +46,39 @@ $filterBtnColor: #2C3E50;
         font-size: $standartFontSize;
       }
     }
+
     &-points {
       width: $pointsWidth;
       height: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-direction: column;
       &-value {
         width: 80px;
         height: 80px;
-        background: radial-gradient(#55ddff, #0081b5);
-        border-radius: 50%;
+        background: url('../../images/pages/personal_points.svg') no-repeat;
+        background-size: contain;
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 35px;
+        font-size: 27px;
+      }
+      &-achievements{
+        display: flex;
+        width: 100%;
+        &-block{
+          display: flex;
+          flex-basis: 33%;
+          justify-content: center;
+          align-items: center;
+        }
+        &-value{
+          box-sizing: border-box;
+        }
       }
     }
+
     &-edit {
       font-family: "Roboto", sans-serif;
       font-weight: bold;
@@ -178,6 +194,7 @@ $filterBtnColor: #2C3E50;
         &-text {
           color: #9ea0a5;
           font-size: 14px;
+          max-width: 80px;
         }
         &-number {
           box-sizing: border-box;

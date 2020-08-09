@@ -2,126 +2,52 @@ import React, { useState } from "react";
 import AdminNavbar from "../admin-navbar";
 import DayPicker from "react-day-picker";
 import "react-day-picker/lib/style.css";
-import { Scrollbars } from "react-custom-scrollbars";
 import Select from "react-select";
+import HoursScrollbar from "./hours-scrollbar";
+import MinutesScrollbar from "./minutes-scrollbar";
+import withDataContainer from "../../../../HOC/withData";
 
+const CreateEventPage = (props: any) => {
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [image, setImage] = useState<FileList | null>();
 
+  const [startDate, setStartDate] = useState<Date | undefined>(new Date());
+  const [startDateHours, setStartDateHours] = useState<number>(-1);
+  const [startDateMinutes, setStartDateMinutes] = useState<number>(-1);
 
-const CreateEventPage = () => {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-    new Date()
-  );
-  const [name, setName] = useState<string>("");
+  const [endDate, setEndDate] = useState<Date | undefined>(new Date());
+  const [endDateHours, setEndDateHours] = useState<number>(-1);
+  const [endDateMinutes, setEndDateMinutes] = useState<number>(-1);
+
   const [address, setAddress] = useState<string>("");
-  const hours = [
-    0,
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18,
-    19,
-    20,
-    21,
-    22,
-    23,
-    24,
-  ];
-  const minutes = [
-    0,
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18,
-    19,
-    20,
-    21,
-    22,
-    23,
-    24,
-    25,
-    26,
-    27,
-    28,
-    29,
-    30,
-    31,
-    32,
-    33,
-    34,
-    35,
-    36,
-    37,
-    38,
-    39,
-    40,
-    41,
-    42,
-    43,
-    44,
-    45,
-    46,
-    47,
-    48,
-    49,
-    50,
-    51,
-    52,
-    53,
-    54,
-    55,
-    56,
-    57,
-    58,
-    59,
-  ];
-  const departments = [
-    { value: "All", label: "All" },
-    { value: "Python", label: "Python" },
-    { value: "Frontend", label: "Frontend" },
-    { value: "PM", label: "PM" },
-    { value: "Design", label: "Design" },
-    { value: "C#", label: "C#" },
-    { value: "Java", label: "Java" },
-    { value: "Android", label: "Android" },
-    { value: "IOS", label: "IOS" },
-    { value: "NodeJS", label: "NodeJS" },
-  ];
+  const [addressDisable, setAddressDisable] = useState<boolean>(true);
+  const [place, setPlace] = useState<number | null>(null);
 
+  const handleChangeAddress = (e: any) => {
+    setPlace(+e.target.value);
+    setAddressDisable(true);
+    setAddress("");
+  };
+
+  const handleSubmit = (event: any) => {
+    event.preventDefault();
+
+    // set hours and minutes of event
+    startDate?.setHours(startDateHours);
+    startDate?.setMinutes(startDateMinutes);
+    startDate?.setSeconds(0);
+    endDate?.setHours(endDateHours);
+    endDate?.setMinutes(endDateMinutes);
+    endDate?.setSeconds(0);
+  };
 
   return (
     <div className="wrapper wrapper_bg_grey">
       <AdminNavbar />
       <div className="content__wrapper">
         <div className="create-event">
-          <form className="create-event__form">
+          <form className="create-event__form" onSubmit={handleSubmit}>
             <section className="create-event__form-section">
               <label className="create-event__form-label" htmlFor="name">
                 Название
@@ -131,9 +57,9 @@ const CreateEventPage = () => {
                 type="text"
                 name="name"
                 required
-                value={name}
+                value={title}
                 onChange={(e) => {
-                  setName(e.target.value);
+                  setTitle(e.target.value);
                 }}
               />
               <label className="create-event__form-label" htmlFor="description">
@@ -143,6 +69,11 @@ const CreateEventPage = () => {
                 cols={30}
                 rows={14}
                 name="description"
+                required
+                value={description}
+                onChange={(e) => {
+                  setDescription(e.target.value);
+                }}
                 placeholder="Some Meet Up"
                 className="create-event__form-textarea"
               />
@@ -150,10 +81,23 @@ const CreateEventPage = () => {
               <label className="create-event__form-label">Изображение</label>
               <div className="create-event__form-file">
                 <input
+                  style={{
+                    width: "100%",
+                    margin: "0 0 10px 0",
+                  }}
+                  className="create-event__form-input"
+                  type="text"
+                  value={image ? image[0].name : "empty"}
+                  readOnly
+                />
+                <input
                   type="file"
                   name="file"
                   id="file"
                   className="create-event__form-file-input button"
+                  onChange={(e) => {
+                    setImage(e.target.files);
+                  }}
                 />
                 <label
                   className="create-event__form-file-input-value"
@@ -167,9 +111,10 @@ const CreateEventPage = () => {
             <section className="create-event__form-section_calendar">
               <DayPicker
                 onDayClick={(date) => {
-                  setSelectedDate(date);
+                  setStartDate(date);
+                  setEndDate(date);
                 }}
-                selectedDays={selectedDate}
+                selectedDays={startDate}
               />
 
               <div className="d-flex">
@@ -181,58 +126,14 @@ const CreateEventPage = () => {
                     Начало
                   </label>
                   <div className="d-flex">
-                    <Scrollbars
-                      autoHide
-                      autoHideTimeout={1000}
-                      autoHideDuration={200}
-                      autoHeight
-                      autoHeightMin={0}
-                      autoHeightMax={200}
-                      thumbMinSize={30}
-                      universal={true}
-                      className="create-event__form-scroll"
-                      style={{ width: 50, height: 200 }}
-                    >
-                      <div className="create-event__form-number create-event__form-number_active">
-                        ч.
-                      </div>
-                      {hours.map((number) => {
-                        return (
-                          <div
-                            key={number}
-                            className="create-event__form-number"
-                          >
-                            {number}
-                          </div>
-                        );
-                      })}
-                    </Scrollbars>
-                    <Scrollbars
-                      autoHide
-                      autoHideTimeout={1000}
-                      autoHideDuration={200}
-                      autoHeight
-                      autoHeightMin={0}
-                      autoHeightMax={200}
-                      thumbMinSize={30}
-                      universal={true}
-                      className="create-event__form-scroll"
-                      style={{ width: 50, height: 200 }}
-                    >
-                      <div className="create-event__form-number create-event__form-number_active">
-                        м.
-                      </div>
-                      {minutes.map((number) => {
-                        return (
-                          <div
-                            key={number}
-                            className="create-event__form-number"
-                          >
-                            {number}
-                          </div>
-                        );
-                      })}
-                    </Scrollbars>
+                    <HoursScrollbar
+                      value={startDateHours}
+                      setValue={setStartDateHours}
+                    />
+                    <MinutesScrollbar
+                      value={startDateMinutes}
+                      setValue={setStartDateMinutes}
+                    />
                   </div>
                 </div>
 
@@ -244,58 +145,14 @@ const CreateEventPage = () => {
                     Конец
                   </label>
                   <div className="d-flex">
-                    <Scrollbars
-                      autoHide
-                      autoHideTimeout={1000}
-                      autoHideDuration={200}
-                      autoHeight
-                      autoHeightMin={0}
-                      autoHeightMax={200}
-                      thumbMinSize={30}
-                      universal={true}
-                      className="create-event__form-scroll"
-                      style={{ width: 50, height: 200 }}
-                    >
-                      <div className="create-event__form-number create-event__form-number_active">
-                        ч.
-                      </div>
-                      {hours.map((number) => {
-                        return (
-                          <div
-                            key={number}
-                            className="create-event__form-number"
-                          >
-                            {number}
-                          </div>
-                        );
-                      })}
-                    </Scrollbars>
-                    <Scrollbars
-                      autoHide
-                      autoHideTimeout={1000}
-                      autoHideDuration={200}
-                      autoHeight
-                      autoHeightMin={0}
-                      autoHeightMax={200}
-                      thumbMinSize={30}
-                      universal={true}
-                      className="create-event__form-scroll"
-                      style={{ width: 50, height: 200 }}
-                    >
-                      <div className="create-event__form-number create-event__form-number_active">
-                        м.
-                      </div>
-                      {minutes.map((number) => {
-                        return (
-                          <div
-                            key={number}
-                            className="create-event__form-number"
-                          >
-                            {number}
-                          </div>
-                        );
-                      })}
-                    </Scrollbars>
+                    <HoursScrollbar
+                      value={endDateHours}
+                      setValue={setEndDateHours}
+                    />
+                    <MinutesScrollbar
+                      value={endDateMinutes}
+                      setValue={setEndDateMinutes}
+                    />
                   </div>
                 </div>
               </div>
@@ -307,19 +164,40 @@ const CreateEventPage = () => {
               </label>
               <div className="create-event__form-radio">
                 <div className="create-event__form-radio-container">
-                  <input type="radio" name="small" id="small" checked={true} />
+                  <input
+                    type="radio"
+                    name="place"
+                    onChange={handleChangeAddress}
+                    value={1}
+                  />
                   <label htmlFor="small">Маленькая комната</label>
                 </div>
                 <div className="create-event__form-radio-container">
-                  <input type="radio" name="small" id="small" />
+                  <input
+                    type="radio"
+                    name="place"
+                    value={2}
+                    onChange={handleChangeAddress}
+                  />
                   <label htmlFor="small">Большая комната</label>
                 </div>
                 <div className="create-event__form-radio-container">
-                  <input type="radio" name="small" id="small" />
+                  <input
+                    type="radio"
+                    name="place"
+                    value={3}
+                    onChange={handleChangeAddress}
+                  />
                   <label htmlFor="small">Весь офис</label>
                 </div>
                 <div className="create-event__form-radio-container">
-                  <input type="radio" name="small" id="small" />
+                  <input
+                    type="radio"
+                    name="place"
+                    onChange={() => {
+                      setAddressDisable(false);
+                    }}
+                  />
                   <label htmlFor="small">Другое</label>
                 </div>
 
@@ -327,7 +205,8 @@ const CreateEventPage = () => {
                   className="create-event__form-input create-event__form-input_border"
                   type="text"
                   name="address"
-                  required
+                  disabled={addressDisable ? true : false}
+                  required={addressDisable ? false : true}
                   value={address}
                   onChange={(e) => {
                     setAddress(e.target.value);
@@ -341,11 +220,16 @@ const CreateEventPage = () => {
                 isMulti
                 isClearable={true}
                 isSearchable={true}
-                options={departments}
+                options={props.selectDepartments}
                 className="basic-multi-select"
                 classNamePrefix="select"
               />
-              <button className='button create-event__form-submit '>Сохранить</button>
+              <button
+                className="button create-event__form-submit "
+                type="submit"
+              >
+                Сохранить
+              </button>
             </section>
           </form>
         </div>
@@ -354,4 +238,4 @@ const CreateEventPage = () => {
   );
 };
 
-export default CreateEventPage;
+export default withDataContainer(CreateEventPage);

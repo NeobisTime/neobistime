@@ -1,7 +1,52 @@
 import React from "react";
 import PageTitle from "../../shared/page-title";
 import Select from "react-select";
-import withNavbarContainer from "../../../HOC/withNavbar";
+import address from "../../../images/pages/address.svg";
+import eventImage from "../../../images/pages/notifications_event_default.png";
+import notificationArrow from "../../../images/pages/notifications_arrow_pagination.png";
+import AdminNavbar from "../admin/admin-navbar";
+
+const BlockEventNotification = () => {
+  return (
+    <div className="notifications__content">
+      <div className="notifications__content-image-wrapper">
+        <img
+          className="notifications__content-image"
+          src={eventImage}
+          alt="event"
+        />
+      </div>
+      <div className="notifications__content-block">
+        <p className="notifications__content-date">19.00 Вторник, Июль 31</p>
+        <p className="notifications__content-title">
+          PM meetup - Jira и мониторинг
+        </p>
+        <p className="notifications__content-description">
+          Очередной Python MeetUp, организованный Необисом для дальнейшей
+          реализации наших проектов. Делимся знаниями и обязательно приходим!
+          Делимся знаниями и обязательно приходим! Делимся знаниями и
+          обязательно приходим!
+        </p>
+        <p className="notifications__content-address">
+          <img
+            className="notifications__content-address-image"
+            src={address}
+            alt="address"
+          />
+          Адрес: Маленькая комната
+        </p>
+        <div className="notifications__content-buttons">
+          <button className="button notifications__content-button notifications__content-button_blue">
+            Подробнее
+          </button>
+          <button className="button notifications__content-button notifications__content-button_cyan">
+            Я пойду
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Notification = () => {
   const filters = [
@@ -11,142 +56,58 @@ const Notification = () => {
   ];
 
   return (
-    <div>
-      <PageTitle text="Уведомления" />
-      <div className="notifications__buttons">
-        <input
-          className="notifications__buttons-search"
-          type="text"
-          name="search"
-          id="search"
-        />
-        <Select options={filters} className="notifications__buttons-select" />
-      </div>
-      <div className="notifications__content">
-        <table className="notifications__table">
-          <colgroup span={4} className="notifications__table-colgroup">
-            <col span={1} id="date" />
-            <col span={1} id="time" />
-            <col span={1} id="owner" />
-            <col span={1} id="event" />
-          </colgroup>
-          <thead className="notifications__table-thead">
-            <tr className="notifications__table-thead-tr">
-              <th className="notifications__table-thead-tr-th w-20" scope="col">
-                Дата
-              </th>
-              <th className="notifications__table-thead-tr-th w-20" scope="col">
-                Время
-              </th>
-              <th className="notifications__table-thead-tr-th w-20" scope="col">
-                Создатель
-              </th>
-              <th className="notifications__table-thead-tr-th w-35" scope="col">
-                Событие
-              </th>
-            </tr>
-          </thead>
-          <tbody className="notifications__table-tbody">
-            <tr className="notifications__table-tbody-tr">
-              <td className="notifications__table-tbody-tr-td w-20">28 jan</td>
-              <td className="notifications__table-tbody-tr-td w-20">
-                13:30-15:30
-              </td>
-              <td className="notifications__table-tbody-tr-td w-20">
-                Адахан А.
-              </td>
-              <td className="notifications__table-tbody-tr-td w-35">
-                Orientation day
-              </td>
-            </tr>
+    <div className="wrapper wrapper_bg_grey">
+      <AdminNavbar />
+      <div className="content__wrapper">
+        <div className="notifications">
+          <PageTitle text="Уведомления" />
+          <div className="notifications__buttons">
+            <input
+              className="notifications__buttons-search"
+              type="text"
+              name="search"
+              id="search"
+              placeholder="Искать..."
+            />
+            <Select
+              options={filters}
+              className="notifications__buttons-select"
+            />
+          </div>
 
-            <tr className="notifications__table-tbody-tr">
-              <td className="notifications__table-tbody-tr-td w-20">29 jul</td>
-              <td className="notifications__table-tbody-tr-td w-20">
-                10:30-20:00
-              </td>
-              <td className="notifications__table-tbody-tr-td w-20">
-                Feruza А.
-              </td>
-              <td className="notifications__table-tbody-tr-td w-35">
-                Плюс 2 человека
-              </td>
-            </tr>
-
-            <tr className="notifications__table-tbody-tr">
-              <td className="notifications__table-tbody-tr-td w-20">
-                07 april
-              </td>
-              <td className="notifications__table-tbody-tr-td w-20">
-                13:00-17:30
-              </td>
-              <td className="notifications__table-tbody-tr-td w-20">
-                Комолдин А.
-              </td>
-              <td className="notifications__table-tbody-tr-td w-35">Уборка</td>
-            </tr>
-
-            <tr className="notifications__table-tbody-tr">
-              <td className="notifications__table-tbody-tr-td w-20">1 aug</td>
-              <td className="notifications__table-tbody-tr-td w-20">
-                08:00-10:00
-              </td>
-              <td className="notifications__table-tbody-tr-td w-20">Куна А.</td>
-              <td className="notifications__table-tbody-tr-td w-35">
-                Закончились печеньки
-              </td>
-            </tr>
-
-            <tr className="notifications__table-tbody-tr">
-              <td className="notifications__table-tbody-tr-td w-20">28 jan</td>
-              <td className="notifications__table-tbody-tr-td w-20">
-                13:30-15:30
-              </td>
-              <td className="notifications__table-tbody-tr-td w-20">
-                Адахан А.
-              </td>
-              <td className="notifications__table-tbody-tr-td w-35">
-                Orientation day
-              </td>
-            </tr>
-
-            <tr className="notifications__table-tbody-tr">
-              <td className="notifications__table-tbody-tr-td w-20">28 jan</td>
-              <td className="notifications__table-tbody-tr-td w-20">
-                13:30-15:30
-              </td>
-              <td className="notifications__table-tbody-tr-td w-20">
-                Адахан А.
-              </td>
-              <td className="notifications__table-tbody-tr-td w-35">
-                Orientation day
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div className="notifications__pagination">
-          <div className="notifications__pagination-content">
-            <div className="notifications__pagination-content-arrow">
-              &#10094;
+          <section className="notifications__section">
+            <div className="notifications__section-arrow ">
+              <img className="rotate_180" src={notificationArrow} alt="arrow" />
             </div>
-            <div className="notifications__pagination-content-number number_active">
-              <p className="notifications__pagination-content-number-value">
-                1
-              </p>
+            <div className="notifications__section-content">
+              <BlockEventNotification />
+              <BlockEventNotification />
+              <BlockEventNotification />
+              <BlockEventNotification />
+              <BlockEventNotification />
+              <BlockEventNotification />
             </div>
-            <div className="notifications__pagination-content-number ">
-              <p className="notifications__pagination-content-number-value">
-                2
-              </p>
+            <div className="notifications__section-arrow">
+              <img src={notificationArrow} alt="arrow" />
             </div>
-            <div className="notifications__pagination-content-number">
-              <p className="notifications__pagination-content-number-value">
-                3
-              </p>
-            </div>
-            <div className="notifications__pagination-content-arrow">
-              &#10095;
+          </section>
+          <div className="notifications__pagination" style={{margin: '0 0 40px 0'}}>
+            <div className="notifications__pagination-content">
+              <div className="notifications__pagination-content-number number_active">
+                <p className="notifications__pagination-content-number-value">
+                  1
+                </p>
+              </div>
+              <div className="notifications__pagination-content-number ">
+                <p className="notifications__pagination-content-number-value">
+                  2
+                </p>
+              </div>
+              <div className="notifications__pagination-content-number">
+                <p className="notifications__pagination-content-number-value">
+                  3
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -155,4 +116,4 @@ const Notification = () => {
   );
 };
 
-export default withNavbarContainer(Notification);
+export default Notification;

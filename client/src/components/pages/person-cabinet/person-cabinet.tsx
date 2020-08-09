@@ -7,6 +7,9 @@ import avatar from "../../../images/shared/user.svg";
 import all from "../../../images/shared/all_events.svg";
 import comed from "../../../images/pages/comed_events.svg";
 import missed from "../../../images/pages/missed_events.svg";
+import firstAchievement from "../../../images/pages/personal_achievment_1.svg";
+import secondAchievement from "../../../images/pages/personal_achievment_2.svg";
+import thirdAchievement from "../../../images/pages/personal_achievment_3.svg";
 
 // charts
 import { Doughnut } from "react-chartjs-2";
@@ -142,8 +145,41 @@ const PersonalOffice = () => {
               </button>
             </Link>
           </div>
+
           <div className="personal-office__info-points">
-            <div className="personal-office__info-points-value">10</div>
+            <div className="personal-office__info-points-value">40</div>
+            <div className="personal-office__info-points-achievements">
+              <div className="personal-office__info-points-achievements-block">
+                <img
+                  className="personal-office__info-points-achievements-image"
+                  src={firstAchievement}
+                  alt="achievement"
+                />
+                <span className="personal-office__info-points-achievements-value">
+                  50
+                </span>
+              </div>
+              <div className="personal-office__info-points-achievements-block">
+                <img
+                  className="personal-office__info-points-achievements-image"
+                  src={secondAchievement}
+                  alt="achievement"
+                />
+                <span className="personal-office__info-points-achievements-value">
+                  250
+                </span>
+              </div>
+              <div style={{marginLeft: '5px'}} className="personal-office__info-points-achievements-block">
+                <img
+                  className="personal-office__info-points-achievements-image"
+                  src={thirdAchievement}
+                  alt="achievement"
+                />
+                <span style={{marginLeft: '5px'}} className="personal-office__info-points-achievements-value">
+                  500
+                </span>
+              </div>
+            </div>
           </div>
         </section>
 

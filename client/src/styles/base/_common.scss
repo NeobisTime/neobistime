@@ -60,5 +60,27 @@ $font: "Montserrat";
   background: #cfcdea;
   border-radius: 10px;
   box-sizing: border-box;
+  box-shadow: 0 0 4px 15px rgba(47, 128, 237, 0.1);
   z-index: 100;
+  // transition: all 0.5s ease-in-out;
+  animation-name: ModalOut;
+  animation-duration: 0.8s;
+}
+
+.error__span{
+  font-size: 12px;
+  color: red;
+}
+
+.rotate_180{
+  transform: rotate(180deg);
+}
+
+@keyframes ModalOut {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

@@ -1,5 +1,9 @@
-import React from "react";
-import { Doughnut } from "react-chartjs-2";
+import React, { useState } from "react";
+import { Doughnut, Bar } from "react-chartjs-2";
+import all from "../../../../images/pages/admin-stat-total-events.svg";
+import percentComing from "../../../../images/pages/admin-stat-percent-coming.svg";
+import averagePeople from "../../../../images/pages/admin-stat-leute.svg";
+import Select from "react-select";
 
 // today date
 import { finalDate } from "../../../pages/today-timetable/today-timetable";
@@ -10,17 +14,51 @@ import events from "../../../../images/pages/events_created.svg";
 import people from "../../../../images/pages/peoples_average.svg";
 import time from "../../../../images/pages/time_average.svg";
 import withNavbarContainer from "../../../../HOC/withNavbar";
+import withDataContainer from "../../../../HOC/withData";
 
-
-const AdminStat = () => {
+const AdminStat = (props: any) => {
+  const [department, setDepartment] = useState<string>("");
+  const [month, setMonth] = useState<string>("");
   const doughnutData = {
     datasets: [
       {
-        data: [10, 18, 13],
-        backgroundColor: ["#36A2EB", "#FFCE56", "#d1f435"],
+        data: [80, 100 - 80],
+        backgroundColor: [
+          "#F7D154",
+          "lightgrey",
+        ],
       },
     ],
-    labels: ["значение", "значение", "значение"],
+    labels: ["% посещений", ""],
+  };
+  const departmentChartData = {
+    datasets: [
+      {
+        data: [12, 10, 9, 11, 15, 16, 7, 5, 8],
+        backgroundColor: [
+          "#1FEAC5",
+          "#6C63FF",
+          "#FBBEBE",
+          "#F7D154",
+          "#87DBEC",
+          "orange",
+          "green",
+          "purple",
+          "red",
+        ],
+      },
+    ],
+    labels: [
+      "Android",
+      "C#",
+      "Design",
+      "Frontend",
+      "IOS",
+      "Java/Kotlin",
+      "NodeJs",
+      "PM",
+      "Python",
+    ],
   };
 
   return (
@@ -103,23 +141,140 @@ const AdminStat = () => {
 
       <div className="admin-stat__charts">
         <div className="admin-stat__charts-doughnut">
-          <Doughnut
-            data={doughnutData}
-            width={300}
-            height={300}
+          <div className="admin-stat__charts-doughnut-filters">
+            <Select
+              options={props.departments}
+              className="admin-stat__charts-doughnut-select"
+              required
+              onChange={(e: any) => {
+                setDepartment(e.value);
+              }}
+            />
+            <Select
+              options={props.yearsMonth}
+              className="admin-stat__charts-doughnut-select"
+              required
+              onChange={(e: any) => {
+                setMonth(e.value);
+              }}
+            />
+            <button className="button admin-stat__charts-doughnut-button_year ">
+              Год
+            </button>
+          </div>
+          <div className="admin-stat__charts-doughnut-chart">
+            <Doughnut
+              data={doughnutData}
+              width={250}
+              height={250}
+              options={{
+                responsive: true,
+                maintainAspectRatio: true,
+                legend: {
+                  display: false,
+                },
+              }}
+            />
+          </div>
+          <div className="personal-office__stat-info">
+            <div className="personal-office__stat-info-content">
+              <div className="personal-office__stat-info-block">
+                <img
+                  className="personal-office__stat-info-block-img"
+                  src={all}
+                  style={{ boxSizing: "border-box", padding: "10px" }}
+                  alt="personal stat logo"
+                />
+                <p className="personal-office__stat-info-block-text">
+                  Всего мероприятий
+                </p>
+                <p
+                  style={{ color: "#1070CA" }}
+                  className="personal-office__stat-info-block-number"
+                >
+                  13
+                </p>
+              </div>
+              <div className="personal-office__stat-info-block">
+                <img
+                  className="personal-office__stat-info-block-img"
+                  style={{
+                    boxSizing: "border-box",
+                    padding: "10px",
+                    marginBottom: "2px",
+                  }}
+                  src={percentComing}
+                  alt="personal stat logo"
+                />
+                <p className="personal-office__stat-info-block-text">
+                  Процент посещений
+                </p>
+                <p
+                  style={{ color: "#F7D154" }}
+                  className="personal-office__stat-info-block-number"
+                >
+                  80
+                </p>
+              </div>
+              <div className="personal-office__stat-info-block">
+                <img
+                  className="personal-office__stat-info-block-img personal-office__stat-info-block-img_small"
+                  src={averagePeople}
+                  alt="personal stat logo"
+                />
+                <p className="personal-office__stat-info-block-text">
+                  людей в среднем
+                </p>
+                <p
+                  style={{ color: "#1070CA" }}
+                  className="personal-office__stat-info-block-number"
+                >
+                  9
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="admin-stat__charts-bar">
+          <p className="admin-stat__charts-bar-text" >
+            Организовано мероприятий департаментами за все время: 
+          </p>
+          <Bar
+            data={departmentChartData}
+            width={100}
+            height={75}
             options={{
               responsive: true,
               maintainAspectRatio: true,
               legend: {
                 display: false,
               },
+              scales: {
+                xAxes: [
+                  {
+                    gridLines: {
+                      display: false,
+                    },
+                  },
+                ],
+                yAxes: [
+                  {
+                    ticks: {
+                      beginAtZero: true,
+                    },
+                    gridLines: {
+                      display: false,
+                    },
+                  },
+                ],
+              },
             }}
           />
         </div>
-        <div className="admin-stat__charts-line"></div>
       </div>
     </div>
   );
 };
 
-export default withNavbarContainer(AdminStat, 'admin');
+export default withNavbarContainer(withDataContainer(AdminStat), "admin");

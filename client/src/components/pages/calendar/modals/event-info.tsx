@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import address from "../../../../images/pages/address.svg";
+import moreInfoArrow from "../../../../images/pages/more_info_arrow.svg";
 import { CloseModalButton } from "../calendar";
 
 const EventInfoModal = (props: any) => {
@@ -46,7 +47,7 @@ const EventInfoModal = (props: any) => {
             deadline: 23 August 12:00
           </p>
           <form className="event-info-modal__form">
-            <div className='d-flex'>
+            <div className="d-flex">
               <label className="event-info-modal__label">
                 Да
                 <input
@@ -68,11 +69,20 @@ const EventInfoModal = (props: any) => {
                 <span className="event-info-modal__checkmark"></span>
               </label>
             </div>
-
+          </form>
+          <div className="event-info-modal__buttons">
+            <button className="event-info-modal__more-info button">
+              <div>Подробнее</div>
+              <img
+                src={moreInfoArrow}
+                alt="arrow  more info"
+                className="event-info-modal__more-info-image"
+              />
+            </button>
             <button className="event-info-modal__change button">
               Изменить
             </button>
-          </form>
+          </div>
         </div>
       </div>
     </div>

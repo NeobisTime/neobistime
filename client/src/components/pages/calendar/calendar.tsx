@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import withNavbarContainer from "../../../HOC/withNavbar";
 
 // fullcalendar
@@ -17,6 +17,7 @@ import EventInfoModal from "./modals/event-info";
 import AdminChooseModal from "./modals/admin-choose";
 import PersonalEventCreateModal from "./modals/create-personal-event";
 import AdminEventCreateModal from "./modals/admin-event";
+import API from "../../../API";
 
 export const CloseModalButton = (props: any) => {
   return (
@@ -32,57 +33,28 @@ export const CloseModalButton = (props: any) => {
 };
 
 const Calendar = () => {
+  useEffect(() => {
+    API.getEvents().then((res) => {
+      // console.log(res.data);
+      // alert(res)
+    });
+  }, []);
+
+  // ! date не обязателен если есть start
   const [serverEvents, setServerEvents] = useState([
     {
-      title: "neobis frontend meetup",
-      date: "2020-08-08",
-      backgroundColor: "green",
-    },
-    {
-      title: "neobis meetup",
-      start: "2020-08-01T12:30:00",
-      end: "2020-08-01T13:30:00",
-    },
-    {
-      title: "Уборка Стирка Пылесосение Поливка разработка",
-      date: "2020-09-01",
-    },
-    { title: "Уборка", date: "2020-08-06" },
-    { title: "Уборка", date: "2020-08-06" },
-    { title: "Уборка", date: "2020-08-06" },
-    { title: "Уборка", date: "2020-08-06" },
-    { title: "Уборка", date: "2020-08-12", backgroundColor: "red" },
-    { title: "Встреча с заказчиком", date: "2020-08-10" },
-    { title: "Праздник", date: "2020-08-02" },
-    {
-      title: "neobis python meetup",
-      date: "2020-08-18",
-      backgroundColor: "green",
-    },
-    { title: "rock party", date: "2020-08-12" },
-    {
-      title: "neobis frontend meetup тема: 'Абстрактный классы'",
-      description: "митап об императивном программировании",
-      date: "2020-08-30",
-    },
-    {
-      title: "neobis PM meetup",
-      date: "2020-08-08",
-      backgroundColor: "red",
-    },
-    {
+      id: "1",
       title: "Orientation day",
-      // ! date не обязателен если есть start
-      // date: "2020-07-21",
-      start: "2020-07-28T10:30:00",
       backgroundColor: "red",
-      end: "2020-07-28T12:30:00",
+      start: "2020-08-04T10:30:00",
+      end: "2020-08-04T12:12:00",
     },
     {
+      id: "2",
       title: "Orientation day part2",
       backgroundColor: "green",
-      start: "2020-07-29T12:30:00",
-      end: "2020-07-29T13:30:00",
+      start: "2020-08-06T12:20:00",
+      end: "2020-08-06T15:30:00",
     },
   ]);
 
@@ -104,9 +76,41 @@ const Calendar = () => {
   const toggleEventInfoOpen = () => {
     setIsEventInfoOpen(!isEventInfoOpen);
   };
-  const handleEventClick = () => {
+  const handleEventClick = (eventClickInfo: any) => {
     toggleEventInfoOpen();
   };
+
+  // !event drop on calendar function
+  const handleEventDrop = (eventDropInfo: any) => {
+    let oldEvent = serverEvents.find(
+      (item) => item.id === eventDropInfo.oldEvent._def.publicId
+    ) || {
+      id: "",
+      title: "",
+      backgroundColor: "",
+      start: "",
+      end: "",
+    };
+    oldEvent.start = eventDropInfo.event.startStr;
+    oldEvent.end = eventDropInfo.event.endStr;
+    console.log("handleEventDrop -> oldEvent", oldEvent);
+  };
+  // !event resize function
+  const handleEventResize = (eventResizeInfo: any) => {
+    let oldEvent = serverEvents.find(
+      (item) => item.id === eventResizeInfo.oldEvent._def.publicId
+    ) || {
+      id: "",
+      title: "",
+      backgroundColor: "",
+      start: "",
+      end: "",
+    };
+    oldEvent.start = eventResizeInfo.event.startStr;
+    oldEvent.end = eventResizeInfo.event.endStr;
+    console.log("handleEventDrop -> oldEvent", oldEvent);
+  };
+
 
   // create event
   let [isEventCreateChooseOpen, setIsEventCreateChooseOpen] = useState<boolean>(
@@ -137,15 +141,6 @@ const Calendar = () => {
     setServerEvents(events);
   };
 
-  // function renderEventContent(eventInfo: any) {
-  //   return (
-  //     <>
-  //       <b>{eventInfo.timeText}</b>
-  //       <i>{eventInfo.event.title}</i>
-  //     </>
-  //   );
-  // }
-
   return (
     <>
       <FullCalendar
@@ -173,10 +168,11 @@ const Calendar = () => {
         selectable={true}
         selectMirror={true}
         select={handleDateSelect}
-        // eventContent={renderEventContent} // custom render function //TODO edit
+        eventDrop={handleEventDrop}
+        eventResize={handleEventResize}
         eventClick={handleEventClick}
-        // eventsSet={handleEvents} // called after events are initialized/added/changed/removed //TODO edit
-        locale='ru'
+        slotDuration='00:15:00' // интервал при изменении на календаре
+        locale="ru"
       />
 
       {/* modals start */}

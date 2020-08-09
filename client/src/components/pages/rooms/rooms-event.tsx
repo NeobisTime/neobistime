@@ -7,7 +7,7 @@ const RoomsEvent = () => {
     <div>
       <p className="today__title">Маленькая комната</p>
       {/* <EmptyRoom /> */}
-      <div className="notifications__content">
+      <div className="notifications__wrapper-table">
         <table className="notifications__table">
           <colgroup span={4} className="notifications__table-colgroup">
             <col span={1} id="date" />
@@ -107,6 +107,31 @@ const RoomsEvent = () => {
             </tr>
           </tbody>
         </table>
+        <div className="notifications__pagination">
+          <div className="notifications__pagination-content">
+            <div className="notifications__pagination-content-arrow">
+              &#10094;
+            </div>
+            <div className="notifications__pagination-content-number number_active">
+              <p className="notifications__pagination-content-number-value">
+                1
+              </p>
+            </div>
+            <div className="notifications__pagination-content-number ">
+              <p className="notifications__pagination-content-number-value">
+                2
+              </p>
+            </div>
+            <div className="notifications__pagination-content-number">
+              <p className="notifications__pagination-content-number-value">
+                3
+              </p>
+            </div>
+            <div className="notifications__pagination-content-arrow">
+              &#10095;
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

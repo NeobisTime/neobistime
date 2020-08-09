@@ -10,8 +10,9 @@ $text-color: rgba(33, 51, 54, 0.8);
     color: $text-color;
     box-sizing: border-box;
     margin-left: 20px;
+    position: relative;
     &-title {
-      color: #6074fb;
+      color: #1665D8;
       font-size: 36px;
       font-weight: bold;
       line-height: 1.2;

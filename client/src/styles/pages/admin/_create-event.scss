@@ -100,15 +100,21 @@ $margin-between-blocks: 0 0 40px 0;
       display: flex;
       width: 100%;
       box-sizing: border-box;
-      margin: 3px 5px 3px 0;
+      margin: 8px 5px 3px 0;
       justify-content: center;
       align-items: center;
       cursor: pointer;
       &_active {
+        color: rgba(33, 51, 54, 0.8);
+        font-weight: bold;
+      }
+      &_active-number {
         color: #1feac5;
+        // background-color: #d4ffee;
+
       }
     }
-    &-submit{
+    &-submit {
       font-size: 18px;
       color: white;
       border-radius: 50px;

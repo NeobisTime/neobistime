@@ -1,16 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Scrollbars } from "react-custom-scrollbars";
 
-const HoursScrollbar = () => {
+const HoursScrollbar = (props: any) => {
+  const { value, setValue } = props;
   const hours = [
-    0,
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
     8,
     9,
     10,
@@ -27,7 +20,14 @@ const HoursScrollbar = () => {
     21,
     22,
     23,
-    24,
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
   ];
   return (
     <Scrollbars
@@ -47,7 +47,18 @@ const HoursScrollbar = () => {
       </div>
       {hours.map((number) => {
         return (
-          <div key={number} className="create-event__form-number">
+          <div
+            key={number}
+            className={
+              number === value
+                ? "create-event__form-number create-event__form-number_active-number"
+                : "create-event__form-number"
+            }
+            // className="create-event__form-number"
+            onClick={() => {
+              setValue(number);
+            }}
+          >
             {number}
           </div>
         );
