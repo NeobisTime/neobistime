@@ -20,6 +20,7 @@ urlpatterns = [
     path('events/<int:event_id>/notify/', views.notify_user, name='notification-email'),
     path('general_stats/', statistics.general_statistics, name='general-statistic'),
     path('stats_for_all_departments/', statistics.stats_for_all_departments, name='stats-for-all-departments'),
+    path('today_events/', views.TodayEvents().as_view(), name='today-events'),
 ]
 
 urlpatterns += router.urls

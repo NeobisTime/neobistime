@@ -86,6 +86,8 @@ class EventGetSerializer(serializers.ModelSerializer):
                 return 'red'
         except ObjectDoesNotExist:
             return 'blue'
+        except TypeError:
+            return 'blue'
         else:
             return 'blue'
 

@@ -1,3 +1,5 @@
+import datetime
+
 from rest_framework import generics, permissions, status, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.exceptions import PermissionDenied
@@ -161,3 +163,14 @@ class UpdatePollForMyEventView(generics.RetrieveUpdateAPIView):
     queryset = Poll.objects.all()
     serializer_class = AdminPolls
     permission_classes = (permissions.IsAdminUser,)
+
+
+class TodayEvents(generics.ListAPIView):
+    """
+    Return list of today's events
+    """
+    serializer_class = EventGetSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        return Event.objects.filter(start_date__date=datetime.datetime.now().date())
