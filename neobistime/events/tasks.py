@@ -11,6 +11,13 @@ from users.models import CustomUser
 
 @shared_task()
 def notify_users(departments: List, individual_users: List, event_id):
+    """
+    Celery task for asynchronous email notification of users
+    :param departments: List containing departments id
+    :param individual_users: List containing individual users_email
+    :param event_id: id of an event which users are going to be invited
+    :return: None
+    """
     recipients = [
         [user for user in CustomUser.objects.filter(department_id__name=department)] for department in departments
     ]

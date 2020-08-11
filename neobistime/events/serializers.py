@@ -92,7 +92,7 @@ class EventGetSerializer(serializers.ModelSerializer):
 
 def populate_choices():
     try:
-        choices = tuple((i.name, i.pk) for i in Department.objects.all())
+        choices = tuple((i.pk, i.name) for i in Department.objects.all())
     except Exception:
         return ()
     return choices
@@ -112,6 +112,11 @@ class UserNotificationSerializer(serializers.Serializer):
         )
 
     def notify(self, event_id):
+        print()
+        print()
+        print(populate_choices())
+        print()
+        print()
         departments = self.validated_data["departments"]
         individual_users = self.validated_data["individual_users"]
         notify_users.delay(list(departments), individual_users, event_id)
