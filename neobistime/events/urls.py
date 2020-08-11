@@ -17,8 +17,6 @@ urlpatterns = [
          name='update-poll-for-my-event'),
     path('stats/', statistics.statistic_for_all_departments, name='stats'),
     path('self-statistic/', statistics.self_statistic, name='self-stats'),
-    path('events/<int:event_id>/notify/', views.notify_user, name='notification-email'),
-
 ]
 
 urlpatterns += router.urls

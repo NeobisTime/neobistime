@@ -69,7 +69,19 @@ class EventViewSet(viewsets.ModelViewSet):
         :return:
         """
         if self.request.user.is_authenticated:
-            return serializer.save(owner=self.request.user)
+            event_data = serializer.save(owner=self.request.user)
+            print()
+            print()
+            print(event_data)
+            print()
+            print()
+
+            # serializer = serializers.UserNotificationSerializer(data=self.request.data["attendees"])
+            # serializer.is_valid(raise_exception=True)
+            #
+            # serializer.notify(event_id)
+
+            return event_data
         else:
             raise PermissionDenied('Авторизуйтесь в системе для добавления ивентов!')
 
@@ -114,22 +126,17 @@ class MyPollListView(generics.ListAPIView):
         return Poll.objects.filter(user=self.request.user)
 
 
-@api_view(["POST"])
-def notify_user(request, event_id):
-    """
-    Checking whether event exists or not, then notifying users
-    """
-    get_object_or_404(Event, pk=event_id)
-
-    serializer = serializers.UserNotificationSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-
-    serializer.notify(event_id)
-
-    return Response(
-        {"message": "Members are successfully notified"},
-        status=status.HTTP_200_OK
-    )
+# @api_view(["POST"])
+# def notify_user(request, event_id):
+#     """
+#     Checking whether event exists or not, then notifying users
+#     """
+#     get_object_or_404(Event, pk=event_id)
+#
+#     return Response(
+#         {"message": "Members are successfully notified"},
+#         status=status.HTTP_200_OK
+#     )
 
 
 class MyEventsListView(generics.ListAPIView):

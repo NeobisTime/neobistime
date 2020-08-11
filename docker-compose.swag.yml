@@ -1,0 +1,18 @@
+version: '3.7'
+
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: compose/sawg.Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - media:/usr/media/:ro
+      - static:/usr/static/:ro
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - backend
+    restart: always

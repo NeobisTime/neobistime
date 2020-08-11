@@ -29,11 +29,14 @@ services:
     build:
       context: .
       dockerfile: compose/nginx.Dockerfile
+    env_file:
+      - example.env
     volumes:
       - media:/usr/media/:ro
       - static:/usr/static/:ro
     ports:
       - 80:80
+      - 443:443
     depends_on:
       - backend
     restart: always
@@ -52,13 +55,6 @@ services:
       - rabbitmq
       - db
     restart: on-failure
-
-#  front-end:
-#    build:
-#      context: .
-#      dockerfile: ./compose/react.Dockerfile
-#    depends_on:
-#      - backend
 
 volumes:
   data:
