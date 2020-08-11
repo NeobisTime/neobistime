@@ -1,7 +1,5 @@
 from rest_framework import generics, permissions, status, viewsets
-from rest_framework.decorators import api_view
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from . import permissions as custom_permissions, serializers
@@ -65,13 +63,44 @@ class EventViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         """
         Posting current user in an owner of event
+        @daniiarz:
+        Sending email notification and creating polls after event creation
         :param serializer:
         :return:
         """
         if self.request.user.is_authenticated:
-            return serializer.save(owner=self.request.user)
+            event_data = serializer.save(owner=self.request.user)
+
+            serializer = serializers.UserNotificationSerializer(data=self.request.data["attendees"])
+            serializer.is_valid(raise_exception=True)
+            serializer.notify(event_data.id)
+
+            return event_data
         else:
             raise PermissionDenied('Авторизуйтесь в системе для добавления ивентов!')
+
+    def update(self, request, *args, **kwargs):
+        """
+        Default update plus creation of poll
+        """
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        event_id = instance.id
+
+        serializer = serializers.UserNotificationSerializer(data=request.data["attendees"])
+        serializer.is_valid(raise_exception=True)
+        serializer.notify(event_id)
+
+        return Response({"message": "Successfully updated"}, status=status.HTTP_200_OK)
 
 
 class PollCreateView(generics.CreateAPIView):
@@ -112,24 +141,6 @@ class MyPollListView(generics.ListAPIView):
 
     def get_queryset(self):
         return Poll.objects.filter(user=self.request.user)
-
-
-@api_view(["POST"])
-def notify_user(request, event_id):
-    """
-    Checking whether event exists or not, then notifying users
-    """
-    get_object_or_404(Event, pk=event_id)
-
-    serializer = serializers.UserNotificationSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-
-    serializer.notify(event_id)
-
-    return Response(
-        {"message": "Members are successfully notified"},
-        status=status.HTTP_200_OK
-    )
 
 
 class MyEventsListView(generics.ListAPIView):
