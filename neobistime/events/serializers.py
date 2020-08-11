@@ -150,6 +150,8 @@ def available_date_for_event(validated_data):
                                                "end": event[0].end_date})
     except KeyError:
         pass
+    except AttributeError:
+        pass
 
 
 class EventCreateUpdateSerializer(serializers.ModelSerializer):
@@ -157,7 +159,7 @@ class EventCreateUpdateSerializer(serializers.ModelSerializer):
          Class for serializing Event models for post and update methods
      """
     owner = serializers.ReadOnlyField(source='owner.name_surname')
-    place = serializers.PrimaryKeyRelatedField(queryset=Place.objects.all())
+    place = serializers.PrimaryKeyRelatedField(queryset=Place.objects.all(), allow_null=True)
 
     class Meta:
         model = Event
