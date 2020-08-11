@@ -44,20 +44,12 @@ services:
     volumes:
       - media:/usr/media/:ro
       - static:/usr/static/:ro
-      - ./conf/local.nginx:/etc/nginx/conf.d/default.conf
+      - ./config/local.nginx:/etc/nginx/conf.d/default.conf
     image: nginx:1.17.9-alpine
     ports:
       - 80:80
     depends_on:
       - backend
-
-  #  front-end:
-  #    build:
-  #      context: .
-  #      dockerfile: ./compose/react.Dockerfile
-  #    depends_on:
-  #      - backend
-
 
 volumes:
   data:

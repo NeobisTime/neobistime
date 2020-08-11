@@ -17,7 +17,6 @@ urlpatterns = [
          name='update-poll-for-my-event'),
     path('stats_by_department/', statistics.stats_by_department, name='stats-by-department'),
     path('self-statistic/', statistics.self_statistic, name='self-stats'),
-    path('events/<int:event_id>/notify/', views.notify_user, name='notification-email'),
     path('general_stats/', statistics.general_statistics, name='general-statistic'),
     path('stats_for_all_departments/', statistics.stats_for_all_departments, name='stats-for-all-departments'),
     path('today_events/', views.TodayEvents().as_view(), name='today-events'),
