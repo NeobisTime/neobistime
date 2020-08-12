@@ -1,6 +1,6 @@
 import datetime
 from django.utils import timezone
-from rest_framework import generics, permissions, status, viewsets
+from rest_framework import generics, permissions, status, viewsets, filters
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 
@@ -32,7 +32,11 @@ class EventsInPlaceView(generics.RetrieveAPIView):
 
 class EventViewSet(viewsets.ModelViewSet):
     """
-    list: List of events
+    list: List of events created by admins
+    query parameters:
+    1) ?search (by title)
+    2) ?period (options:day,week,month)
+    also possible to combine these parameters by next syntax:?search=rest&period=month
 
     retrieve: Retrieve single event object
 
@@ -44,9 +48,23 @@ class EventViewSet(viewsets.ModelViewSet):
 
     destroy: Delete single event object
     """
+    search_fields = ['title', ]
+    filter_backends = (filters.SearchFilter,)
 
     def get_queryset(self):
-        return Event.objects.filter(owner__is_staff=True)
+        queryset = Event.objects.filter(owner__is_staff=True)
+        if self.request.query_params.get('period') == 'day':
+            day = timezone.now().day
+            queryset = queryset.filter(start_date__day=day)
+        elif self.request.query_params.get('period') == 'week':
+            week_start = timezone.now()
+            week_start -= datetime.timedelta(days=week_start.weekday())
+            week_end = week_start + datetime.timedelta(days=7)
+            queryset = queryset.filter(start_date__gte=week_start, start_date__lt=week_end)
+        elif self.request.query_params.get('period') == 'month':
+            month_start = timezone.now().month
+            queryset = queryset.filter(start_date__month=month_start)
+        return queryset
 
     def get_permissions(self):
         """
