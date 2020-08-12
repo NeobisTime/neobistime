@@ -58,6 +58,10 @@ class Department(models.Model):
 
     name = models.CharField(max_length=50)
 
+    class Meta:
+        verbose_name = 'Департамент'
+        verbose_name_plural = 'Департаменты'
+
     def __str__(self):
         return self.name
 
@@ -71,15 +75,20 @@ class CustomUser(AbstractUser):
                                         default="profile_imgs/default.jpg")
     email = models.EmailField(_('email address'), unique=True)
 
-    phone = models.CharField(max_length=100)
-    name_surname = models.CharField(blank=True, max_length=120)
-    department_id = models.ForeignKey(Department, on_delete=models.SET_NULL, related_name='department', null=True)
+    phone = models.CharField(max_length=100, verbose_name="Телефон")
+    name_surname = models.CharField(blank=True, max_length=120, verbose_name="Имя")
+    department_id = models.ForeignKey(Department, on_delete=models.SET_NULL, related_name='department', null=True,
+                                      verbose_name='Департамент')
     points = models.SmallIntegerField(verbose_name='Очки', default=0, null=True, blank=True)
 
     REQUIRED_FIELDS = ["phone", "name_surname", "department_id"]
     USERNAME_FIELD = 'email'
 
     objects = CustomUserManager()
+
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
 
     def __str__(self):
         return "{}  ".format(self.name_surname)

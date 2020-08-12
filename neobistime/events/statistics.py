@@ -1,3 +1,4 @@
+import datetime
 import math
 from allauth.account.admin import EmailAddress
 from django.core.exceptions import ObjectDoesNotExist
@@ -22,7 +23,7 @@ def stats_by_department(request):
 
     :param request:
      department_id - Integer (required),
-     month - integer (required),
+     month - integer (required) ,
      year - bool (required)
     :return: json with statistic data
     """
@@ -84,10 +85,16 @@ def self_statistic(request):
     """
     Returns statistic data filtered by current user
     :param request:
+    ?period (options: week,month,year)
     :return: json with statistic data
     """
     poll_queryset = Poll.objects.all()
-    if request.query_params.get('period') == 'month':
+    if request.query_params.get('period') == 'week':
+        week_start = timezone.now()
+        week_start -= datetime.timedelta(days=week_start.weekday())
+        week_end = week_start + datetime.timedelta(days=7)
+        poll_queryset = Poll.objects.filter(answered_date__gte=week_start, answered_date__lt=week_end)
+    elif request.query_params.get('period') == 'month':
         month_start = timezone.now().month
         poll_queryset = Poll.objects.filter(answered_date__month=month_start)
     elif request.query_params.get('period') == 'year':

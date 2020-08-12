@@ -20,6 +20,7 @@ urlpatterns = [
     path('general_stats/', statistics.general_statistics, name='general-statistic'),
     path('stats_for_all_departments/', statistics.stats_for_all_departments, name='stats-for-all-departments'),
     path('today_events/', views.TodayEvents().as_view(), name='today-events'),
+    path('place/<int:pk>/', views.EventsInPlaceView().as_view(), name='events-in-place'),
 ]
 
 urlpatterns += router.urls
