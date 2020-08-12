@@ -60,7 +60,7 @@ http {
 	##
 
 	include /config/nginx/site-confs/*;
-	lua_load_resty_core on;
+	lua_load_resty_core off;
 
 }
 

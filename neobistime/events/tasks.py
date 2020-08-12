@@ -28,14 +28,15 @@ def notify_users(departments: List, individual_users: List, event_id):
         except CustomUser.DoesNotExist:
             continue
 
-    recipients = list(chain(*recipients))
+    recipients = set(chain(*recipients))
     recipients_emails = [user.email for user in recipients]
 
     event = Event.objects.get(pk=event_id)
     body_message = f'Здравствуй, мы организовали' \
-                   f' новое мероприятие "{event.title}" от {event.owner}' \
-                   f' \n Дата {event.start_date}\nМесто {event.place} ' \
-                   f'\nС уважением, команда Необис'
+                   f'новое мероприятие "{event.title}" от {event.owner}\n' \
+                   f'Дата {event.start_date}\n' \
+                   f'Место {event.place}\n' \
+                   f'С уважением, команда Необис'
 
     # TODO добавить ссылку на ивент в тело сообщения
     send_mail('Новый Ивент от Необиса', body_message,
