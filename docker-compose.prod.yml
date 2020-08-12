@@ -28,7 +28,9 @@ services:
   nginx:
     build:
       context: .
-      dockerfile: compose/nginx.Dockerfile
+      dockerfile: compose/swag.Dockerfile
+    cap_add:
+      - NET_ADMIN
     env_file:
       - example.env
     volumes:
@@ -39,7 +41,7 @@ services:
       - 443:443
     depends_on:
       - backend
-    restart: always
+    restart: unless-stopped
 
   rabbitmq:
     image: rabbitmq:3.8.3-alpine
