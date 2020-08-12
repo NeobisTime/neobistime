@@ -1,5 +1,5 @@
 import datetime
-
+from django.utils import timezone
 from rest_framework import generics, permissions, status, viewsets
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
@@ -153,7 +153,13 @@ class MyEventsListView(generics.ListAPIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
-        return Event.objects.filter(owner=self.request.user)
+        # shows user's events that ended in range of 3 days form now
+        week_start = timezone.now()
+        week_end = week_start + datetime.timedelta(days=3)
+        event_queryset = Event.objects.filter(owner=self.request.user)
+        event_queryset = event_queryset.filter(end_date__date__range=[week_start,
+                                                                      week_end])
+        return event_queryset
 
 
 class PollsForMyEventView(generics.ListAPIView, ):
