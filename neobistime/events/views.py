@@ -8,18 +8,25 @@ from . import permissions as custom_permissions, serializers
 from .models import Event, Place, Poll
 from .permissions import EventOwner
 from .serializers import AdminPolls, EventCreateUpdateSerializer, EventGetSerializer, EventsInPlaceSerializer, \
-    MyEventListSerializer
+    MyEventListSerializer, PlaceSerializer
 
 
 class PlaceListView(generics.ListAPIView):
     """
     get:
     Return list of place objects.
-
     """
     queryset = Place.objects.all()
+    serializer_class = PlaceSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+
+class EventsInPlaceView(generics.RetrieveAPIView):
+    """
+    Returns all events based on chosen place
+    """
+    queryset = Place
     serializer_class = EventsInPlaceSerializer
-    # serializer_class = PlaceSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
 
