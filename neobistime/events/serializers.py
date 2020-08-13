@@ -63,13 +63,15 @@ class EventGetSerializer(serializers.ModelSerializer):
      """
     owner = serializers.ReadOnlyField(source='owner.name_surname')
     backgroundColor = serializers.SerializerMethodField()
+    department = serializers.SerializerMethodField()
     place = PlaceSerializer()
 
     class Meta:
         model = Event
         fields = (
-            'id', "image", 'owner', 'title', 'description', 'deadline', 'start_date', 'end_date', 'place', 'link',
-            'address', 'backgroundColor')
+            'id', "image", 'owner', 'department', 'title', 'description', 'deadline', 'start_date', 'end_date', 'place',
+            'link',
+            'address', 'backgroundColor',)
 
     def get_backgroundColor(self, obj):
         """
@@ -90,6 +92,9 @@ class EventGetSerializer(serializers.ModelSerializer):
             return 'blue'
         else:
             return 'blue'
+
+    def get_department(self, obj):
+        return str(obj.owner.department_id)
 
 
 def populate_choices():
@@ -210,15 +215,11 @@ class AdminPolls(serializers.ModelSerializer):
     Polls for admins to mark who really came to event
     """
     user = serializers.StringRelatedField()
+    department = serializers.SerializerMethodField()
 
     class Meta:
         model = Poll
-        fields = ('id', 'user', 'was_on_event')
+        fields = ('id', 'user', 'department', 'was_on_event')
 
-
-class EventsInPlaceSerializer(serializers.ModelSerializer):
-    events = EventGetSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Place
-        fields = ('id', 'name', 'address', 'events')
+    def get_department(self, obj):
+        return str(obj.user.department_id)
