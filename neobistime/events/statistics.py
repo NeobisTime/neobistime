@@ -43,6 +43,10 @@ def stats_by_department(request):
     try:
         month = request.data['month']
         year = request.data['year']
+        if not (1 <= month <= 12):
+            raise NotFound(detail='Укажите месяц от 1 до 12')
+    except TypeError:
+        pass
     except KeyError:
         raise NotFound(detail='Укажите параметры month(int), year(bool)')
     if month is not None:
