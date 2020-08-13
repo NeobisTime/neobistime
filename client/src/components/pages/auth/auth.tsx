@@ -3,8 +3,9 @@ import designPhoto from "../../../images/pages/authentication.svg";
 import "../../../styles/pages/_auth.scss";
 import { Link } from "react-router-dom";
 import eye from "../../../images/pages/password_eye.svg";
+import API from "../../../API";
 
-const Authorization: React.FC = () => {
+const Authorization: React.FC = (props: any) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [hidden1, setHidden1] = useState<boolean>(true);
@@ -32,12 +33,27 @@ const Authorization: React.FC = () => {
     }
     return errors;
   };
+
   async function handleSubmit(event: any) {
     event.preventDefault();
     const data = { email, password };
     validate();
 
-    
+    let answer = await API.postAuthData(data);
+    if (answer.status >= 200 && answer.status <= 299){
+      props.history.push('/')
+    }
+  }
+
+  function getCookie(name: string) {
+    let matches = document.cookie.match(
+      new RegExp(
+        "(?:^|; )" +
+          name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
+          "=([^;]*)"
+      )
+    );
+    return matches ? decodeURIComponent(matches[1]) : undefined;
   }
 
   return (

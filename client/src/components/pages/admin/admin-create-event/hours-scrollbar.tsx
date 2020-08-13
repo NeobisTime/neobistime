@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Scrollbars } from "react-custom-scrollbars";
 
 const HoursScrollbar = (props: any) => {

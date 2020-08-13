@@ -4,7 +4,7 @@ import Select from "react-select";
 import address from "../../../images/pages/address.svg";
 import eventImage from "../../../images/pages/notifications_event_default.png";
 import notificationArrow from "../../../images/pages/notifications_arrow_pagination.png";
-import AdminNavbar from "../admin/admin-navbar";
+import Navbar from "../../shared/navbar";
 
 const BlockEventNotification = () => {
   return (
@@ -57,7 +57,7 @@ const Notification = () => {
 
   return (
     <div className="wrapper wrapper_bg_grey">
-      <AdminNavbar />
+      <Navbar />
       <div className="content__wrapper">
         <div className="notifications">
           <PageTitle text="Уведомления" />

@@ -1,10 +1,24 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import arrow from "../../../../images/shared/arrow.svg";
 import editPen from "../../../../images/shared/pencil.png";
 import { Link } from "react-router-dom";
 import withNavbarContainer from "../../../../HOC/withNavbar";
+import API from "../../../../API";
 
 const EditEventsPage = () => {
+  const [events, setEvents] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [next, setNext] = useState<string | null>("");
+
+  useEffect(() => {
+    API.getEvents(pageSize, pageSize * currentPage, "").then((events) => {
+      setEvents(events.data.results);
+      setTotalProducts(events.data.count);
+      setNext(events.data.next);
+    });
+  }, [currentPage]);
   return (
     <div className="end-event-info">
       <div>
@@ -27,183 +41,59 @@ const EditEventsPage = () => {
             </tr>
           </thead>
           <tbody className="end-event-info__table-tbody">
-            <tr>
-              <td className="bold">Orientation day</td>
-              <td className="bold">Frontend</td>
-              <td className="end-event-info__table-tbody-date">01/12/2020</td>
-              <td>Маленькая комната</td>
-              <td className="all-events__edit-wrapper">
-                <Link to="/admin/create_event/2" className="link">
-                  <img
-                    src={editPen}
-                    alt="edit pen"
-                    className="all-events__edit-image"
-                  />
-                </Link>
-              </td>
-            </tr>
-
-            <tr>
-              <td className="bold">Orientation day</td>
-              <td className="bold">Frontend</td>
-              <td className="end-event-info__table-tbody-date">01/12/2020</td>
-              <td>Маленькая комната</td>
-              <td className="all-events__edit-wrapper">
-                <Link to="/admin/create_event/2" className="link">
-                  <img
-                    src={editPen}
-                    alt="edit pen"
-                    className="all-events__edit-image"
-                  />
-                </Link>
-              </td>
-            </tr>
-
-            <tr>
-              <td className="bold">Orientation day</td>
-              <td className="bold">Frontend</td>
-              <td className="end-event-info__table-tbody-date">01/12/2020</td>
-              <td>Маленькая комната</td>
-              <td className="all-events__edit-wrapper">
-                <Link to="/admin/create_event/2" className="link">
-                  <img
-                    src={editPen}
-                    alt="edit pen"
-                    className="all-events__edit-image"
-                  />
-                </Link>
-              </td>
-            </tr>
-
-            <tr>
-              <td className="bold">Orientation day</td>
-              <td className="bold">Frontend</td>
-              <td className="end-event-info__table-tbody-date">01/12/2020</td>
-              <td>Маленькая комната</td>
-              <td className="all-events__edit-wrapper">
-                <Link to="/admin/create_event/2" className="link">
-                  <img
-                    src={editPen}
-                    alt="edit pen"
-                    className="all-events__edit-image"
-                  />
-                </Link>
-              </td>
-            </tr>
-
-            <tr>
-              <td className="bold">Orientation day</td>
-              <td className="bold">Frontend</td>
-              <td className="end-event-info__table-tbody-date">01/12/2020</td>
-              <td>Маленькая комната</td>
-              <td className="all-events__edit-wrapper">
-                <Link to="/admin/create_event/2" className="link">
-                  <img
-                    src={editPen}
-                    alt="edit pen"
-                    className="all-events__edit-image"
-                  />
-                </Link>
-              </td>
-            </tr>
-
-            <tr>
-              <td className="bold">Orientation day</td>
-              <td className="bold">Frontend</td>
-              <td className="end-event-info__table-tbody-date">01/12/2020</td>
-              <td>Маленькая комната</td>
-              <td className="all-events__edit-wrapper">
-                <Link to="/admin/create_event/2" className="link">
-                  <img
-                    src={editPen}
-                    alt="edit pen"
-                    className="all-events__edit-image"
-                  />
-                </Link>
-              </td>
-            </tr>
-
-            <tr>
-              <td className="bold">Orientation day</td>
-              <td className="bold">Frontend</td>
-              <td className="end-event-info__table-tbody-date">01/12/2020</td>
-              <td>Маленькая комната</td>
-              <td className="all-events__edit-wrapper">
-                <Link to="/admin/create_event/2" className="link">
-                  <img
-                    src={editPen}
-                    alt="edit pen"
-                    className="all-events__edit-image"
-                  />
-                </Link>
-              </td>
-            </tr>
-
-            <tr>
-              <td className="bold">Orientation day</td>
-              <td className="bold">Frontend</td>
-              <td className="end-event-info__table-tbody-date">01/12/2020</td>
-              <td>Маленькая комната</td>
-              <td className="all-events__edit-wrapper">
-                <Link to="/admin/create_event/2" className="link">
-                  <img
-                    src={editPen}
-                    alt="edit pen"
-                    className="all-events__edit-image"
-                  />
-                </Link>
-              </td>
-            </tr>
-
-            <tr>
-              <td className="bold">Orientation day</td>
-              <td className="bold">Frontend</td>
-              <td className="end-event-info__table-tbody-date">01/12/2020</td>
-              <td>Маленькая комната</td>
-              <td className="all-events__edit-wrapper">
-                <Link to="/admin/create_event/2" className="link">
-                  <img
-                    src={editPen}
-                    alt="edit pen"
-                    className="all-events__edit-image"
-                  />
-                </Link>
-              </td>
-            </tr>
-
-            <tr>
-              <td className="bold">Orientation day</td>
-              <td className="bold">Frontend</td>
-              <td className="end-event-info__table-tbody-date">01/12/2020</td>
-              <td>Маленькая комната</td>
-              <td className="all-events__edit-wrapper">
-                <Link to="/admin/create_event/2" className="link">
-                  <img
-                    src={editPen}
-                    alt="edit pen"
-                    className="all-events__edit-image"
-                  />
-                </Link>
-              </td>
-            </tr>
+            {events.map((event: any) => {
+              let date = new Date(event.start_date);
+              return (
+                <tr>
+                  <td className="bold">{event.title}</td>
+                  <td className="bold">-</td>
+                  <td className="end-event-info__table-tbody-date">
+                    {date.getDate()}/{date.getMonth() + 1}/{date.getFullYear()}
+                  </td>
+                  <td>Маленькая комната</td>
+                  <td className="all-events__edit-wrapper">
+                    <Link
+                      to={`/admin/create_event/${event.id}`}
+                      className="link"
+                    >
+                      <img
+                        src={editPen}
+                        alt="edit pen"
+                        className="all-events__edit-image"
+                      />
+                    </Link>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
         <div className="end-event-info__pagination">
           <span className="end-event-info__pagination-text_bold">
-            1-10 &nbsp;
+            {currentPage * pageSize + 1}-
+            {currentPage * pageSize + pageSize > totalProducts
+              ? totalProducts
+              : currentPage * pageSize + pageSize}{" "}
+            &nbsp;
           </span>{" "}
-          of 100
+          of {totalProducts}
           <div className="end-event-info__pagination-buttons">
             <img
               className="end-event-info__pagination-buttons-image"
               src={arrow}
               style={{ transform: "rotate(180deg)" }}
               alt="arrow"
+              onClick={() => {
+                return currentPage > 0 ? setCurrentPage(currentPage - 1) : null;
+              }}
             />
             <img
               className="end-event-info__pagination-buttons-image"
               src={arrow}
               alt="arrow"
+              onClick={() => {
+                return next ? setCurrentPage(currentPage + 1) : null;
+              }}
             />
           </div>
         </div>

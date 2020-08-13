@@ -12,7 +12,10 @@ const withDataContainer = (Component: any) => {
     { value: "3", label: "PM" },
     { value: "1", label: "Python" },
   ];
-  const selectDepartments = [{ value: "All", label: "All" }, ...departments];
+  const selectDepartments = [
+    { value: "1,2,3,4,5,6,7,8,9", label: "All" },
+    ...departments,
+  ];
   const yearsMonth = [
     { value: "0", label: "Январь" },
     { value: "1", label: "Февраль" },

@@ -1,8 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Doughnut, Bar } from "react-chartjs-2";
-import all from "../../../../images/pages/admin-stat-total-events.svg";
-import percentComing from "../../../../images/pages/admin-stat-percent-coming.svg";
-import averagePeople from "../../../../images/pages/admin-stat-leute.svg";
 import Select from "react-select";
 
 // today date
@@ -15,18 +12,30 @@ import people from "../../../../images/pages/peoples_average.svg";
 import time from "../../../../images/pages/time_average.svg";
 import withNavbarContainer from "../../../../HOC/withNavbar";
 import withDataContainer from "../../../../HOC/withData";
+import all from "../../../../images/pages/admin-stat-total-events.svg";
+import percentComing from "../../../../images/pages/admin-stat-percent-coming.svg";
+import averagePeople from "../../../../images/pages/admin-stat-leute.svg";
+import API from "../../../../API";
 
+type GeneralStatsType = {
+  quantity_of_people: number;
+  quantity_of_all_events: number;
+  average_number_of_people_per_event: number;
+  percentage_of_attendance_at_events: number;
+};
 const AdminStat = (props: any) => {
   const [department, setDepartment] = useState<string>("");
   const [month, setMonth] = useState<string>("");
+  const [year, setYear] = useState<boolean>(true);
+  const [generalStat, setGeneralStat] = useState<GeneralStatsType | any>({});
+  const [departmentsChartData, setDepartmentsChartData] = useState([]);
+  const [departmentsChartLabels, setDepartmentsChartLabels] = useState([]);
+
   const doughnutData = {
     datasets: [
       {
         data: [80, 100 - 80],
-        backgroundColor: [
-          "#F7D154",
-          "lightgrey",
-        ],
+        backgroundColor: ["#F7D154", "lightgrey"],
       },
     ],
     labels: ["% посещений", ""],
@@ -34,32 +43,47 @@ const AdminStat = (props: any) => {
   const departmentChartData = {
     datasets: [
       {
-        data: [12, 10, 9, 11, 15, 16, 7, 5, 8],
+        // data: [12, 10, 9, 11, 15, 16, 7, 5, 8],
+        data: departmentsChartData,
         backgroundColor: [
-          "#1FEAC5",
           "#6C63FF",
+          "#1FEAC5",
           "#FBBEBE",
-          "#F7D154",
           "#87DBEC",
+          "purple",
+          "#F7D154",
           "orange",
           "green",
-          "purple",
           "red",
         ],
       },
     ],
-    labels: [
-      "Android",
-      "C#",
-      "Design",
-      "Frontend",
-      "IOS",
-      "Java/Kotlin",
-      "NodeJs",
-      "PM",
-      "Python",
-    ],
+    labels: departmentsChartLabels,
   };
+
+  useEffect(() => {
+    API.getGeneralStat().then((requestData) => {
+      setGeneralStat(requestData.data);
+    });
+    API.getStatForAllDepartments().then((allDepartmentsData) => {
+      let data = allDepartmentsData.data;
+      // get data to departments chart
+      let keys: any = [];
+      let values: any = [];
+      for (let key in data) {
+        keys.push(key);
+        values.push(data[key]);
+      }
+      setDepartmentsChartData(values);
+      setDepartmentsChartLabels(keys);
+    });
+    const data = {
+      month,
+      department,
+      year,
+    };
+    // API.postStatByDepartment(data).then((data: any) => {});
+  }, []);
 
   return (
     <div className="admin-stat">
@@ -67,7 +91,9 @@ const AdminStat = (props: any) => {
         <div className="admin-stat__row-info-block admin-stat__row-info-block_1">
           <div className="d-flex p-1">
             <div>
-              <p className="admin-stat__row-info-block-value">89</p>
+              <p className="admin-stat__row-info-block-value">
+                {generalStat.percentage_of_attendance_at_events}
+              </p>
               <p className="admin-stat__row-info-block-text">
                 % посещений мероприятий
               </p>
@@ -86,7 +112,9 @@ const AdminStat = (props: any) => {
         <div className="admin-stat__row-info-block admin-stat__row-info-block_2">
           <div className="d-flex p-1">
             <div>
-              <p className="admin-stat__row-info-block-value">103</p>
+              <p className="admin-stat__row-info-block-value">
+                {generalStat.quantity_of_all_events}
+              </p>
               <p className="admin-stat__row-info-block-text">
                 мероприятий организовано
               </p>
@@ -105,7 +133,9 @@ const AdminStat = (props: any) => {
         <div className="admin-stat__row-info-block admin-stat__row-info-block_3">
           <div className="d-flex p-1">
             <div>
-              <p className="admin-stat__row-info-block-value">18</p>
+              <p className="admin-stat__row-info-block-value">
+                {generalStat.average_number_of_people_per_event}
+              </p>
               <p className="admin-stat__row-info-block-text">людей в среднем</p>
             </div>
             <div>
@@ -122,15 +152,17 @@ const AdminStat = (props: any) => {
         <div className="admin-stat__row-info-block admin-stat__row-info-block_4">
           <div className="d-flex p-1">
             <div>
-              <p className="admin-stat__row-info-block-value">70</p>
+              <p className="admin-stat__row-info-block-value">
+                {generalStat.quantity_of_people}
+              </p>
               <p className="admin-stat__row-info-block-text">
-                минут средняя длительность
+                численность Необиса
               </p>
             </div>
             <div>
               <img
                 className="admin-stat__row-info-block-img"
-                src={time}
+                src={people}
                 alt="beautiful content"
               />
             </div>
@@ -156,9 +188,15 @@ const AdminStat = (props: any) => {
               required
               onChange={(e: any) => {
                 setMonth(e.value);
+                setYear(false);
               }}
             />
-            <button className="button admin-stat__charts-doughnut-button_year ">
+            <button
+              onClick={() => {
+                setYear(true);
+              }}
+              className="button admin-stat__charts-doughnut-button_year "
+            >
               Год
             </button>
           </div>
@@ -237,8 +275,8 @@ const AdminStat = (props: any) => {
         </div>
 
         <div className="admin-stat__charts-bar">
-          <p className="admin-stat__charts-bar-text" >
-            Организовано мероприятий департаментами за все время: 
+          <p className="admin-stat__charts-bar-text">
+            Организовано мероприятий департаментами за все время:
           </p>
           <Bar
             data={departmentChartData}

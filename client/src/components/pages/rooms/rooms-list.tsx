@@ -22,7 +22,7 @@ const RoomsList = () => {
           </div>
         </Link>
 
-        <Link to="/rooms/1" className="link">
+        <Link to="/rooms/2" className="link">
           <div className="today__list-item">
             <div className="today__list-item-answer">
               <div
@@ -37,7 +37,7 @@ const RoomsList = () => {
           </div>
         </Link>
 
-        <Link to="/rooms/1" className="link">
+        <Link to="/rooms/3" className="link">
           <div className="today__list-item">
             <div className="today__list-item-answer">
               <div

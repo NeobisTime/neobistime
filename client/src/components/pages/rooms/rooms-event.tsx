@@ -1,8 +1,18 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import EmptyRoom from "./rooms-empty";
 import withNavbarContainer from "../../../HOC/withNavbar";
+import { withRouter } from "react-router-dom";
+import API from "../../../API";
 
-const RoomsEvent = () => {
+const RoomsEvent = (props: any) => {
+  let roomId = props.match.params.id;
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    API.getRoomEvents().then((data) => {
+      console.log(data);
+    });
+  }, []);
   return (
     <div>
       <p className="today__title">Маленькая комната</p>
@@ -137,4 +147,4 @@ const RoomsEvent = () => {
   );
 };
 
-export default withNavbarContainer(RoomsEvent);
+export default withNavbarContainer(withRouter(RoomsEvent));
