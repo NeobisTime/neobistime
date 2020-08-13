@@ -62,16 +62,16 @@ class EventGetSerializer(serializers.ModelSerializer):
          Class for serializing Event models for get method
      """
     owner = serializers.ReadOnlyField(source='owner.name_surname')
-    color = serializers.SerializerMethodField()
+    backgroundColor = serializers.SerializerMethodField()
     place = PlaceSerializer()
 
     class Meta:
         model = Event
         fields = (
             'id', "image", 'owner', 'title', 'description', 'deadline', 'start_date', 'end_date', 'place', 'link',
-            'address', 'color')
+            'address', 'backgroundColor')
 
-    def get_color(self, obj):
+    def get_backgroundColor(self, obj):
         """
         Method that returns the desired color for a calendar
         depending on user, and his answer
