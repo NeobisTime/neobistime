@@ -1,13 +1,13 @@
 import datetime
 from django.utils import timezone
 from rest_framework import generics, permissions, status, viewsets, filters
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, NotFound
 from rest_framework.response import Response
-
+from django.core.exceptions import ObjectDoesNotExist
 from . import permissions as custom_permissions, serializers
 from .models import Event, Place, Poll
 from .permissions import EventOwner
-from .serializers import AdminPolls, EventCreateUpdateSerializer, EventGetSerializer, EventsInPlaceSerializer, \
+from .serializers import AdminPolls, EventCreateUpdateSerializer, EventGetSerializer, \
     MyEventListSerializer, PlaceSerializer
 
 
@@ -21,13 +21,19 @@ class PlaceListView(generics.ListAPIView):
     permission_classes = (permissions.IsAuthenticated,)
 
 
-class EventsInPlaceView(generics.RetrieveAPIView):
+class EventsInPlaceView(generics.ListAPIView):
     """
     Returns all events based on chosen place
     """
-    queryset = Place
-    serializer_class = EventsInPlaceSerializer
+    serializer_class = EventGetSerializer
     permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        try:
+            Place.objects.get(id=self.kwargs['pk'])
+        except ObjectDoesNotExist:
+            raise NotFound('Укажите верный id для place')
+        return Event.objects.filter(place=self.kwargs['pk'])
 
 
 class EventViewSet(viewsets.ModelViewSet):
