@@ -2,7 +2,6 @@ from rest_framework import generics, permissions, status, viewsets
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
-from users.models import Department
 from . import permissions as custom_permissions, serializers
 from .models import Event, Place, Poll
 from .permissions import EventOwner
