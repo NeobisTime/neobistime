@@ -35,7 +35,7 @@ def notify_users(departments: List, individual_users: List, event_id):
             recipients.append(CustomUser.objects.get(email=email))
         except CustomUser.DoesNotExist:
             continue
-            
+
     recipients_emails = [user.email for user in set(recipients)]
     body_message = f'Здравствуй, мы организовали' \
                    f'новое мероприятие "{event.title}" от {event.owner}\n' \
