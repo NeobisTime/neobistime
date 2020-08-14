@@ -122,7 +122,7 @@ class UserNotificationSerializer(serializers.Serializer):
         departments = self.validated_data["departments"]
         individual_users = self.validated_data["individual_users"]
         # TODO: add delay to function
-        notify_users(list(departments), individual_users, event_id)
+        notify_users.delay(list(departments), individual_users, event_id)
 
 
 def available_date_for_event(validated_data):
