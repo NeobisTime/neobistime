@@ -1,30 +1,50 @@
-from rest_framework import generics, permissions, status, viewsets
-from rest_framework.exceptions import PermissionDenied, ValidationError
+import datetime
+from django.utils import timezone
+from rest_framework import generics, permissions, status, viewsets, filters
+from rest_framework.exceptions import PermissionDenied, NotFound, ValidationError
 from rest_framework.response import Response
+from django.core.exceptions import ObjectDoesNotExist
 
 from users.models import Department
 from . import permissions as custom_permissions, serializers
 from .models import Event, Place, Poll
 from .permissions import EventOwner
-from .serializers import AdminPolls, EventCreateUpdateSerializer, EventGetSerializer, EventsInPlaceSerializer, \
-    MyEventListSerializer
+from .serializers import AdminPolls, EventCreateUpdateSerializer, EventGetSerializer, \
+    MyEventListSerializer, PlaceSerializer
 
 
 class PlaceListView(generics.ListAPIView):
     """
     get:
     Return list of place objects.
-
     """
     queryset = Place.objects.all()
-    serializer_class = EventsInPlaceSerializer
-    # serializer_class = PlaceSerializer
+    serializer_class = PlaceSerializer
     permission_classes = (permissions.IsAuthenticated,)
+
+
+class EventsInPlaceView(generics.ListAPIView):
+    """
+    Returns all events based on chosen place
+    """
+    serializer_class = EventGetSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        try:
+            Place.objects.get(id=self.kwargs['pk'])
+        except ObjectDoesNotExist:
+            raise NotFound('Укажите верный id для place')
+        return Event.objects.filter(place=self.kwargs['pk'])
 
 
 class EventViewSet(viewsets.ModelViewSet):
     """
-    list: List of events
+    list: List of events created by admins
+    query parameters:
+    1) ?search (by title)
+    2) ?period (options:day,week,month)
+    also possible to combine these parameters by next syntax:?search=rest&period=month
 
     retrieve: Retrieve single event object
 
@@ -36,9 +56,23 @@ class EventViewSet(viewsets.ModelViewSet):
 
     destroy: Delete single event object
     """
+    search_fields = ['title', ]
+    filter_backends = (filters.SearchFilter,)
 
     def get_queryset(self):
-        return Event.objects.filter(owner__is_staff=True)
+        queryset = Event.objects.filter(owner__is_staff=True)
+        if self.request.query_params.get('period') == 'day':
+            day = timezone.now().day
+            queryset = queryset.filter(start_date__day=day)
+        elif self.request.query_params.get('period') == 'week':
+            week_start = timezone.now()
+            week_start -= datetime.timedelta(days=week_start.weekday())
+            week_end = week_start + datetime.timedelta(days=7)
+            queryset = queryset.filter(start_date__gte=week_start, start_date__lt=week_end)
+        elif self.request.query_params.get('period') == 'month':
+            month_start = timezone.now().month
+            queryset = queryset.filter(start_date__month=month_start)
+        return queryset
 
     def get_permissions(self):
         """
@@ -177,7 +211,13 @@ class MyEventsListView(generics.ListAPIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
-        return Event.objects.filter(owner=self.request.user)
+        # shows user's events that ended in range of 3 days form now
+        week_start = timezone.now()
+        week_end = week_start + datetime.timedelta(days=3)
+        event_queryset = Event.objects.filter(owner=self.request.user)
+        event_queryset = event_queryset.filter(end_date__date__range=[week_start,
+                                                                      week_end])
+        return event_queryset
 
 
 class PollsForMyEventView(generics.ListAPIView, ):
@@ -198,3 +238,14 @@ class UpdatePollForMyEventView(generics.RetrieveUpdateAPIView):
     queryset = Poll.objects.all()
     serializer_class = AdminPolls
     permission_classes = (permissions.IsAdminUser,)
+
+
+class TodayEvents(generics.ListAPIView):
+    """
+    Return list of today's events
+    """
+    serializer_class = EventGetSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        return Event.objects.filter(start_date__date=datetime.datetime.now().date())
