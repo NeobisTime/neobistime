@@ -21,12 +21,6 @@ def notify_users(departments: List, individual_users: List, event_id):
     """
     event = Event.objects.get(pk=event_id)
 
-    print()
-    print()
-    print(departments, individual_users)
-    print()
-    print()
-
     try:
         Attendees.objects.create(event=event, departments=departments, individual_users=individual_users)
     except IntegrityError:
