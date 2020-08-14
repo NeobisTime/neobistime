@@ -109,7 +109,7 @@ class UserNotificationSerializer(serializers.Serializer):
     """
     Serializing email notification data
     """
-    departments = serializers.MultipleChoiceField(choices=populate_choices())
+    departments = serializers.MultipleChoiceField(choices=populate_choices(), required=False)
     individual_users = serializers.ListField(child=serializers.EmailField(), required=False, default=[])
 
     def __init__(self, *args, **kwargs):
