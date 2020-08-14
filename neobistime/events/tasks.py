@@ -26,20 +26,17 @@ def notify_users(departments: List, individual_users: List, event_id):
     except IntegrityError:
         Attendees.objects.filter(event=event_id).update(departments=departments, individual_users=individual_users)
 
-    recipients = [
+    recipients = list(chain(*[
         [user for user in CustomUser.objects.filter(department_id=department)] for department in departments
-    ]
+    ]))
 
-    users = []
     for email in individual_users:
         try:
-            users.append(CustomUser.objects.get(email=email))
+            recipients.append(CustomUser.objects.get(email=email))
         except CustomUser.DoesNotExist:
             continue
-
-    recipients = set(chain(*recipients, users))
-    recipients_emails = [user.email for user in recipients]
-
+            
+    recipients_emails = [user.email for user in set(recipients)]
     body_message = f'Здравствуй, мы организовали' \
                    f'новое мероприятие "{event.title}" от {event.owner}\n' \
                    f'Дата {event.start_date}\n' \
