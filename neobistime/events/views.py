@@ -1,9 +1,10 @@
 import datetime
 from django.utils import timezone
 from rest_framework import generics, permissions, status, viewsets, filters
-from rest_framework.exceptions import PermissionDenied, NotFound
+from rest_framework.exceptions import PermissionDenied, NotFound, ValidationError
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
+
 from . import permissions as custom_permissions, serializers
 from .models import Event, Place, Poll
 from .permissions import EventOwner
@@ -104,7 +105,11 @@ class EventViewSet(viewsets.ModelViewSet):
         if self.request.user.is_authenticated:
             event_data = serializer.save(owner=self.request.user)
 
-            serializer = serializers.UserNotificationSerializer(data=self.request.data["attendees"])
+            attendees = self.request.data.get("attendees", "")
+            if not attendees:
+                raise ValidationError("Attendees required")
+
+            serializer = serializers.UserNotificationSerializer(data=attendees)
             serializer.is_valid(raise_exception=True)
             serializer.notify(event_data.id)
 
@@ -129,11 +134,32 @@ class EventViewSet(viewsets.ModelViewSet):
 
         event_id = instance.id
 
+        attendees = request.data.get("attendees", "")
+        if not attendees:
+            raise ValidationError("Attendees required")
+
         serializer = serializers.UserNotificationSerializer(data=request.data["attendees"])
         serializer.is_valid(raise_exception=True)
         serializer.notify(event_id)
 
         return Response({"message": "Successfully updated"}, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+
+        attendees = {"department": [], "attendees": []}
+
+        polls = instance.polls.all()
+        for i in polls:
+            department = i.user.department_id
+            if department:
+                if department.name not in attendees["department"]:
+                    attendees["department"].append(department.name)
+            else:
+                attendees["attendees"].append(i.user.email)
+
+        return Response({**serializer.data, "attendees": attendees})
 
 
 class PollCreateView(generics.CreateAPIView):
@@ -154,12 +180,12 @@ class PollCreateView(generics.CreateAPIView):
 
 class PollDetailView(generics.RetrieveUpdateAPIView):
     """
-       get:
-       Return single event instance.
+    get:
+    Return single event instance.
 
-       patch:
-       Update single event instance.
-       """
+    patch:
+    Update single event instance.
+    """
     queryset = Poll.objects.all()
     serializer_class = serializers.PollRetrieveUpdateSerializer
     permission_classes = (permissions.IsAuthenticated, custom_permissions.PollOwner,)
