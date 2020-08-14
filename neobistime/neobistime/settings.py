@@ -115,6 +115,7 @@ REST_FRAMEWORK = {
     'DATETIME_FORMAT':
         "%Y-%m-%dT%H:%M:%S",
 
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
 }
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'users.serializers.UserSerializer',
