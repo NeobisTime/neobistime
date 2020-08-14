@@ -147,19 +147,11 @@ class EventViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
-
-        attendees = {"department": [], "attendees": []}
-
-        polls = instance.polls.all()
-        for i in polls:
-            department = i.user.department_id
-            if department:
-                if department.name not in attendees["department"]:
-                    attendees["department"].append(department.name)
-            else:
-                attendees["attendees"].append(i.user.email)
-
-        return Response({**serializer.data, "attendees": attendees})
+        attendees = instance.attendees
+        return Response(
+            {**serializer.data,
+             "attendees": {"departments": attendees.departments, "individual_users": attendees.individual_users}}
+        )
 
 
 class PollCreateView(generics.CreateAPIView):

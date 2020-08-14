@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db.models import signals
 from django.db import models
 from easy_thumbnails.fields import ThumbnailerImageField
+from django.contrib.postgres import fields as postgres_fields
 
 
 class Place(models.Model):
@@ -72,6 +73,15 @@ class Poll(models.Model):
 
     def __str__(self):
         return f'{self.user}  {self.answer}'
+
+
+class Attendees(models.Model):
+    """
+    Storing attendees, useful only for frontend part
+    """
+    event = models.OneToOneField(Event, on_delete=models.CASCADE, related_name="attendees")
+    departments = postgres_fields.ArrayField(models.IntegerField())
+    individual_users = postgres_fields.ArrayField(models.CharField(max_length=200))
 
 
 def save_profile(sender, instance, **kwargs):
