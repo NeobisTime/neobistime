@@ -103,7 +103,7 @@ class UserNotificationSerializer(serializers.Serializer):
     Serializing email notification data
     """
     departments = serializers.MultipleChoiceField(choices=populate_choices())
-    individual_users = serializers.ListField(child=serializers.EmailField(), allow_empty=True)
+    individual_users = serializers.ListField(child=serializers.EmailField(), required=False, default=[])
 
     def __init__(self, *args, **kwargs):
         super(UserNotificationSerializer, self).__init__(*args, **kwargs)
@@ -112,14 +112,10 @@ class UserNotificationSerializer(serializers.Serializer):
         )
 
     def notify(self, event_id):
-        print()
-        print()
-        print(populate_choices())
-        print()
-        print()
         departments = self.validated_data["departments"]
         individual_users = self.validated_data["individual_users"]
-        notify_users.delay(list(departments), individual_users, event_id)
+        # TODO: add delay to function
+        notify_users(list(departments), individual_users, event_id)
 
 
 def available_date_for_event(validated_data):

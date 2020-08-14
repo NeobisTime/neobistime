@@ -19,7 +19,7 @@ def notify_users(departments: List, individual_users: List, event_id):
     :return: None
     """
     recipients = [
-        [user for user in CustomUser.objects.filter(department_id__name=department)] for department in departments
+        [user for user in CustomUser.objects.filter(department_id=department)] for department in departments
     ]
 
     for email in individual_users:

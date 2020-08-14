@@ -10,7 +10,7 @@ server {
 server {
   listen 80 deferred;
   listen [::]:80 deferred;
-  server_name 46.101.110.53;
+  server_name 220-accentuation.co www.220-accentuation.co;
   server_tokens on;
 
   location ~ ^/(api|admin|swagger) {
