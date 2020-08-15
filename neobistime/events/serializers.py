@@ -65,13 +65,14 @@ class EventGetSerializer(serializers.ModelSerializer):
     backgroundColor = serializers.SerializerMethodField()
     department = serializers.SerializerMethodField()
     place = PlaceSerializer()
+    my_event = serializers.SerializerMethodField()
 
     class Meta:
         model = Event
         fields = (
             'id', "image", 'owner', 'department', 'title', 'description', 'deadline', 'start_date', 'end_date', 'place',
             'link',
-            'address', 'backgroundColor',)
+            'address', 'backgroundColor', 'my_event')
 
     def get_backgroundColor(self, obj):
         """
@@ -95,6 +96,9 @@ class EventGetSerializer(serializers.ModelSerializer):
 
     def get_department(self, obj):
         return str(obj.owner.department_id)
+
+    def get_my_event(self, obj):
+        return obj.owner == self.context['request'].user
 
 
 def populate_choices():
