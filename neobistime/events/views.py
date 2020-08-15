@@ -134,11 +134,15 @@ class EventViewSet(viewsets.ModelViewSet):
 
         event_id = instance.id
 
-        attendees = request.data.get("attendees", "")
-        if not attendees:
+        departments = request.data.get("departments", "")
+        individual_users = request.data.get("individual_users", "")
+
+        if not departments and not individual_users:
             raise ValidationError("Attendees required")
 
-        serializer = serializers.UserNotificationSerializer(data=request.data["attendees"])
+        serializer = serializers.UserNotificationSerializer(
+            data={"departments": departments, "individual_users": individual_users}
+        )
         serializer.is_valid(raise_exception=True)
         serializer.notify(event_id)
 
