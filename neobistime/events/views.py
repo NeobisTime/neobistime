@@ -1,4 +1,6 @@
 import datetime
+import re
+
 from django.utils import timezone
 from rest_framework import generics, permissions, status, viewsets, filters
 from rest_framework.exceptions import PermissionDenied, NotFound, ValidationError
@@ -105,15 +107,18 @@ class EventViewSet(viewsets.ModelViewSet):
         if self.request.user.is_authenticated:
             event_data = serializer.save(owner=self.request.user)
 
-            if self.request.user.is_staff:
+            if not self.request.data["my_event"]:
                 departments = self.request.data.get("departments", "")
                 individual_users = self.request.data.get("individual_users", "")
+
+                departments_list = list(map(int, re.findall("\d+", departments)))
+                users_list = individual_users.split(",")
 
                 if not departments and not individual_users:
                     raise ValidationError("Attendees required")
 
                 serializer = serializers.UserNotificationSerializer(
-                    data={"departments": departments, "individual_users": individual_users}
+                    data={"departments": departments_list, "individual_users": users_list}
                 )
                 serializer.is_valid(raise_exception=True)
                 serializer.notify(event_data.id)
@@ -137,20 +142,21 @@ class EventViewSet(viewsets.ModelViewSet):
             # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
 
-        if request.user.is_staff:
-            event_id = instance.id
-
+        if not request.data["my_event"]:
             departments = request.data.get("departments", "")
             individual_users = request.data.get("individual_users", "")
+
+            departments_list = list(map(int, re.findall("\d+", departments)))
+            users_list = individual_users.split(",")
 
             if not departments and not individual_users:
                 raise ValidationError("Attendees required")
 
             serializer = serializers.UserNotificationSerializer(
-                data={"departments": departments, "individual_users": individual_users}
+                data={"departments": departments_list, "individual_users": users_list}
             )
             serializer.is_valid(raise_exception=True)
-            serializer.notify(event_id)
+            serializer.notify(instance.id)
 
         return Response({"message": "Successfully updated"}, status=status.HTTP_200_OK)
 

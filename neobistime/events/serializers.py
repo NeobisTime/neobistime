@@ -97,26 +97,12 @@ class EventGetSerializer(serializers.ModelSerializer):
         return str(obj.owner.department_id)
 
 
-def populate_choices():
-    try:
-        choices = tuple((i.pk, i.name) for i in Department.objects.all())
-    except Exception:
-        return ()
-    return choices
-
-
 class UserNotificationSerializer(serializers.Serializer):
     """
     Serializing email notification data
     """
-    departments = serializers.MultipleChoiceField(choices=populate_choices(), required=False)
+    departments = serializers.ListField(child=serializers.IntegerField(), required=False)
     individual_users = serializers.ListField(child=serializers.EmailField(), required=False, default=[])
-
-    def __init__(self, *args, **kwargs):
-        super(UserNotificationSerializer, self).__init__(*args, **kwargs)
-        self.fields["departments"] = serializers.MultipleChoiceField(
-            choices=populate_choices()
-        )
 
     def notify(self, event_id):
         departments = self.validated_data["departments"]
