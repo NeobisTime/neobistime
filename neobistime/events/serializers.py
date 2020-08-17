@@ -3,7 +3,6 @@ from django.db.models import Q
 from django.utils import timezone
 from rest_framework import serializers
 
-from users.models import Department
 from .models import Event, Place, Poll
 from .tasks import notify_users
 
