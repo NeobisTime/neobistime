@@ -113,7 +113,7 @@ class EventViewSet(viewsets.ModelViewSet):
                 departments = self.request.data.get("departments", "")
                 individual_users = self.request.data.get("individual_users", "")
 
-                departments_list = list(map(int, re.findall("\d+", departments)))  #noqa
+                departments_list = list(map(int, re.findall("\d+", departments)))  # noqa
                 users_list = individual_users.split(",")
 
                 if not departments and not individual_users:
@@ -148,7 +148,7 @@ class EventViewSet(viewsets.ModelViewSet):
             departments = request.data.get("departments", "")
             individual_users = request.data.get("individual_users", "")
 
-            departments_list = list(map(int, re.findall("\d+", departments)))  #noqa
+            departments_list = list(map(int, re.findall("\d+", departments)))  # noqa
             users_list = individual_users.split(",")
 
             if not departments and not individual_users:
