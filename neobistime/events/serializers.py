@@ -3,7 +3,6 @@ from django.db.models import Q
 from django.utils import timezone
 from rest_framework import serializers
 
-from users.models import Department
 from .models import Event, Place, Poll
 from .tasks import notify_users
 
@@ -112,7 +111,7 @@ class UserNotificationSerializer(serializers.Serializer):
         departments = self.validated_data["departments"]
         individual_users = self.validated_data["individual_users"]
         # TODO: add delay to function
-        notify_users.delay(list(departments), individual_users, event_id)
+        notify_users(departments, individual_users, event_id)
 
 
 def available_date_for_event(validated_data):

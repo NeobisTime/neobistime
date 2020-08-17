@@ -104,14 +104,16 @@ class EventViewSet(viewsets.ModelViewSet):
         :param serializer:
         :return:
         """
-        if self.request.user.is_authenticated:
-            event_data = serializer.save(owner=self.request.user)
 
-            if not self.request.data["my_event"]:
+        if self.request.user.is_authenticated:
+
+            event_data = serializer.save(owner=self.request.user)
+            if self.request.data["my_event"].lower() == "false":
+
                 departments = self.request.data.get("departments", "")
                 individual_users = self.request.data.get("individual_users", "")
 
-                departments_list = list(map(int, re.findall("\d+", departments)))
+                departments_list = list(map(int, re.findall("\d+", departments)))  # noqa
                 users_list = individual_users.split(",")
 
                 if not departments and not individual_users:
@@ -142,11 +144,11 @@ class EventViewSet(viewsets.ModelViewSet):
             # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
 
-        if not request.data["my_event"]:
+        if request.data["my_event"].lower() == "false":
             departments = request.data.get("departments", "")
             individual_users = request.data.get("individual_users", "")
 
-            departments_list = list(map(int, re.findall("\d+", departments)))
+            departments_list = list(map(int, re.findall("\d+", departments)))  # noqa
             users_list = individual_users.split(",")
 
             if not departments and not individual_users:
