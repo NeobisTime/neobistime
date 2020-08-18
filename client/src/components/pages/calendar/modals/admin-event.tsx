@@ -42,13 +42,13 @@ const AdminEventCreateModal = (props: any) => {
   }, []);
 
   const handleChangeAddress = (e: any) => {
-      setPlace(+e.target.value);
-      setAddressDisable(true);
-      setAddress("");
+    setPlace(+e.target.value);
+    setAddressDisable(true);
+    setAddress("");
 
-      if (e.target.value == 4) {
-        setAddressDisable(false);
-      }
+    if (e.target.value == 4) {
+      setAddressDisable(false);
+    }
   };
 
   return (
@@ -130,66 +130,50 @@ const AdminEventCreateModal = (props: any) => {
               alt="people"
             />
             <div className="create-event__form-radio">
-                <div className="create-event__form-radio-container">
-                  <input
-                    type="radio"
-                    name="place"
-                    onChange={handleChangeAddress}
-                    value={1}
-                    checked={
-                         place && +place.id === 1
-                          ? true
-                          : false
-                    }
-                  />
-                  <label htmlFor="small">Маленькая комната</label>
-                </div>
-                <div className="create-event__form-radio-container">
-                  <input
-                    type="radio"
-                    name="place"
-                    value={2}
-                    onChange={handleChangeAddress}
-                    checked={
-                      place && +place.id === 2
-                          ? true
-                          : false
-                    }
-                  />
-                  <label htmlFor="small">Большая комната</label>
-                </div>
-                <div className="create-event__form-radio-container">
-                  <input
-                    type="radio"
-                    name="place"
-                    value={3}
-                    onChange={handleChangeAddress}
-                    checked={
-                      place && +place.id === 3
-                          ? true
-                          : false
-                    }
-                  />
-                  <label htmlFor="small">Весь офис</label>
-                </div>
-                <div className="create-event__form-radio-container">
-                  <input
-                    type="radio"
-                    name="place"
-                    value={4}
-                    onChange={handleChangeAddress}
-                    checked={
-                      place && +place.id === 4
-                          ? true
-                          : false
-                    }
-                  />
-                  <label htmlFor="small">Другое</label>
-                </div>
+              <div className="create-event__form-radio-container">
+                <input
+                  type="radio"
+                  name="place"
+                  onChange={handleChangeAddress}
+                  value={1}
+                  checked={place && +place.id === 1 ? true : false}
+                />
+                <label htmlFor="small">Маленькая комната</label>
+              </div>
+              <div className="create-event__form-radio-container">
+                <input
+                  type="radio"
+                  name="place"
+                  value={2}
+                  onChange={handleChangeAddress}
+                  checked={place && +place.id === 2 ? true : false}
+                />
+                <label htmlFor="small">Большая комната</label>
+              </div>
+              <div className="create-event__form-radio-container">
+                <input
+                  type="radio"
+                  name="place"
+                  value={3}
+                  onChange={handleChangeAddress}
+                  checked={place && +place.id === 3 ? true : false}
+                />
+                <label htmlFor="small">Весь офис</label>
+              </div>
+              <div className="create-event__form-radio-container">
+                <input
+                  type="radio"
+                  name="place"
+                  value={4}
+                  onChange={handleChangeAddress}
+                  checked={place && +place.id === 4 ? true : false}
+                />
+                <label htmlFor="small">Другое</label>
+              </div>
+            </div>
           </div>
-        </div>
 
-        {/* <div className="create-event">
+          {/* <div className="create-event">
           <form className="create-event__form">
             <section className="create-event__form-section">
               <label className="create-event__form-label" htmlFor="name">
@@ -320,6 +304,7 @@ const AdminEventCreateModal = (props: any) => {
             </section>
           </form>
         </div> */}
+        </div>
       </div>
     </div>
   );
