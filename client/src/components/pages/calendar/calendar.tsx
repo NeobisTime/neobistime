@@ -33,13 +33,6 @@ export const CloseModalButton = (props: any) => {
 };
 
 const Calendar = () => {
-  useEffect(() => {
-    API.getEvents().then((res) => {
-      // console.log(res.data);
-      // alert(res)
-    });
-  }, []);
-
   // ! date не обязателен если есть start
   const [serverEvents, setServerEvents] = useState([
     {
@@ -49,14 +42,15 @@ const Calendar = () => {
       start: "2020-08-04T10:30:00",
       end: "2020-08-04T12:12:00",
     },
-    {
-      id: "2",
-      title: "Orientation day part2",
-      backgroundColor: "green",
-      start: "2020-08-06T12:20:00",
-      end: "2020-08-06T15:30:00",
-    },
   ]);
+  console.log("Calendar -> serverEvents", serverEvents);
+
+  useEffect(() => {
+    API.getEvents(1000, 0, "", "").then((res) => {
+      console.log(res.data.results);
+      // setServerEvents(res.data.results);
+    });
+  }, []);
 
   // google calendar api integration
   const events = {
@@ -83,7 +77,7 @@ const Calendar = () => {
   // !event drop on calendar function
   const handleEventDrop = (eventDropInfo: any) => {
     let oldEvent = serverEvents.find(
-      (item) => item.id === eventDropInfo.oldEvent._def.publicId
+      (item: any) => item.id === eventDropInfo.oldEvent._def.publicId
     ) || {
       id: "",
       title: "",
@@ -98,7 +92,7 @@ const Calendar = () => {
   // !event resize function
   const handleEventResize = (eventResizeInfo: any) => {
     let oldEvent = serverEvents.find(
-      (item) => item.id === eventResizeInfo.oldEvent._def.publicId
+      (item: any) => item.id === eventResizeInfo.oldEvent._def.publicId
     ) || {
       id: "",
       title: "",
@@ -110,7 +104,6 @@ const Calendar = () => {
     oldEvent.end = eventResizeInfo.event.endStr;
     console.log("handleEventDrop -> oldEvent", oldEvent);
   };
-
 
   // create event
   let [isEventCreateChooseOpen, setIsEventCreateChooseOpen] = useState<boolean>(
@@ -171,7 +164,7 @@ const Calendar = () => {
         eventDrop={handleEventDrop}
         eventResize={handleEventResize}
         eventClick={handleEventClick}
-        slotDuration='00:15:00' // интервал при изменении на календаре
+        slotDuration="00:15:00" // интервал при изменении на календаре
         locale="ru"
       />
 
@@ -187,6 +180,7 @@ const Calendar = () => {
       {isPersonalEventCreate && (
         <PersonalEventCreateModal onClose={togglePersonalEventCreate} />
       )}
+      <AdminEventCreateModal onClose={toggleAdminEventCreate} />
       {isAdminEventCreate && (
         <AdminEventCreateModal onClose={toggleAdminEventCreate} />
       )}

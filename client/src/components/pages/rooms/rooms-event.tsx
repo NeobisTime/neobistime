@@ -1,22 +1,52 @@
 import React, { useState, useEffect } from "react";
 import EmptyRoom from "./rooms-empty";
 import withNavbarContainer from "../../../HOC/withNavbar";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import API from "../../../API";
 
 const RoomsEvent = (props: any) => {
   let roomId = props.match.params.id;
   const [events, setEvents] = useState([]);
 
+  // pagination
+  const [currentPage, setCurrentPage] = useState(0);
+  const [pageSize, setPageSize] = useState(7);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [portionSize, setPortionSize] = useState(5);
+  let pagesCount = Math.ceil(totalProducts / pageSize);
+  let pages = [];
+  for (let i = 1; i <= pagesCount; i++) {
+    pages.push(i);
+  }
+  let portionCount = Math.ceil(pagesCount / portionSize);
+  let [portionNumber, setPortionNumber] = useState(1);
+  let leftPortionPageNumber = (portionNumber - 1) * portionSize + 1;
+  let rightPortionPageNumber = portionNumber * portionSize;
+
+  let monthNames = [
+    "jan",
+    "feb",
+    "mar",
+    "apr",
+    "may",
+    "jun",
+    "jul",
+    "aug",
+    "sep",
+    "oct",
+    "nov",
+    "dec",
+  ];
+
   useEffect(() => {
-    API.getRoomEvents().then((data) => {
-      console.log(data);
+    API.getRoomEvents(roomId, pageSize, currentPage * pageSize).then((data) => {
+      setEvents(data.data.results);
+      setTotalProducts(data.data.count);
     });
-  }, []);
+  }, [pageSize, currentPage]);
   return (
     <div>
       <p className="today__title">Маленькая комната</p>
-      {/* <EmptyRoom /> */}
       <div className="notifications__wrapper-table">
         <table className="notifications__table">
           <colgroup span={4} className="notifications__table-colgroup">
@@ -42,104 +72,92 @@ const RoomsEvent = (props: any) => {
             </tr>
           </thead>
           <tbody className="notifications__table-tbody">
-            <tr className="notifications__table-tbody-tr">
-              <td className="notifications__table-tbody-tr-td w-20">30 jul</td>
-              <td className="notifications__table-tbody-tr-td w-20">
-                13:30-15:30
-              </td>
-              <td className="notifications__table-tbody-tr-td w-20">
-                Адахан А.
-              </td>
-              <td className="notifications__table-tbody-tr-td w-35">
-                Orientation day
-              </td>
-            </tr>
-
-            <tr className="notifications__table-tbody-tr">
-              <td className="notifications__table-tbody-tr-td w-20">31 jul</td>
-              <td className="notifications__table-tbody-tr-td w-20">
-                13:30-15:30
-              </td>
-              <td className="notifications__table-tbody-tr-td w-20">
-                Адахан А.
-              </td>
-              <td className="notifications__table-tbody-tr-td w-35">
-                Orientation day
-              </td>
-            </tr>
-
-            <tr className="notifications__table-tbody-tr">
-              <td className="notifications__table-tbody-tr-td w-20">1 aug</td>
-              <td className="notifications__table-tbody-tr-td w-20">
-                08:30-14:27
-              </td>
-              <td className="notifications__table-tbody-tr-td w-20">Куна А.</td>
-              <td className="notifications__table-tbody-tr-td w-35">
-                Orientation day
-              </td>
-            </tr>
-
-            <tr className="notifications__table-tbody-tr">
-              <td className="notifications__table-tbody-tr-td w-20">2 aug</td>
-              <td className="notifications__table-tbody-tr-td w-20">
-                18:30-20:30
-              </td>
-              <td className="notifications__table-tbody-tr-td w-20">Нодир</td>
-              <td className="notifications__table-tbody-tr-td w-35">
-                Java курсы
-              </td>
-            </tr>
-
-            <tr className="notifications__table-tbody-tr">
-              <td className="notifications__table-tbody-tr-td w-20">3 aug</td>
-              <td className="notifications__table-tbody-tr-td w-20">
-                18:30-20:30
-              </td>
-              <td className="notifications__table-tbody-tr-td w-20">
-                Димитриос Х.
-              </td>
-              <td className="notifications__table-tbody-tr-td w-35">
-                Курсы JS
-              </td>
-            </tr>
-
-            <tr className="notifications__table-tbody-tr">
-              <td className="notifications__table-tbody-tr-td w-20">30 jul</td>
-              <td className="notifications__table-tbody-tr-td w-20">
-                13:30-15:30
-              </td>
-              <td className="notifications__table-tbody-tr-td w-20">
-                Chpokman
-              </td>
-              <td className="notifications__table-tbody-tr-td w-35">
-                Movie night
-              </td>
-            </tr>
+            {events ? (
+              events.map((event: any) => {
+                let startDate = new Date(event.start_date);
+                let endDate = new Date(event.end_date);
+                return (
+                  // <Link to={`/today/${event.id}`} className='link'>
+                  <tr key={event.id} className="notifications__table-tbody-tr">
+                    <td className="notifications__table-tbody-tr-td w-20">
+                      {(startDate.getDate() < 10 ? "0" : "") +
+                        startDate.getDate()}{" "}
+                      {monthNames[startDate.getMonth()]}
+                    </td>
+                    <td className="notifications__table-tbody-tr-td w-20">
+                      {(startDate.getHours() < 10 ? "0" : "") +
+                        startDate.getHours()}
+                      :
+                      {(startDate.getMinutes() < 10 ? "0" : "") +
+                        startDate.getMinutes()}
+                      -
+                      {(endDate.getHours() < 10 ? "0" : "") +
+                        endDate.getHours()}
+                      :
+                      {(endDate.getMinutes() < 10 ? "0" : "") +
+                        endDate.getMinutes()}
+                    </td>
+                    <td className="notifications__table-tbody-tr-td w-20">
+                      {event.owner}
+                    </td>
+                    <td className="notifications__table-tbody-tr-td w-35">
+                      {event.title}
+                    </td>
+                  </tr>
+                  // </Link>
+                );
+              })
+            ) : (
+              <EmptyRoom />
+            )}
           </tbody>
         </table>
         <div className="notifications__pagination">
           <div className="notifications__pagination-content">
-            <div className="notifications__pagination-content-arrow">
-              &#10094;
-            </div>
-            <div className="notifications__pagination-content-number number_active">
-              <p className="notifications__pagination-content-number-value">
-                1
-              </p>
-            </div>
-            <div className="notifications__pagination-content-number ">
-              <p className="notifications__pagination-content-number-value">
-                2
-              </p>
-            </div>
-            <div className="notifications__pagination-content-number">
-              <p className="notifications__pagination-content-number-value">
-                3
-              </p>
-            </div>
-            <div className="notifications__pagination-content-arrow">
-              &#10095;
-            </div>
+            {portionNumber > 1 && (
+              <div
+                onClick={() => {
+                  setPortionNumber(portionNumber - 1);
+                }}
+                className="notifications__pagination-content-arrow"
+              >
+                &#10094;
+              </div>
+            )}
+            {pages
+              .filter(
+                (p) => p >= leftPortionPageNumber && p <= rightPortionPageNumber
+              )
+              .map((page) => {
+                return (
+                  <div
+                    key={page}
+                    onClick={() => {
+                      setCurrentPage(page - 1);
+                    }}
+                    className={
+                      page === currentPage + 1
+                        ? "notifications__pagination-content-number number_active"
+                        : "notifications__pagination-content-number"
+                    }
+                  >
+                    <p className="notifications__pagination-content-number-value">
+                      {page}
+                    </p>
+                  </div>
+                );
+              })}
+
+            {portionCount > portionNumber && (
+              <div
+                onClick={() => {
+                  setPortionNumber(portionNumber + 1);
+                }}
+                className="notifications__pagination-content-arrow"
+              >
+                &#10095;
+              </div>
+            )}
           </div>
         </div>
       </div>

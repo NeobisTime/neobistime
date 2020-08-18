@@ -23,10 +23,23 @@ type GeneralStatsType = {
   average_number_of_people_per_event: number;
   percentage_of_attendance_at_events: number;
 };
+
+type DepartmentStatsType = {
+  average_attendance: number;
+  average_number_of_people_per_event: number;
+  quantity_of_events_by_departments: number;
+  quantity_of_students_by_departments: number;
+};
+
 const AdminStat = (props: any) => {
-  const [department, setDepartment] = useState<string>("");
-  const [month, setMonth] = useState<string>("");
+  // filltration data
+  const [department, setDepartment] = useState<number>(1);
+  const [month, setMonth] = useState<number>(1);
   const [year, setYear] = useState<boolean>(true);
+
+  const [departmentData, setDepartmentData] = useState<
+    DepartmentStatsType | any
+  >({});
   const [generalStat, setGeneralStat] = useState<GeneralStatsType | any>({});
   const [departmentsChartData, setDepartmentsChartData] = useState([]);
   const [departmentsChartLabels, setDepartmentsChartLabels] = useState([]);
@@ -34,16 +47,18 @@ const AdminStat = (props: any) => {
   const doughnutData = {
     datasets: [
       {
-        data: [80, 100 - 80],
+        data: [
+          departmentData.average_attendance,
+          100 - departmentData.average_attendance,
+        ],
         backgroundColor: ["#F7D154", "lightgrey"],
       },
     ],
-    labels: ["% посещений", ""],
+    labels: ["% посещений", "% пропусков"],
   };
   const departmentChartData = {
     datasets: [
       {
-        // data: [12, 10, 9, 11, 15, 16, 7, 5, 8],
         data: departmentsChartData,
         backgroundColor: [
           "#6C63FF",
@@ -59,6 +74,33 @@ const AdminStat = (props: any) => {
       },
     ],
     labels: departmentsChartLabels,
+  };
+
+  function updateDepartmentData() {
+    const data = {
+      month: month,
+      department_id: +department,
+      year,
+    };
+    API.postStatByDepartment(data).then((data: any) => {
+    console.log("updateDepartmentData -> data", data.data)
+      setDepartmentData(data.data);
+    });
+  }
+
+  useEffect(() => {
+    updateDepartmentData();
+  }, [month, year, department]);
+
+  const handleDepartmentChange = (e: any) => {
+    setDepartment(e.value);
+    updateDepartmentData();
+  };
+
+  const handleMonthChange = (e: any) => {
+    setMonth(+e.value + 1);
+    setYear(false);
+    updateDepartmentData();
   };
 
   useEffect(() => {
@@ -77,12 +119,8 @@ const AdminStat = (props: any) => {
       setDepartmentsChartData(values);
       setDepartmentsChartLabels(keys);
     });
-    const data = {
-      month,
-      department,
-      year,
-    };
-    // API.postStatByDepartment(data).then((data: any) => {});
+
+    updateDepartmentData();
   }, []);
 
   return (
@@ -178,18 +216,13 @@ const AdminStat = (props: any) => {
               options={props.departments}
               className="admin-stat__charts-doughnut-select"
               required
-              onChange={(e: any) => {
-                setDepartment(e.value);
-              }}
+              onChange={handleDepartmentChange}
             />
             <Select
               options={props.yearsMonth}
               className="admin-stat__charts-doughnut-select"
               required
-              onChange={(e: any) => {
-                setMonth(e.value);
-                setYear(false);
-              }}
+              onChange={handleMonthChange}
             />
             <button
               onClick={() => {
@@ -230,7 +263,7 @@ const AdminStat = (props: any) => {
                   style={{ color: "#1070CA" }}
                   className="personal-office__stat-info-block-number"
                 >
-                  13
+                  {departmentData.quantity_of_events_by_departments}
                 </p>
               </div>
               <div className="personal-office__stat-info-block">
@@ -251,7 +284,7 @@ const AdminStat = (props: any) => {
                   style={{ color: "#F7D154" }}
                   className="personal-office__stat-info-block-number"
                 >
-                  80
+                  {departmentData.average_attendance}
                 </p>
               </div>
               <div className="personal-office__stat-info-block">
@@ -267,7 +300,7 @@ const AdminStat = (props: any) => {
                   style={{ color: "#1070CA" }}
                   className="personal-office__stat-info-block-number"
                 >
-                  9
+                  {departmentData.average_number_of_people_per_event}
                 </p>
               </div>
             </div>

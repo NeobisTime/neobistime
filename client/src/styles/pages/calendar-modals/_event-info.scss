@@ -1,7 +1,7 @@
 .event-info-modal {
   display: flex;
   flex-direction: column;
-  width: 550px;
+  width: 450px;
   padding: 10px 10px 10px 0;
   &__modal {
     display: flex;
@@ -13,22 +13,26 @@
       font-size: 40px;
       box-sizing: border-box;
       margin: 15px 0 0 0;
-      color: white;
+      color: black;
     }
+  }
+  &__edit-pen {
+    position: absolute;
+    right: 20px;
+    top: 60px;
+    cursor: pointer;
+    z-index: 1;
+  }
+  &__form-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   &__form {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 95%;
-    box-sizing: border-box;
-  }
-  &__buttons {
-    position: absolute;
-    right: 20px;
-    bottom: 0;
-    display: flex;
-    flex-direction: column;
     box-sizing: border-box;
   }
   &__change {
@@ -44,13 +48,14 @@
   &__more-info {
     display: flex;
     align-items: center;
-    color: #1665d8;
+    color: var(--neobisColor);
     text-align: center;
     font-weight: bold;
     font-family: "Roboto";
-    font-size: 18px;
+    font-size: 12px;
     margin-bottom: 5px;
     position: relative;
+    text-decoration: underline;
     &:hover {
       animation-name: arrowLeftMovement;
       animation-duration: 1.4s;
@@ -60,8 +65,34 @@
     }
     &-image {
       position: absolute;
-      width: 18px;
-      right: 0;
+      width: 12px;
+      right: 5px;
+    }
+  }
+  &__admin-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    margin: 10px 0;
+    &-wrapper{
+      display: flex;
+      width: 70%; 
+      justify-content: space-between;
+    }
+    &-save, &-cancel{
+      border-radius: 10px;
+      padding: 10px 20px;
+      color: white;
+      font-size: 16px;
+      box-sizing: border-box;
+      font-family: "Montserrat";
+    }
+    &-save {
+      background-color: var(--neobisColor) !important;
+    }
+    &-cancel {
+      background-color: rgba(144, 153, 155, 0.5) !important;
     }
   }
 }

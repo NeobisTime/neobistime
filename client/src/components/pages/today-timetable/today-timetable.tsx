@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import withNavbarContainer from "../../../HOC/withNavbar";
 import API from "../../../API";
+import EmptyRoom from "../rooms/rooms-empty";
 
 // TODO: todayList нужно сделать переиспользуемым компонентом, он используется на  этой странице и на admin-end-events
 
@@ -12,30 +13,37 @@ type TodayListProps = {
 export const TodayList = ({ events }: TodayListProps) => {
   return (
     <div className="today__list">
-      {events.map((event: any) => {
-        const startTime = new Date(event.start_date);
-        let finalStartTime = `${startTime.getHours()}:${startTime.getMinutes()}`;
-        const endTime = new Date(event.end_date);
-        let finalEndTime = `${endTime.getHours()}:${endTime.getMinutes()}`;
-        return (
-          <Link to={`/today/${event.id}`} key={event.id} className="link">
-            <div className="today__list-item">
-              <div className="today__list-item-answer">
-                <div
-                  className="today__list-item-answer_circle"
-                  style={{ backgroundColor: "var(--neobisColor)" }}
-                ></div>
+      {events ? (
+        events.map((event: any) => {
+          const startDate = new Date(event.start_date);
+          const endDate = new Date(event.end_date);
+          return (
+            <Link to={`/today/${event.id}`} key={event.id} className="link">
+              <div className="today__list-item">
+                <div className="today__list-item-answer">
+                  <div
+                    className="today__list-item-answer_circle"
+                    style={{ backgroundColor: "var(--neobisColor)" }}
+                  ></div>
+                </div>
+                <div className="today__list-item-content">
+                  <p className="today__list-item-text">{event.title}</p>
+                  <p className="today__list-item-time">
+                    {startDate.getHours()}:
+                    {(startDate.getMinutes() < 10 ? "0" : "") +
+                      startDate.getMinutes()}{" "}
+                    - {endDate.getHours()}:
+                    {(endDate.getMinutes() < 10 ? "0" : "") +
+                      endDate.getMinutes()}{" "}
+                  </p>
+                </div>
               </div>
-              <div className="today__list-item-content">
-                <p className="today__list-item-text">{event.title}</p>
-                <p className="today__list-item-time">
-                  {finalStartTime} - {finalEndTime}
-                </p>
-              </div>
-            </div>
-          </Link>
-        );
-      })}
+            </Link>
+          );
+        })
+      ) : (
+        <EmptyRoom />
+      )}
     </div>
   );
 };
@@ -63,7 +71,8 @@ const TodayTimetable = (props: any) => {
   const [todayEvents, setTodayEvents] = useState([]);
   useEffect(() => {
     API.getTodaySchedule().then((requestData) => {
-      setTodayEvents(requestData.data.results);
+      console.log("TodayTimetable -> requestData", requestData);
+      setTodayEvents(requestData.data);
     });
   }, []);
   return (

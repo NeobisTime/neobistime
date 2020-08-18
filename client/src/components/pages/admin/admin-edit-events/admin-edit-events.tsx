@@ -13,7 +13,7 @@ const EditEventsPage = () => {
   const [next, setNext] = useState<string | null>("");
 
   useEffect(() => {
-    API.getEvents(pageSize, pageSize * currentPage, "").then((events) => {
+    API.getEvents(pageSize, pageSize * currentPage).then((events) => {
       setEvents(events.data.results);
       setTotalProducts(events.data.count);
       setNext(events.data.next);
@@ -46,7 +46,7 @@ const EditEventsPage = () => {
               return (
                 <tr>
                   <td className="bold">{event.title}</td>
-                  <td className="bold">-</td>
+                  <td className="bold">{event.department}</td>
                   <td className="end-event-info__table-tbody-date">
                     {date.getDate()}/{date.getMonth() + 1}/{date.getFullYear()}
                   </td>

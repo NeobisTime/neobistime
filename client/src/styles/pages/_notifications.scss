@@ -86,6 +86,9 @@ $blockWidth: 270px;
       border-radius: 10px 10px 0 0;
     }
     &-block {
+      height: 160px;
+      box-sizing: border-box;
+      max-width: 100%;
       padding: 0 10px 10px 10px;
     }
     &-title {
@@ -110,13 +113,17 @@ $blockWidth: 270px;
     &-address {
       margin: 0 0 5px 0;
       font-size: 12px;
+      max-height: 15px;
+      overflow-y: hidden;
       &-image {
         width: 12px;
       }
     }
     &-buttons {
       display: flex;
+      width: 250px;
       justify-content: space-between;
+      padding: 0 10px 10px;
     }
     &-button {
       border-radius: 5px;

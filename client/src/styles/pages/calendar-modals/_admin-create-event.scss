@@ -1,4 +1,15 @@
-.admin-create-event-modal{
-    height: 600px;
-    width: 1000px;
+.admin-create-event-modal {
+  height: 500px;
+  width: 600px;
+  &-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+  &-row {
+    display: flex;
+  }
+  &-icon {
+  }
+  &-input {
+  }
 }

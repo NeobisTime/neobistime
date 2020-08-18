@@ -7,14 +7,18 @@ import HoursScrollbar from "./hours-scrollbar";
 import MinutesScrollbar from "./minutes-scrollbar";
 import withDataContainer from "../../../../HOC/withData";
 import API from "../../../../API";
+import { withRouter } from "react-router-dom";
 
 const CreateEventPage = (props: any) => {
+  const eventId = props.match.params.id;
+
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [image, setImage] = useState<any>([]);
   const [departments, setDepartments] = useState([]);
 
   const [startDate, setStartDate] = useState<Date>(new Date());
+  // console.log("CreateEventPage ->.>>>>>>", startDate);
   const [startDateHours, setStartDateHours] = useState<number>(-1);
   const [startDateMinutes, setStartDateMinutes] = useState<number>(-1);
 
@@ -36,25 +40,63 @@ const CreateEventPage = (props: any) => {
       });
       setFinalUsers(preFinalUsers);
     });
-   
+  }, []);
+
+  // with params for put request
+  useEffect(() => {
+    if (eventId) {
+      API.getEventInfo(eventId).then((requestData) => {
+        let data = requestData.data;
+        setTitle(data.title);
+        setImage(data.image);
+        setDescription(data.description);
+        setStartDate(new Date(data.start_date));
+        setEndDate(new Date(data.end_date));
+        setPlace(data.place);
+        setAddress(data.address);
+        if (data.place.id === 4) {
+          setAddressDisable(false);
+        }
+
+        // set time for scrollbars
+        let startDate = new Date(data.start_date);
+        setStartDateHours(startDate.getHours());
+        setStartDateMinutes(startDate.getMinutes());
+        let endDate = new Date(data.end_date);
+        setEndDateHours(endDate.getHours());
+        setEndDateMinutes(endDate.getMinutes());
+      });
+    }
   }, []);
 
   const handleChangeAddress = (e: any) => {
-    setPlace(+e.target.value);
-    setAddressDisable(true);
-    setAddress("");
+    if (eventId) {
+      setPlace({ ...place, id: e.target.value });
+    } else {
+      setPlace(+e.target.value);
+      setAddressDisable(true);
+      setAddress("");
+
+      if (e.target.value == 4) {
+        setAddressDisable(false);
+      }
+    }
   };
 
   const updateStartTime = () => {
     let startTime = new Date(startDate);
     startTime.setHours(startDateHours, startDateMinutes, 0);
-    let finalTime = `${startTime.getFullYear()}-${startTime.getMonth()}-${startTime.getDate()}T${startTime.getHours()}:${startTime.getMinutes()}`;
+    let finalTime = `${startTime.getFullYear()}-${
+      startTime.getMonth() + 1
+    }-${startTime.getDate()}T${startTime.getHours()}:${startTime.getMinutes()}`;
     return finalTime;
   };
   const updateEndTime = () => {
     let endTime = new Date(endDate);
     endTime.setHours(endDateHours, endDateMinutes, 0);
-    let finalTime = `${endTime.getFullYear()}-${endTime.getMonth()}-${endTime.getDate()}T${endTime.getHours()}:${endTime.getMinutes()}`;
+    let finalTime = `${endTime.getFullYear()}-${
+      endTime.getMonth() + 1
+    }-${endTime.getDate()}T${endTime.getHours()}:${endTime.getMinutes()}`;
     return finalTime;
   };
 
@@ -63,30 +105,59 @@ const CreateEventPage = (props: any) => {
 
     let start_time = await updateStartTime();
     let end_time = await updateEndTime();
-    let attendees = {
-      departments: [departments],
-      individual_users: [usersForSend],
-    };
 
-    console.log(place);
-    
+    // working with forming attendees
+    let CheckForAll = departments.find((item: any) => item.value === "all");
+    let departmentNumbers: any = [];
+    if (CheckForAll) {
+      // * if selected all departments we return array with all
+      departmentNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    } else {
+      // * else return selected deparments
+      departmentNumbers = departments.map((item: any) => {
+        return +item.value;
+      });
+    }
+    let usersForSendEmails: any = usersForSend.map((item: any) => {
+      return item.value;
+    });
+    //
+
     let formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
-    if (image[0]) {
-      formData.append("image", image[0]);
+    if (eventId) {
+      if (typeof image !== typeof "") {
+        formData.append("image", image[0]);
+      } else console.log("image is string");
+    } else {
+      if (image[0]) {
+        formData.append("image", image[0]);
+      }
     }
     formData.append("start_date", String(start_time));
     formData.append("deadline", String(start_time));
     formData.append("end_date", String(end_time));
-    if (place){
+    if (eventId) {
+      formData.append("place", place.id);
+    } else {
       formData.append("place", place);
     }
     formData.append("address", address);
-    formData.append("attendees", String(attendees));
-    console.log("handleSubmit -> formData", formData);
+    formData.append("departments", departmentNumbers);
+    formData.append("individual_users", usersForSendEmails);
+    formData.append("my_event", "false");
 
-    API.postEventCreateData(formData);
+    let json = JSON.parse(
+      JSON.stringify(Object.fromEntries(formData.entries()))
+    );
+    console.log("handleSubmit -> json", json);
+
+    if (eventId) {
+      API.patchEventChangeData(formData, eventId);
+    } else {
+      API.postEventCreateData(formData);
+    }
   }
 
   return (
@@ -139,7 +210,7 @@ const CreateEventPage = (props: any) => {
                   }}
                   className="create-event__form-input"
                   type="text"
-                  value={image[0] ? image[0].name : "empty"}
+                  value={image[0] ? image[0].name || image : "empty"}
                   readOnly
                 />
                 <input
@@ -221,6 +292,13 @@ const CreateEventPage = (props: any) => {
                     name="place"
                     onChange={handleChangeAddress}
                     value={1}
+                    checked={
+                      eventId
+                        ? place && +place.id === 1
+                          ? true
+                          : false
+                        : undefined
+                    }
                   />
                   <label htmlFor="small">Маленькая комната</label>
                 </div>
@@ -230,6 +308,13 @@ const CreateEventPage = (props: any) => {
                     name="place"
                     value={2}
                     onChange={handleChangeAddress}
+                    checked={
+                      eventId
+                        ? place && +place.id === 2
+                          ? true
+                          : false
+                        : undefined
+                    }
                   />
                   <label htmlFor="small">Большая комната</label>
                 </div>
@@ -239,6 +324,13 @@ const CreateEventPage = (props: any) => {
                     name="place"
                     value={3}
                     onChange={handleChangeAddress}
+                    checked={
+                      eventId
+                        ? place && +place.id === 3
+                          ? true
+                          : false
+                        : undefined
+                    }
                   />
                   <label htmlFor="small">Весь офис</label>
                 </div>
@@ -246,10 +338,15 @@ const CreateEventPage = (props: any) => {
                   <input
                     type="radio"
                     name="place"
-                    onChange={() => {
-                      setAddressDisable(false);
-                      setPlace(null);
-                    }}
+                    value={4}
+                    onChange={handleChangeAddress}
+                    checked={
+                      eventId
+                        ? place && +place.id === 4
+                          ? true
+                          : false
+                        : undefined
+                    }
                   />
                   <label htmlFor="small">Другое</label>
                 </div>
@@ -311,4 +408,4 @@ const CreateEventPage = (props: any) => {
   );
 };
 
-export default withDataContainer(CreateEventPage);
+export default withDataContainer(withRouter(CreateEventPage));

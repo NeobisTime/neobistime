@@ -3,7 +3,7 @@ import designPhoto from "../../../images/pages/authentication.svg";
 import "../../../styles/pages/_auth.scss";
 import { Link } from "react-router-dom";
 import eye from "../../../images/pages/password_eye.svg";
-import API from "../../../API";
+import API, { getCookie } from "../../../API";
 
 const Authorization: React.FC = (props: any) => {
   const [email, setEmail] = useState<string>("");
@@ -40,20 +40,21 @@ const Authorization: React.FC = (props: any) => {
     validate();
 
     let answer = await API.postAuthData(data);
-    if (answer.status >= 200 && answer.status <= 299){
-      props.history.push('/')
+    if (answer.status >= 200 && answer.status <= 299) {
+      let token: string = getCookie("XSRF-Token") || "";
+      let requestDataToPush: any = {
+        token,
+      };
+      await API.getRole(requestDataToPush).then((data: any) => {
+        if (data.data.is_staff) {
+          document.cookie = `role =admin`;
+        } else {
+          document.cookie = `role =user`;
+        }
+      });
+      props.history.push("/");
+      window.location.reload(true);
     }
-  }
-
-  function getCookie(name: string) {
-    let matches = document.cookie.match(
-      new RegExp(
-        "(?:^|; )" +
-          name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
-          "=([^;]*)"
-      )
-    );
-    return matches ? decodeURIComponent(matches[1]) : undefined;
   }
 
   return (

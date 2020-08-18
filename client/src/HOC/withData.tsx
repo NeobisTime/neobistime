@@ -12,14 +12,34 @@ const withDataContainer = (Component: any) => {
     { value: "3", label: "PM" },
     { value: "1", label: "Python" },
   ];
-  const selectDepartments = [
-    { value: "1,2,3,4,5,6,7,8,9", label: "All" },
-    ...departments,
+  const selectDepartments = [{ value: "all", label: "All" }, ...departments];
+  let days = [
+    "Воскресенье",
+    "Понедельник",
+    "Вторник",
+    "Среда",
+    "Четверг",
+    "Пятница",
+    "Суббота",
+  ];
+  let months = [
+    "Январь",
+    "Февраль",
+    "Март",
+    "Апрель",
+    "Май",
+    "Июнь",
+    "Июль",
+    "Август",
+    "Cентябрь",
+    "Октябрь",
+    "Ноябрь",
+    "Декабрь",
   ];
   const yearsMonth = [
     { value: "0", label: "Январь" },
     { value: "1", label: "Февраль" },
-    { value: "2", label: "Марь" },
+    { value: "2", label: "Март" },
     { value: "3", label: "Апрель" },
     { value: "4", label: "Май" },
     { value: "5", label: "Июнь" },
@@ -33,6 +53,8 @@ const withDataContainer = (Component: any) => {
   const withData = (props: any) => {
     return (
       <Component
+        days={days}
+        monthListRus={months}
         departments={departments}
         selectDepartments={selectDepartments}
         yearsMonth={yearsMonth}

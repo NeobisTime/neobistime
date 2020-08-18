@@ -52,6 +52,36 @@ const postData = (url: string, data: any) => {
     );
 };
 
+const postGetRoleData = (url: string, data: any) => {
+  return http
+    .post(url, data, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    })
+    .then(
+      (response) => {
+        console.log("%c " + response, "color: lightgreen");
+        return response;
+      },
+      (error) => {
+        console.log("%c " + error.response.statusText, "color: red");
+        return error;
+      }
+    );
+};
+
+const patchData = (url: string, data: any) => {
+  http.patch(url, data, {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: "Token " + token,
+    },
+  });
+};
+
 const postTokenData = (url: string, data: any) => {
   http
     .post(url, data, {
@@ -73,13 +103,43 @@ const postTokenData = (url: string, data: any) => {
     );
 };
 
-const postFormData = (url: string, data: any) => {
-  http.post(url, data, {
+const postDataWithReturnJSON = (url: string, data: any) => {
+  return http.post(url, data, {
     headers: {
-      "Content-Type": "multipart/form-data",
+      Accept: "application/json",
+      "Content-Type": "application/json",
       Authorization: "Token " + token,
     },
   });
+};
+
+const patchDataWithReturnJSON = (url: string, data: any) => {
+  return http.patch(url, data, {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: "Token " + token,
+    },
+  });
+};
+
+const postFormData = (url: string, data: any) => {
+  http
+    .post(url, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: "Token " + token,
+      },
+    })
+    .then(
+      (response) => {
+        alert(response);
+      },
+      (error) => {
+        alert(error);
+        console.log(error.response.data);
+      }
+    );
 };
 
 async function postAuthData(url: string, data: object) {
@@ -99,21 +159,37 @@ async function postAuthData(url: string, data: object) {
 }
 
 export default {
-  getEvents: (limit?: number, offset?: number, search?: string) =>
-    getData(`events/?limit=${limit}&offset=${offset}&search=${search}`),
-  getEventInfo: (id: string | number) => http.get(`events/${id}/`),
-  getRoomEvents: () => http.get("place/"),
+  getEvents: (
+    limit: number = 10,
+    offset: number = 0,
+    search: string = "",
+    period: string = ""
+  ) =>
+    getData(
+      `events/?limit=${limit}&offset=${offset}&search=${search}&period=${period}`
+    ),
+  getEventInfo: (id: string | number) => getData(`events/${id}/`),
+  getRoomEvents: (id: number | string, limit: number, offset: number) =>
+    getData(`place/${id}/?limit=${limit}&offset=${offset}`),
   getTodaySchedule: () => getData("today_events/"),
   getUsers: () => getData("users/"),
   getGeneralStat: () => getData("general_stats/"),
   getStatForAllDepartments: () => getData("stats_for_all_departments/"),
+  getEndEvents: () => getData("my_events/"),
+  getUserInfo: () => getData("users/rest-auth/user/"),
+  getMyPoll: () => getData("my_poll/"),
+
+  getRole: (token: string) => postGetRoleData("users/is_user_staff/", token),
   postStatByDepartment: (data: any) =>
-    postTokenData("stats_by_department/", data),
+    postDataWithReturnJSON("stats_by_department/", data),
   postRegistrationData: (data: object) =>
     postData("users/rest-auth/registration/", data),
   postAuthData: (data: object) => postAuthData("users/rest-auth/login/", data),
   postEventCreateData: (data: object) => postFormData("events/", data),
-  postPoll: (data: object) => postTokenData("poll", data),
-  //   getNews: (currentPage, perPage) =>
-  //     http.get(`/api/main/news/?limit=${perPage}&offset=${currentPage}`),
+  patchEventChangeData: (data: object, id: number | string) =>
+    patchData(`events/${id}/`, data),
+  patchPoll: (data: object, id: number | string) =>
+    patchDataWithReturnJSON(`poll/${id}/`, data),
+  postPoll: (data: object) =>
+    postDataWithReturnJSON(`poll/`, data),
 };
