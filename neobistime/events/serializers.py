@@ -3,7 +3,6 @@ from django.db.models import Q
 from django.utils import timezone
 from rest_framework import serializers
 
-from users.models import Department
 from .models import Event, Place, Poll
 from .tasks import notify_users
 
@@ -103,36 +102,18 @@ class EventGetSerializer(serializers.ModelSerializer):
         return obj.owner == self.context['request'].user
 
 
-def populate_choices():
-    try:
-        choices = tuple((i.pk, i.name) for i in Department.objects.all())
-    except Exception:
-        return ()
-    return choices
-
-
 class UserNotificationSerializer(serializers.Serializer):
     """
     Serializing email notification data
     """
-    departments = serializers.MultipleChoiceField(choices=populate_choices())
-    individual_users = serializers.ListField(child=serializers.EmailField(), allow_empty=True)
-
-    def __init__(self, *args, **kwargs):
-        super(UserNotificationSerializer, self).__init__(*args, **kwargs)
-        self.fields["departments"] = serializers.MultipleChoiceField(
-            choices=populate_choices()
-        )
+    departments = serializers.ListField(child=serializers.IntegerField(), required=False)
+    individual_users = serializers.ListField(child=serializers.EmailField(), required=False, default=[])
 
     def notify(self, event_id):
-        print()
-        print()
-        print(populate_choices())
-        print()
-        print()
         departments = self.validated_data["departments"]
         individual_users = self.validated_data["individual_users"]
-        notify_users.delay(list(departments), individual_users, event_id)
+        # TODO: add delay to function
+        notify_users(departments, individual_users, event_id)
 
 
 def available_date_for_event(validated_data):

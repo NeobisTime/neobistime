@@ -1,9 +1,12 @@
 import datetime
+import re
+
 from django.utils import timezone
 from rest_framework import generics, permissions, status, viewsets, filters
-from rest_framework.exceptions import PermissionDenied, NotFound
+from rest_framework.exceptions import PermissionDenied, NotFound, ValidationError
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
+
 from . import permissions as custom_permissions, serializers
 from .models import Event, Place, Poll
 from .permissions import EventOwner
@@ -101,12 +104,26 @@ class EventViewSet(viewsets.ModelViewSet):
         :param serializer:
         :return:
         """
-        if self.request.user.is_authenticated:
-            event_data = serializer.save(owner=self.request.user)
 
-            serializer = serializers.UserNotificationSerializer(data=self.request.data["attendees"])
-            serializer.is_valid(raise_exception=True)
-            serializer.notify(event_data.id)
+        if self.request.user.is_authenticated:
+
+            event_data = serializer.save(owner=self.request.user)
+            if self.request.data["my_event"].lower() == "false":
+
+                departments = self.request.data.get("departments", "")
+                individual_users = self.request.data.get("individual_users", "")
+
+                departments_list = list(map(int, re.findall("\d+", departments)))  # noqa
+                users_list = individual_users.split(",")
+
+                if not departments and not individual_users:
+                    raise ValidationError("Attendees required")
+
+                serializer = serializers.UserNotificationSerializer(
+                    data={"departments": departments_list, "individual_users": users_list}
+                )
+                serializer.is_valid(raise_exception=True)
+                serializer.notify(event_data.id)
 
             return event_data
         else:
@@ -127,13 +144,32 @@ class EventViewSet(viewsets.ModelViewSet):
             # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
 
-        event_id = instance.id
+        if request.data["my_event"].lower() == "false":
+            departments = request.data.get("departments", "")
+            individual_users = request.data.get("individual_users", "")
 
-        serializer = serializers.UserNotificationSerializer(data=request.data["attendees"])
-        serializer.is_valid(raise_exception=True)
-        serializer.notify(event_id)
+            departments_list = list(map(int, re.findall("\d+", departments)))  # noqa
+            users_list = individual_users.split(",")
+
+            if not departments and not individual_users:
+                raise ValidationError("Attendees required")
+
+            serializer = serializers.UserNotificationSerializer(
+                data={"departments": departments_list, "individual_users": users_list}
+            )
+            serializer.is_valid(raise_exception=True)
+            serializer.notify(instance.id)
 
         return Response({"message": "Successfully updated"}, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        attendees = instance.attendees
+        return Response(
+            {**serializer.data,
+             "attendees": {"departments": attendees.departments, "individual_users": attendees.individual_users}}
+        )
 
 
 class PollCreateView(generics.CreateAPIView):
@@ -154,12 +190,12 @@ class PollCreateView(generics.CreateAPIView):
 
 class PollDetailView(generics.RetrieveUpdateAPIView):
     """
-       get:
-       Return single event instance.
+    get:
+    Return single event instance.
 
-       patch:
-       Update single event instance.
-       """
+    patch:
+    Update single event instance.
+    """
     queryset = Poll.objects.all()
     serializer_class = serializers.PollRetrieveUpdateSerializer
     permission_classes = (permissions.IsAuthenticated, custom_permissions.PollOwner,)
