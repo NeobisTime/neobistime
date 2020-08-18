@@ -65,11 +65,13 @@ class EventGetSerializer(serializers.ModelSerializer):
     department = serializers.SerializerMethodField()
     place = PlaceSerializer()
     my_event = serializers.SerializerMethodField()
+    start = serializers.CharField(source='start_date')
+    end = serializers.CharField(source='end_date')
 
     class Meta:
         model = Event
         fields = (
-            'id', "image", 'owner', 'department', 'title', 'description', 'deadline', 'start_date', 'end_date', 'place',
+            'id', "image", 'owner', 'department', 'title', 'description', 'deadline', 'start', 'end', 'place',
             'link',
             'address', 'backgroundColor', 'my_event')
 
@@ -152,11 +154,13 @@ class EventCreateUpdateSerializer(serializers.ModelSerializer):
      """
     owner = serializers.ReadOnlyField(source='owner.name_surname')
     place = serializers.PrimaryKeyRelatedField(queryset=Place.objects.all(), allow_null=True)
+    start = serializers.CharField(source='start_date')
+    end = serializers.CharField(source='end_date')
 
     class Meta:
         model = Event
         fields = (
-            'id', "image", 'owner', 'title', 'description', 'deadline', 'start_date', 'end_date', 'place', 'link',
+            'id', "image", 'owner', 'title', 'description', 'deadline', 'start', 'end', 'place', 'link',
             'address',
         )
 
@@ -186,11 +190,13 @@ class MyEventListSerializer(serializers.ModelSerializer):
      """
     owner = serializers.ReadOnlyField(source='owner.name_surname')
     place = PlaceSerializer()
+    start = serializers.CharField(source='start_date')
+    end = serializers.CharField(source='end_date')
 
     class Meta:
         model = Event
         fields = (
-            'id', "image", 'owner', 'title', 'description', 'deadline', 'start_date', 'end_date', 'place', 'link',
+            'id', "image", 'owner', 'title', 'description', 'deadline', 'start', 'end', 'place', 'link',
             'address',
         )
 
