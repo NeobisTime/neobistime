@@ -22,6 +22,14 @@ class PollAdmin(admin.ModelAdmin):
     search_fields = ('user__name_surname', 'event__title')
 
 
+class NotesAdmin(admin.ModelAdmin):
+    list_display = ('title', 'start', 'end', 'owner',)
+    list_filter = ('start',)
+    list_per_page = 15
+    search_fields = ('owner__name_surname', 'title')
+
+
 admin.site.register(models.Poll, PollAdmin)
 admin.site.register(models.Place)
 admin.site.register(models.Event, EventAdmin)
+admin.site.register(models.Notes, NotesAdmin)

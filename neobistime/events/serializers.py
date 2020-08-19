@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.utils import timezone
 from rest_framework import serializers
 
-from .models import Event, Place, Poll
+from .models import Event, Place, Poll, Notes
 from .tasks import notify_users
 
 
@@ -214,3 +214,19 @@ class AdminPolls(serializers.ModelSerializer):
 
     def get_department(self, obj):
         return str(obj.user.department_id)
+
+
+class NotesSerializer(serializers.ModelSerializer):
+    """
+    Class for serializing personal Notes of User's
+    """
+    owner = serializers.ReadOnlyField(source='owner.name_surname')
+
+    def create(self, validated_data):
+        return Notes.objects.create(**validated_data)
+
+    class Meta:
+        model = Notes
+        fields = (
+            'id', 'owner', 'title', 'description', 'start', 'end',
+        )

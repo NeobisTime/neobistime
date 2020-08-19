@@ -84,6 +84,25 @@ class Attendees(models.Model):
     individual_users = postgres_fields.ArrayField(models.CharField(max_length=200))
 
 
+class Notes(models.Model):
+    """
+    Class for personal notes of users
+    """
+    title = models.CharField(max_length=70, verbose_name='Название')
+    description = models.TextField(verbose_name='Описание заметки', blank=True, null=True)
+    start = models.DateTimeField(verbose_name='Начало события')
+    end = models.DateTimeField(verbose_name='Конец события')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
+                              verbose_name='Владелец')
+
+    class Meta:
+        verbose_name = 'Заметка'
+        verbose_name_plural = 'Заметки'
+
+    def __str__(self):
+        return f'{self.title}'
+
+
 def save_profile(sender, instance, **kwargs):
     if instance.was_on_event:
         instance.user.points += 10

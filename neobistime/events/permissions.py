@@ -24,3 +24,14 @@ class EventOwner(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         return bool(request.user.is_staff and obj.owner == request.user)
+
+
+class NotesOwner(permissions.BasePermission):
+    """
+    Allows access to modify notes only for his owner
+    """
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return obj.owner == request.user
