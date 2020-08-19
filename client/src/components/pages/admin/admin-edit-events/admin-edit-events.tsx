@@ -42,7 +42,7 @@ const EditEventsPage = () => {
           </thead>
           <tbody className="end-event-info__table-tbody">
             {events.map((event: any) => {
-              let date = new Date(event.start_date);
+              let date = new Date(event.start);
               return (
                 <tr>
                   <td className="bold">{event.title}</td>

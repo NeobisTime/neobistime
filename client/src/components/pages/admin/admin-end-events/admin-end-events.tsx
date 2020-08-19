@@ -13,8 +13,8 @@ const EndEventsList = ({ events }: EndEventsListProps) => {
     <div className="today__list">
       {events &&
         events.map((item: any) => {
-          let startDate = new Date(item.start_date);
-          let endDate = new Date(item.end_date);
+          let startDate = new Date(item.start);
+          let endDate = new Date(item.end);
           return (
             <Link to={`/admin/end_event/${item.id}`} className="link">
               <div className="today__list-item">

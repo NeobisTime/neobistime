@@ -74,8 +74,8 @@ const RoomsEvent = (props: any) => {
           <tbody className="notifications__table-tbody">
             {events ? (
               events.map((event: any) => {
-                let startDate = new Date(event.start_date);
-                let endDate = new Date(event.end_date);
+                let startDate = new Date(event.start);
+                let endDate = new Date(event.end);
                 return (
                   // <Link to={`/today/${event.id}`} className='link'>
                   <tr key={event.id} className="notifications__table-tbody-tr">

@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink, Link } from "react-router-dom";
 import ConfirmExit from "../../../shared/navbar/confirm-exit";
+import API from "../../../../API";
 
 // *icons
 import avatar from "../../../../images/shared/user.svg";
@@ -10,26 +11,43 @@ import peoples from "../../../../images/shared/admin_members.svg";
 import create_event from "../../../../images/shared/edit.svg";
 import stat from "../../../../images/shared/adminn_stat.svg";
 import calendar from "../../../../images/shared/calendar.svg";
+import withDataContainer from "../../../../HOC/withData";
 
-const AdminNavbar = () => {
+const AdminNavbar = (props: any) => {
   let [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [userInfo, setUserInfo] = useState<any>({});
+  const [department, setDepartment] = useState<any>({});
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
+  useEffect(() => {
+    API.getUserInfo().then((data) => {
+      setUserInfo(data.data);
+      let departmentNumber = props.departments.filter(
+        (department: any) => +department.value === +data.data.department_id
+      );
+      setDepartment(departmentNumber[0]);
+    });
+  }, []);
+
   return (
     <div className="navbar">
       <Link to="/personal_office" className="link">
         <div className="navbar__person-info">
-          <img
-            className="navbar__person-info-image"
-            src={avatar}
-            alt="default avatar"
-          />
+          <div className="navbar__person-info-image-container">
+            <img
+              className="navbar__person-info-image"
+              src={userInfo.profile_img || avatar}
+              alt="default avatar"
+            />
+          </div>
           <div className="navbar__person-info-text_wrapper">
-            <p className="navbar__person-info-name">Adakhan Azizbek uulu</p>
-            <p className="navbar__person-info-text">IOS department </p>
-            <p className="navbar__person-info-text">login@example.com</p>
+            <p className="navbar__person-info-name">{userInfo.name_surname}</p>
+            <p className="navbar__person-info-text">
+              {department.label || "Neobis"} department{" "}
+            </p>
+            <p className="navbar__person-info-text">{userInfo.email}</p>
           </div>
         </div>
       </Link>
@@ -111,4 +129,4 @@ const AdminNavbar = () => {
   );
 };
 
-export default AdminNavbar;
+export default withDataContainer(AdminNavbar);

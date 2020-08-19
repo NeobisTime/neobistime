@@ -11,7 +11,7 @@ import withDataContainer from "../../../HOC/withData";
 
 const BlockEventNotification = (props: any) => {
   const { data } = props;
-  let startDate = new Date(data.start_date);
+  let startDate = new Date(data.start);
   return (
     <div className="notifications__content">
       <div className="notifications__content-image-wrapper">

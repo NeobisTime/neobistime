@@ -15,8 +15,8 @@ export const TodayList = ({ events }: TodayListProps) => {
     <div className="today__list">
       {events ? (
         events.map((event: any) => {
-          const startDate = new Date(event.start_date);
-          const endDate = new Date(event.end_date);
+          const startDate = new Date(event.start);
+          const endDate = new Date(event.end);
           return (
             <Link to={`/today/${event.id}`} key={event.id} className="link">
               <div className="today__list-item">

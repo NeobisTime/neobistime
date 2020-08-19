@@ -17,7 +17,7 @@ import EventInfoModal from "./modals/event-info";
 import AdminChooseModal from "./modals/admin-choose";
 import PersonalEventCreateModal from "./modals/create-personal-event";
 import AdminEventCreateModal from "./modals/admin-event";
-import API from "../../../API";
+import API, { getCookie } from "../../../API";
 
 export const CloseModalButton = (props: any) => {
   return (
@@ -33,23 +33,23 @@ export const CloseModalButton = (props: any) => {
 };
 
 const Calendar = () => {
+  const [currentEvent, setCurrentEvent] = useState<any>({});
+  const [role, setRole] = useState<string | undefined>("");
+  const [editable, setEditable] = useState(false);
+
   // ! date не обязателен если есть start
-  const [serverEvents, setServerEvents] = useState([
-    {
-      id: "1",
-      title: "Orientation day",
-      backgroundColor: "red",
-      start: "2020-08-04T10:30:00",
-      end: "2020-08-04T12:12:00",
-    },
-  ]);
-  console.log("Calendar -> serverEvents", serverEvents);
+  const [serverEvents, setServerEvents] = useState([]);
 
   useEffect(() => {
     API.getEvents(1000, 0, "", "").then((res) => {
-      console.log(res.data.results);
-      // setServerEvents(res.data.results);
+      setServerEvents(res.data.results);
     });
+    setRole(getCookie("role"));
+    if (getCookie("role") === "admin") {
+      setEditable(true);
+    } else {
+      setEditable(false);
+    }
   }, []);
 
   // google calendar api integration
@@ -59,50 +59,54 @@ const Calendar = () => {
     classNames: ["google-calendar"],
   };
 
-  // TODO: here will be modal window open to add event
-
-  const handleDateClick = (arg: any) => {
-    // bind with an arrow function
-    alert(arg.dateStr);
-  };
   // TODO: modal window to see event logic
   let [isEventInfoOpen, setIsEventInfoOpen] = useState<boolean>(false);
   const toggleEventInfoOpen = () => {
     setIsEventInfoOpen(!isEventInfoOpen);
   };
   const handleEventClick = (eventClickInfo: any) => {
+    let eventId = Number(eventClickInfo.event._def.publicId);
+    let findCurrentEvent = serverEvents.filter(
+      (event: any) => event.id === eventId
+    );
+    setCurrentEvent(findCurrentEvent[0]);
     toggleEventInfoOpen();
   };
 
-  // !event drop on calendar function
-  const handleEventDrop = (eventDropInfo: any) => {
+  const handleEventDropAndResize = (eventDropInfo: any) => {
     let oldEvent = serverEvents.find(
-      (item: any) => item.id === eventDropInfo.oldEvent._def.publicId
+      (item: any) => item.id === Number(eventDropInfo.oldEvent._def.publicId)
     ) || {
       id: "",
-      title: "",
-      backgroundColor: "",
       start: "",
       end: "",
+      deadline: "",
+      my_event: false,
     };
     oldEvent.start = eventDropInfo.event.startStr;
     oldEvent.end = eventDropInfo.event.endStr;
-    console.log("handleEventDrop -> oldEvent", oldEvent);
-  };
-  // !event resize function
-  const handleEventResize = (eventResizeInfo: any) => {
-    let oldEvent = serverEvents.find(
-      (item: any) => item.id === eventResizeInfo.oldEvent._def.publicId
-    ) || {
-      id: "",
-      title: "",
-      backgroundColor: "",
-      start: "",
-      end: "",
+    oldEvent.deadline = eventDropInfo.event.startStr;
+    // TODO if my_event === false we should send attendees
+    const dataToPatch = {
+      start: oldEvent.start,
+      end: oldEvent.end,
+      deadline: oldEvent.start,
+      my_event: oldEvent.my_event,
+      public: true,
     };
-    oldEvent.start = eventResizeInfo.event.startStr;
-    oldEvent.end = eventResizeInfo.event.endStr;
-    console.log("handleEventDrop -> oldEvent", oldEvent);
+    API.patchEventChangeData(dataToPatch, oldEvent.id);
+    // API.getEventInfo(oldEvent.id).then((data) => {
+    //   let attendees = data.data.attendees;
+    //   const dataToPatch = {
+    //     start: oldEvent.start,
+    //     end: oldEvent.end,
+    //     deadline: oldEvent.start,
+    //     my_event: oldEvent.my_event,
+    //     departments: attendees.departments,
+    //     individual_users: attendees.individual_users,
+    //   };
+    //   API.patchEventChangeData(dataToPatch, oldEvent.id);
+    // });
   };
 
   // create event
@@ -130,9 +134,9 @@ const Calendar = () => {
     toggleEventCreateChoose();
   };
 
-  const handleEvents = (events: any) => {
-    setServerEvents(events);
-  };
+  // const handleEvents = (events: any) => {
+  //   setServerEvents(events);
+  // };
 
   return (
     <>
@@ -153,7 +157,7 @@ const Calendar = () => {
         }}
         initialView="dayGridMonth"
         // dateClick={handleDateClick} //TODO: edit
-        editable={true}
+        editable={editable}
         firstDay={1}
         googleCalendarApiKey="AIzaSyCqbA_GExr7SrXh3ZVwCvojL_AGSnXN3X8"
         eventSources={[events, serverEvents]}
@@ -161,15 +165,17 @@ const Calendar = () => {
         selectable={true}
         selectMirror={true}
         select={handleDateSelect}
-        eventDrop={handleEventDrop}
-        eventResize={handleEventResize}
+        eventDrop={handleEventDropAndResize}
+        eventResize={handleEventDropAndResize}
         eventClick={handleEventClick}
         slotDuration="00:15:00" // интервал при изменении на календаре
         locale="ru"
       />
 
       {/* modals start */}
-      {isEventInfoOpen && <EventInfoModal onClose={toggleEventInfoOpen} />}
+      {isEventInfoOpen && (
+        <EventInfoModal onClose={toggleEventInfoOpen} event={currentEvent} />
+      )}
       {isEventCreateChooseOpen && (
         <AdminChooseModal
           onClose={toggleEventCreateChoose}
@@ -177,10 +183,10 @@ const Calendar = () => {
           openAdminEventCreateWindow={toggleAdminEventCreate}
         />
       )}
+      <PersonalEventCreateModal onClose={togglePersonalEventCreate} />
       {isPersonalEventCreate && (
         <PersonalEventCreateModal onClose={togglePersonalEventCreate} />
       )}
-      <AdminEventCreateModal onClose={toggleAdminEventCreate} />
       {isAdminEventCreate && (
         <AdminEventCreateModal onClose={toggleAdminEventCreate} />
       )}

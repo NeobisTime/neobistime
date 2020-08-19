@@ -46,7 +46,7 @@ const withDataContainer = (Component: any) => {
     { value: "6", label: "Июль" },
     { value: "7", label: "Август" },
     { value: "8", label: "Сентябрь" },
-    { value: "9", label: "Остябрь" },
+    { value: "9", label: "Октябрь" },
     { value: "10", label: "Ноябрь" },
     { value: "11", label: "Декабрь" },
   ];

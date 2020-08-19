@@ -18,7 +18,6 @@ const CreateEventPage = (props: any) => {
   const [departments, setDepartments] = useState([]);
 
   const [startDate, setStartDate] = useState<Date>(new Date());
-  // console.log("CreateEventPage ->.>>>>>>", startDate);
   const [startDateHours, setStartDateHours] = useState<number>(-1);
   const [startDateMinutes, setStartDateMinutes] = useState<number>(-1);
 
@@ -47,11 +46,12 @@ const CreateEventPage = (props: any) => {
     if (eventId) {
       API.getEventInfo(eventId).then((requestData) => {
         let data = requestData.data;
+        console.log("CreateEventPage -> data", data);
         setTitle(data.title);
         setImage(data.image);
         setDescription(data.description);
-        setStartDate(new Date(data.start_date));
-        setEndDate(new Date(data.end_date));
+        setStartDate(new Date(data.start));
+        setEndDate(new Date(data.end));
         setPlace(data.place);
         setAddress(data.address);
         if (data.place.id === 4) {
@@ -59,10 +59,10 @@ const CreateEventPage = (props: any) => {
         }
 
         // set time for scrollbars
-        let startDate = new Date(data.start_date);
+        let startDate = new Date(data.start);
         setStartDateHours(startDate.getHours());
         setStartDateMinutes(startDate.getMinutes());
-        let endDate = new Date(data.end_date);
+        let endDate = new Date(data.end);
         setEndDateHours(endDate.getHours());
         setEndDateMinutes(endDate.getMinutes());
       });
@@ -72,6 +72,9 @@ const CreateEventPage = (props: any) => {
   const handleChangeAddress = (e: any) => {
     if (eventId) {
       setPlace({ ...place, id: e.target.value });
+      if (e.target.value == 4) {
+        setAddressDisable(false);
+      }
     } else {
       setPlace(+e.target.value);
       setAddressDisable(true);
@@ -135,9 +138,9 @@ const CreateEventPage = (props: any) => {
         formData.append("image", image[0]);
       }
     }
-    formData.append("start_date", String(start_time));
+    formData.append("start", String(start_time));
     formData.append("deadline", String(start_time));
-    formData.append("end_date", String(end_time));
+    formData.append("end", String(end_time));
     if (eventId) {
       formData.append("place", place.id);
     } else {
@@ -148,10 +151,10 @@ const CreateEventPage = (props: any) => {
     formData.append("individual_users", usersForSendEmails);
     formData.append("my_event", "false");
 
-    let json = JSON.parse(
-      JSON.stringify(Object.fromEntries(formData.entries()))
-    );
-    console.log("handleSubmit -> json", json);
+    // let json = JSON.parse(
+    //   JSON.stringify(Object.fromEntries(formData.entries()))
+    // );
+    // console.log("handleSubmit -> json", json);
 
     if (eventId) {
       API.patchEventChangeData(formData, eventId);

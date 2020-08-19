@@ -178,6 +178,8 @@ export default {
   getEndEvents: () => getData("my_events/"),
   getUserInfo: () => getData("users/rest-auth/user/"),
   getMyPoll: () => getData("my_poll/"),
+  getEventPoll: (id: number | string, limit: number, offset: number) =>
+    getData(`my_events/${id}/?limit=${limit}&offset=${offset}`),
 
   getRole: (token: string) => postGetRoleData("users/is_user_staff/", token),
   postStatByDepartment: (data: any) =>
@@ -190,6 +192,8 @@ export default {
     patchData(`events/${id}/`, data),
   patchPoll: (data: object, id: number | string) =>
     patchDataWithReturnJSON(`poll/${id}/`, data),
-  postPoll: (data: object) =>
-    postDataWithReturnJSON(`poll/`, data),
+  postPoll: (data: object) => postDataWithReturnJSON(`poll/`, data),
+  patchMyEventPoll: (eventId: any, pollId: any, data: object) =>
+    patchData(`my_events/${eventId}/poll/${pollId}/`, data),
+  
 };

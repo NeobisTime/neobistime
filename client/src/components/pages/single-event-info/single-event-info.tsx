@@ -33,7 +33,7 @@ let months = [
 const EventInfo = (props: any) => {
   const eventId = props.match.params.id;
   const [eventData, setEventData] = useState<any>({});
-  const [correntPollId, setCorrectPollId] = useState<any>(0);
+  const [correctPollId, setCorrectPollId] = useState<any>(0);
   const [address, setAddress] = useState<any>({});
 
   const [willGo, setwillGo] = useState<boolean | undefined>(false);
@@ -42,7 +42,7 @@ const EventInfo = (props: any) => {
   const [rejectionReason, setRejectionReason] = useState("");
   const [missedDeadline, setMissedDeadline] = useState(false);
 
-  let startDate = new Date(eventData.start_date);
+  let startDate = new Date(eventData.start);
   let deadline = new Date(eventData.deadline);
   let today = new Date();
 
@@ -95,8 +95,8 @@ const EventInfo = (props: any) => {
       answer: finalAnswer,
       rejection_reason: rejectionReason,
     };
-    if (correntPollId) {
-      API.patchPoll(data, correntPollId);
+    if (correctPollId) {
+      API.patchPoll(data, correctPollId);
       // .then((data) => {
       //   console.log("handleSubmit -> data", data.data);
       // });
@@ -184,7 +184,7 @@ const EventInfo = (props: any) => {
           )}
         </div>
         <div className="event-info__content">
-          <img src={preview} alt="event" />
+          <img src={eventData.image || preview} alt="event" />
         </div>
       </div>
     </>
