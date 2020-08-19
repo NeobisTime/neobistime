@@ -5,6 +5,7 @@ from . import views
 
 router = DefaultRouter()
 router.register('events', views.EventViewSet, basename='events')
+router.register('notes', views.NotesViewSet, basename='notes')
 
 urlpatterns = [
     path('place/', views.PlaceListView().as_view(), name='places'),

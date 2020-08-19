@@ -8,10 +8,10 @@ from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
 
 from . import permissions as custom_permissions, serializers
-from .models import Event, Place, Poll
+from .models import Event, Place, Poll, Notes
 from .permissions import EventOwner
 from .serializers import AdminPolls, EventCreateUpdateSerializer, EventGetSerializer, \
-    MyEventListSerializer, PlaceSerializer
+    MyEventListSerializer, PlaceSerializer, NotesSerializer
 
 
 class PlaceListView(generics.ListAPIView):
@@ -258,3 +258,43 @@ class TodayEvents(generics.ListAPIView):
 
     def get_queryset(self):
         return Event.objects.filter(start_date__date=datetime.datetime.now().date())
+
+
+class NotesViewSet(viewsets.ModelViewSet):
+    """
+    list: List of notes created by users
+    query parameters:
+    1) ?search (by title)
+
+    retrieve: Retrieve single note object
+
+    update: Update single note object
+
+    create: Create single note object
+
+    partial_update: single note object
+
+    destroy: Delete single note object
+    """
+    search_fields = ['title', ]
+    filter_backends = (filters.SearchFilter,)
+    serializer_class = NotesSerializer
+
+    def get_queryset(self):
+        return Notes.objects.filter(owner=self.request.user)
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == 'create':
+            permission_classes = [permissions.IsAuthenticated, ]
+        else:
+            permission_classes = [custom_permissions.NotesOwner, ]
+        return [permission() for permission in permission_classes]
+
+    def perform_create(self, serializer):
+        if self.request.user.is_authenticated:
+            return serializer.save(owner=self.request.user)
+        else:
+            raise PermissionDenied('Авторизуйтесь в системе для создания заметок!')
