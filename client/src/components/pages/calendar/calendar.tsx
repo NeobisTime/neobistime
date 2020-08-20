@@ -36,6 +36,7 @@ const Calendar = () => {
   const [currentEvent, setCurrentEvent] = useState<any>({});
   const [role, setRole] = useState<string | undefined>("");
   const [editable, setEditable] = useState(false);
+  const [date, setDate] = useState(new Date());
 
   // ! date не обязателен если есть start
   const [serverEvents, setServerEvents] = useState([]);
@@ -59,7 +60,6 @@ const Calendar = () => {
     classNames: ["google-calendar"],
   };
 
-  // TODO: modal window to see event logic
   let [isEventInfoOpen, setIsEventInfoOpen] = useState<boolean>(false);
   const toggleEventInfoOpen = () => {
     setIsEventInfoOpen(!isEventInfoOpen);
@@ -91,7 +91,7 @@ const Calendar = () => {
       start: oldEvent.start,
       end: oldEvent.end,
       deadline: oldEvent.start,
-      my_event: oldEvent.my_event,
+      my_event: String(oldEvent.my_event),
       public: true,
     };
     API.patchEventChangeData(dataToPatch, oldEvent.id);
@@ -110,33 +110,38 @@ const Calendar = () => {
   };
 
   // create event
-  let [isEventCreateChooseOpen, setIsEventCreateChooseOpen] = useState<boolean>(
-    false
-  );
-  const toggleEventCreateChoose = () => {
-    setIsEventCreateChooseOpen(!isEventCreateChooseOpen);
-  };
+  // let [isEventCreateChooseOpen, setIsEventCreateChooseOpen] = useState<boolean>(
+  //   false
+  // );
+  // const toggleEventCreateChoose = () => {
+  //   setIsEventCreateChooseOpen(!isEventCreateChooseOpen);
+  // };
 
-  let [isPersonalEventCreate, setIsPersonalEventCreate] = useState<boolean>(
-    false
-  );
-  const togglePersonalEventCreate = () => {
-    setIsPersonalEventCreate(!isPersonalEventCreate);
-    setIsEventCreateChooseOpen(false);
-  };
+  // let [isPersonalEventCreate, setIsPersonalEventCreate] = useState<boolean>(
+  //   false
+  // );
+  // const togglePersonalEventCreate = () => {
+  //   setIsPersonalEventCreate(!isPersonalEventCreate);
+  //   setIsEventCreateChooseOpen(false);
+  // };
 
   let [isAdminEventCreate, setIsAdminEventCreate] = useState<boolean>(false);
   const toggleAdminEventCreate = () => {
     setIsAdminEventCreate(!isAdminEventCreate);
-    setIsEventCreateChooseOpen(false);
+    updateEvents();
+    // setIsEventCreateChooseOpen(false);
   };
   const handleDateSelect = (selectInfo: any) => {
-    toggleEventCreateChoose();
+    setDate(selectInfo.start);
+    toggleAdminEventCreate();
+    // toggleEventCreateChoose();
   };
 
-  // const handleEvents = (events: any) => {
-  //   setServerEvents(events);
-  // };
+  const updateEvents = () => {
+    API.getEvents(1000, 0, "", "").then((res) => {
+      setServerEvents(res.data.results);
+    });
+  };
 
   return (
     <>
@@ -176,19 +181,18 @@ const Calendar = () => {
       {isEventInfoOpen && (
         <EventInfoModal onClose={toggleEventInfoOpen} event={currentEvent} />
       )}
-      {isEventCreateChooseOpen && (
+      {/* {isEventCreateChooseOpen && (
         <AdminChooseModal
           onClose={toggleEventCreateChoose}
           openPersonalEventCreateWindow={togglePersonalEventCreate}
           openAdminEventCreateWindow={toggleAdminEventCreate}
         />
       )}
-      <PersonalEventCreateModal onClose={togglePersonalEventCreate} />
       {isPersonalEventCreate && (
         <PersonalEventCreateModal onClose={togglePersonalEventCreate} />
-      )}
+      )} */}
       {isAdminEventCreate && (
-        <AdminEventCreateModal onClose={toggleAdminEventCreate} />
+        <AdminEventCreateModal onClose={toggleAdminEventCreate} date={date} />
       )}
       {/* modals end */}
     </>

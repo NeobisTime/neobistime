@@ -3,7 +3,6 @@ import { CloseModalButton } from "../calendar";
 import DayPickerInput from "react-day-picker/DayPickerInput";
 import "react-day-picker/lib/style.css";
 import Select from "react-select";
-import withDataContainer from "../../../../HOC/withData";
 import API from "../../../../API";
 
 // icons
@@ -14,17 +13,16 @@ import descriptionImage from "../../../../images/shared/modal-description.svg";
 import fileImage from "../../../../images/shared/modal-file.svg";
 
 const AdminEventCreateModal = (props: any) => {
-  console.log("AdminEventCreateModal -> props", props)
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [image, setImage] = useState<any>([]);
   const [departments, setDepartments] = useState([]);
 
-  const [startDate, setStartDate] = useState<Date>(new Date());
+  const [startDate, setStartDate] = useState<Date>(props.date);
   const [startDateHours, setStartDateHours] = useState<number>(0);
   const [startDateMinutes, setStartDateMinutes] = useState<number>(0);
 
-  const [endDate, setEndDate] = useState<Date>(new Date());
+  const [endDate, setEndDate] = useState<Date>(props.date);
   const [endDateHours, setEndDateHours] = useState<number>(0);
   const [endDateMinutes, setEndDateMinutes] = useState<number>(0);
 
@@ -40,6 +38,18 @@ const AdminEventCreateModal = (props: any) => {
     { value: "2", label: "Большая комната" },
     { value: "3", label: "Весь Офис" },
     { value: "4", label: "Другое" },
+  ];
+  const selectDepartments = [
+    { value: "all", label: "All" },
+    { value: "8", label: "Android" },
+    { value: "6", label: "C#" },
+    { value: "7", label: "Design" },
+    { value: "5", label: "Frontend" },
+    { value: "9", label: "IOS" },
+    { value: "4", label: "Java/Kotlin" },
+    { value: "2", label: "NodeJS" },
+    { value: "3", label: "PM" },
+    { value: "1", label: "Python" },
   ];
 
   useEffect(() => {
@@ -146,6 +156,7 @@ const AdminEventCreateModal = (props: any) => {
             />
             <div className="admin-create-event-modal__day-picker">
               <DayPickerInput
+                value={props.date}
                 onDayChange={(day) => {
                   setStartDate(day);
                   setEndDate(day);
@@ -211,7 +222,7 @@ const AdminEventCreateModal = (props: any) => {
               isMulti
               isClearable={true}
               isSearchable={true}
-              options={props.selectDepartments}
+              options={selectDepartments}
               className="admin-create-event-modal-select"
               classNamePrefix="select"
               placeholder="Добавить департамент"

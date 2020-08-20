@@ -1,29 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import designPhoto from "../../../images/pages/forgot_password_gi2d.svg";
 import Select from "react-select";
-import eye from "../../../images/pages/password_eye.svg";
-import {Input} from '../registration/registration';
+// import eye from "../../../images/pages/password_eye.svg";
+import { Input } from "../registration/registration";
+import withDataContainer from "../../../HOC/withData";
+import API from "../../../API";
 
-const ChangePassword = () => {
+const ChangePassword = (props: any) => {
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
+  const [image, setImage] = useState<any>([]);
+  console.log("ChangePassword -> image", image);
   const [department, setDepartment] = useState<string>("");
   // password values
   const [password, setPassword] = useState<string>("");
   const [hidden1, setHidden1] = useState<boolean>(true);
-
-  const departments = [
-    { value: "Android", label: "Android" },
-    { value: "C#", label: "C#" },
-    { value: "Design", label: "Design" },
-    { value: "Frontend", label: "Frontend" },
-    { value: "IOS", label: "IOS" },
-    { value: "Java", label: "Java" },
-    { value: "NodeJS", label: "NodeJS" },
-    { value: "PM", label: "PM" },
-    { value: "Python", label: "Python" },
-  ];
 
   const handleChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -59,9 +51,26 @@ const ChangePassword = () => {
     return errors;
   };
 
+  useEffect(() => {
+    API.getUserInfo().then((data) => {
+      let requestData = data.data;
+      console.log("requestData", requestData);
+      setName(requestData.name_surname);
+      setPhone(requestData.phone);
+    });
+  }, []);
+
   const handleSubmit = (event: any) => {
     event.preventDefault();
     validate();
+
+    let formData = new FormData();
+    formData.append("name_surname", name);
+    formData.append("phone", phone);
+    if (image[0]) {
+      formData.append("profile_img", image[0]);
+    }
+    API.patchUserInfo(formData);
   };
 
   return (
@@ -73,12 +82,12 @@ const ChangePassword = () => {
 
         <section className="registration__section registration__section_w_40 ">
           <form className="auth__form" onSubmit={handleSubmit}>
-          <label className="registration__label" htmlFor="name">
+            <label className="registration__label" htmlFor="name">
               ФИО
             </label>
             <Input type="text" name="name" value={name} setValue={setName} />
 
-            <label className="registration__label" htmlFor="email">
+            {/* <label className="registration__label" htmlFor="email">
               E-mail
             </label>
             <input
@@ -90,20 +99,32 @@ const ChangePassword = () => {
               onChange={handleChangeEmail}
               onBlur={validate}
             />
-            {errors && <div className="error__span">{errors.emailError}</div>}
-
+            {errors && <div className="error__span">{errors.emailError}</div>} */}
+            {/* 
             <label className="registration__label" htmlFor="department">
               Департамент
             </label>
             <Select
-              options={departments}
+              options={props.departments}
               className="registration__select"
               onChange={(e: any) => {
                 setDepartment(e.value);
               }}
-            />
+            /> */}
 
-            <label className="registration__label" htmlFor="password">
+            <label className="registration__label" htmlFor="department">
+              Фото
+            </label>
+            <div className="registration__input">
+              <input
+                type="file"
+                name="image"
+                onChange={(e) => {
+                  setImage(e.target.files);
+                }}
+              />
+            </div>
+            {/* <label className="registration__label" htmlFor="password">
               Пароль
             </label>
             <div className="registration__password">
@@ -126,7 +147,7 @@ const ChangePassword = () => {
                 alt="eye"
                 className="registration__password-image"
               />
-            </div>
+            </div> */}
 
             <label className="registration__label" htmlFor="phone">
               Телефон
@@ -143,7 +164,11 @@ const ChangePassword = () => {
             {telErrors && (
               <div className="error__span">{telErrors.numberError}</div>
             )}
-            <button style={{width: '60%', margin: '30px auto 0'}} className="registration__submit" type="submit">
+            <button
+              style={{ width: "60%", margin: "30px auto 0" }}
+              className="registration__submit"
+              type="submit"
+            >
               Сохранить
             </button>
           </form>
@@ -160,4 +185,4 @@ const ChangePassword = () => {
   );
 };
 
-export default ChangePassword;
+export default withDataContainer(ChangePassword);

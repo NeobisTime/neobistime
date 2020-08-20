@@ -132,7 +132,7 @@ const EventInfoModal = (props: any) => {
               src={address}
               alt="address"
             />
-            Адрес: {event.place.name} {event.place.address}
+            Адрес: {event.place.name} {event.address}
           </p>
           <p
             className="event-info__content-text_m_t"

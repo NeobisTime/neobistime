@@ -3,10 +3,12 @@ $pictureBlockWidth: 16%;
 $pointsWidth: 20%;
 //  infoContentWidth = 100% - pointsWidth - pictureBlockWidth
 $infoContentWidth: 64%;
-$filterBtnColor: #2C3E50;
+$filterBtnColor: #2c3e50;
 
 .personal-office {
   font-family: "Montserrat";
+  margin: 0 5px 0 30px !important;
+  white-space: nowrap;
   &__info {
     display: flex;
     width: 100%;
@@ -19,10 +21,17 @@ $filterBtnColor: #2C3E50;
     &-picture-block {
       width: $pictureBlockWidth;
       height: 100%;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
     }
     &-avatar {
-      width: 100%;
+      width: 130px;
       height: 100%;
+      box-sizing: border-box;
+      border-radius: 50%;
     }
     &-content-wrapper {
       box-sizing: border-box;
@@ -39,6 +48,8 @@ $filterBtnColor: #2C3E50;
     &-text {
       display: flex;
       justify-content: space-between;
+      box-sizing: border-box;
+      margin: 5px 0 10px 0;
       color: rgba(255, 255, 255, 0.8);
       font-size: $standartFontSize;
       &-content {
@@ -53,28 +64,44 @@ $filterBtnColor: #2C3E50;
       display: flex;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
+      &-container {
+      }
       &-value {
-        width: 80px;
-        height: 80px;
-        background: url('../../images/pages/personal_points.svg') no-repeat;
-        background-size: contain;
+        width: 120px;
+        height: 120px;
+        font-size: 36px;
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 27px;
+        background: url("../../images/pages/personal_points.svg") no-repeat;
+        background-size: contain;
       }
-      &-achievements{
+      &-achievements {
         display: flex;
         width: 100%;
-        &-block{
+        &-images {
           display: flex;
-          flex-basis: 33%;
+          flex-direction: column;
           justify-content: center;
           align-items: center;
-        }
-        &-value{
           box-sizing: border-box;
+          padding: 0 5px;
+        }
+        &-image {
+          box-sizing: border-box;
+          padding: 5px 0;
+        }
+        &-values {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-around;
+          align-items: baseline;
+          box-sizing: border-box;
+          padding: 0 5px;
+        }
+        &-value {
+          box-sizing: border-box;
+          
         }
       }
     }
@@ -165,7 +192,7 @@ $filterBtnColor: #2C3E50;
         background-color: #1e2b37 !important;
         color: white;
       }
-      &_active{
+      &_active {
         background-color: #1e2b37 !important;
         color: white;
         box-shadow: 0 0 10px 1px grey;

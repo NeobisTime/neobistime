@@ -128,7 +128,7 @@ const EventInfo = (props: any) => {
               src={addressImage}
               alt="address"
             />
-            Адрес: {address.name} {address.address}
+            Адрес: {address.name} {eventData.address}
           </p>
           <p className="event-info__content-text_m_t">
             Примите ли вы участие в данном событии?
@@ -184,7 +184,7 @@ const EventInfo = (props: any) => {
           )}
         </div>
         <div className="event-info__content">
-          <img src={eventData.image || preview} alt="event" />
+          <img src={eventData.image || preview} alt="event" className="event-info__content-right-image" />
         </div>
       </div>
     </>

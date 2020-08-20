@@ -124,7 +124,7 @@ const patchDataWithReturnJSON = (url: string, data: any) => {
 };
 
 const postFormData = (url: string, data: any) => {
-  http
+  return http
     .post(url, data, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -138,6 +138,23 @@ const postFormData = (url: string, data: any) => {
       (error) => {
         alert(error);
         console.log(error.response.data);
+      }
+    );
+};
+const patchFormData = (url: string, data: any) => {
+  return http
+    .patch(url, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: "Token " + token,
+      },
+    })
+    .then(
+      (response) => {
+        alert(response);
+      },
+      (error) => {
+        console.log("patchFormData -> error", error);
       }
     );
 };
@@ -180,6 +197,9 @@ export default {
   getMyPoll: () => getData("my_poll/"),
   getEventPoll: (id: number | string, limit: number, offset: number) =>
     getData(`my_events/${id}/?limit=${limit}&offset=${offset}`),
+  getNotes: () => getData("notes/"),
+  getPersonalStats: (period: string) =>
+    getData(`self-statistic/?period=${period}`),
 
   getRole: (token: string) => postGetRoleData("users/is_user_staff/", token),
   postStatByDepartment: (data: any) =>
@@ -188,12 +208,15 @@ export default {
     postData("users/rest-auth/registration/", data),
   postAuthData: (data: object) => postAuthData("users/rest-auth/login/", data),
   postEventCreateData: (data: object) => postFormData("events/", data),
+  postNoteCreateData: (data: object) => postTokenData("notes/", data),
   patchEventChangeData: (data: object, id: number | string) =>
     patchData(`events/${id}/`, data),
+  patchNoteChangeData: (data: object, id: number | string) =>
+    patchData(`notes/${id}/`, data),
   patchPoll: (data: object, id: number | string) =>
     patchDataWithReturnJSON(`poll/${id}/`, data),
   postPoll: (data: object) => postDataWithReturnJSON(`poll/`, data),
   patchMyEventPoll: (eventId: any, pollId: any, data: object) =>
     patchData(`my_events/${eventId}/poll/${pollId}/`, data),
-  
+  patchUserInfo: (data: object) => patchFormData(`users/rest-auth/user/`, data),
 };
