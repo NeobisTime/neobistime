@@ -1,0 +1,47 @@
+$buttonTextSize: 20px;
+$bottom: 15px;
+$flankPadding: 20px;
+
+.confirm-exit {
+  position: absolute;
+  display: flex;
+  font-family: "Montserrat";
+  box-sizing: border-box;
+  flex-direction: column;
+  background: #ffffff;
+  border-radius: 35px;
+  width: 90%;
+  height: 140px;
+  padding: 20px;
+  left: 5%;
+  bottom: 40%;
+  color: #213336;
+  &__text {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 70%;
+  }
+  &__buttons_wrapper {
+    display: flex;
+    width: 90%;
+    position: relative;
+  }
+  &__button_red_left {
+    font-size: $buttonTextSize;
+    color: #eb0f0f;
+    left: $flankPadding;
+    bottom: $bottom;
+    cursor: pointer;
+    position: absolute;
+  }
+  &__button_black_right {
+    font-size: $buttonTextSize;
+    position: absolute;
+    right: $flankPadding;
+    cursor: pointer;
+    bottom: $bottom;
+  }
+}

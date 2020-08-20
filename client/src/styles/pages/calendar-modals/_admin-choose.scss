@@ -1,0 +1,28 @@
+.admin-choose-modal {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  padding: 10px;
+  align-items: center;
+  &__text {
+    text-align: center;
+    font-size: 20px;
+    box-sizing: border-box;
+    margin: 0 0 10px 0;
+  }
+  &__button {
+    box-sizing: border-box;
+    margin: 15px 0;
+    background-color: var(--neobisColor) !important;
+    width: 50%;
+    color: white;
+    height: 40px;
+    cursor: pointer;
+    font-size: 24px;
+    border-radius: 30px;
+    &:hover{
+        color:  var(--neobisColor);
+        background-color: white !important;
+    }
+  }
+}
