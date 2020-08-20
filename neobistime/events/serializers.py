@@ -112,8 +112,7 @@ class UserNotificationSerializer(serializers.Serializer):
     def notify(self, event_id):
         departments = self.validated_data["departments"]
         individual_users = self.validated_data["individual_users"]
-        # TODO: add delay to function
-        notify_users(departments, individual_users, event_id)
+        notify_users.delay(departments, individual_users, event_id)
 
 
 def available_date_for_event(validated_data):
@@ -150,8 +149,8 @@ def available_date_for_event(validated_data):
 
 class EventCreateUpdateSerializer(serializers.ModelSerializer):
     """
-         Class for serializing Event models for post and update methods
-     """
+    Class for serializing Event models for post and update methods
+    """
     owner = serializers.ReadOnlyField(source='owner.name_surname')
     place = serializers.PrimaryKeyRelatedField(queryset=Place.objects.all(), allow_null=True)
     start = serializers.CharField(source='start_date')

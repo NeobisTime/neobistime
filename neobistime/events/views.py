@@ -106,13 +106,11 @@ class EventViewSet(viewsets.ModelViewSet):
         """
 
         if self.request.user.is_authenticated:
-
             event_data = serializer.save(owner=self.request.user)
-            if self.request.data["my_event"].lower() == "false":
 
+            if self.request.data["my_event"].lower() == "false":
                 departments = self.request.data.get("departments", "")
                 individual_users = self.request.data.get("individual_users", "")
-
                 departments_list = list(map(int, re.findall("\d+", departments)))  # noqa
                 users_list = individual_users.split(",")
 
@@ -147,7 +145,6 @@ class EventViewSet(viewsets.ModelViewSet):
         if request.data["my_event"].lower() == "false":
             departments = request.data.get("departments", "")
             individual_users = request.data.get("individual_users", "")
-
             departments_list = list(map(int, re.findall("\d+", departments)))  # noqa
             users_list = individual_users.split(",")
 

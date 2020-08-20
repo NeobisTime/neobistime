@@ -37,8 +37,7 @@ def notify_users(departments: List, individual_users: List, event_id):
             continue
 
     recipients_emails = [user.email for user in set(recipients)]
-    body_message = f'Здравствуй, мы организовали' \
-                   f'новое мероприятие "{event.title}" от {event.owner}\n' \
+    body_message = f'Здравствуй, мы организовали новое мероприятие "{event.title}" от {event.owner}\n' \
                    f'Дата {event.start_date}\n' \
                    f'Место {event.place}\n' \
                    f'С уважением, команда Необис'
