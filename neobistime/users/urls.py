@@ -2,7 +2,7 @@ from allauth.account.views import PasswordChangeView, PasswordResetView, confirm
 from django.conf.urls import url
 from django.urls import include, path, re_path
 from rest_auth.views import PasswordResetConfirmView
-from .views import UserListView, DepartmentListView, is_user_staff
+from .views import UserListView, DepartmentListView, is_user_staff, add_chat_id
 
 urlpatterns = [
     path('', UserListView.as_view(), name='list-users'),
@@ -18,5 +18,6 @@ urlpatterns = [
         r'^rest-auth/password/reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,'
         r'20})/$ ', PasswordResetConfirmView.as_view(),
         name='password_reset_confirm'),
-    path('is_user_staff/', is_user_staff, name='user_is_staff')
+    path('is_user_staff/', is_user_staff, name='user_is_staff'),
+    path('add_chat_id/', add_chat_id, name='add-chat-id'),
 ]

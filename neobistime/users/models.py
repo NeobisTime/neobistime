@@ -80,7 +80,7 @@ class CustomUser(AbstractUser):
     department_id = models.ForeignKey(Department, on_delete=models.SET_NULL, related_name='department', null=True,
                                       verbose_name='Департамент')
     points = models.SmallIntegerField(verbose_name='Очки', default=0, null=True, blank=True)
-
+    chat_id = models.CharField(max_length=60, verbose_name='Telegram Чат ID', null=True, blank=True, default='')
     REQUIRED_FIELDS = ["phone", "name_surname", "department_id"]
     USERNAME_FIELD = 'email'
 
