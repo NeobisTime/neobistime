@@ -217,6 +217,6 @@ export default {
     patchDataWithReturnJSON(`poll/${id}/`, data),
   postPoll: (data: object) => postDataWithReturnJSON(`poll/`, data),
   patchMyEventPoll: (eventId: any, pollId: any, data: object) =>
-    patchData(`my_events/${eventId}/poll/${pollId}/`, data),
+    patchDataWithReturnJSON(`my_events/${eventId}/poll/${pollId}/`, data),
   patchUserInfo: (data: object) => patchFormData(`users/rest-auth/user/`, data),
 };
