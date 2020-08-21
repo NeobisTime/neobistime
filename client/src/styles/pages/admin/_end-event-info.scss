@@ -13,6 +13,7 @@ $blue-color: #1665d8;
     0px 1px 0px rgba(63, 63, 68, 0.05);
   border-radius: 4px;
   padding: 30px 30px 0 30px;
+  margin: 0 0 0 20px;
   &__title {
     color: $black-color;
     font-weight: 600;
@@ -55,7 +56,7 @@ $blue-color: #1665d8;
   &__pagination {
     height: $height;
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center;
     &-text_bold {
       display: inline-block;
@@ -63,11 +64,14 @@ $blue-color: #1665d8;
     }
     &-buttons {
       display: flex;
-      width: 30px;
+      justify-content: center;
+      align-items: center;
       height: 100%;
       box-sizing: border-box;
       &-image {
         padding: 10px;
+        box-sizing: border-box;
+        margin: 0 15px;
         cursor: pointer;
       }
     }

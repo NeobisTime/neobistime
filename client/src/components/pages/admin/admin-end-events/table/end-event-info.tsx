@@ -103,14 +103,6 @@ const EndEventInfo = (props: any) => {
             </tbody>
           </table>
           <div className="end-event-info__pagination">
-            <span className="end-event-info__pagination-text_bold">
-              {currentPage * pageSize + 1}-
-              {currentPage * pageSize + pageSize > totalProducts
-                ? totalProducts
-                : currentPage * pageSize + pageSize}{" "}
-              &nbsp;
-            </span>{" "}
-            of {totalProducts}
             <div className="end-event-info__pagination-buttons">
               <img
                 className="end-event-info__pagination-buttons-image"
@@ -123,6 +115,14 @@ const EndEventInfo = (props: any) => {
                     : null;
                 }}
               />
+              <span className="end-event-info__pagination-text_bold">
+                {currentPage * pageSize + 1}-
+                {currentPage * pageSize + pageSize > totalProducts
+                  ? totalProducts
+                  : currentPage * pageSize + pageSize}{" "}
+                &nbsp;
+              </span>{" "}
+              of {totalProducts}
               <img
                 className="end-event-info__pagination-buttons-image"
                 src={arrow}
