@@ -1,0 +1,25 @@
+.spinner {
+  z-index: 100000;
+  background: #dcf3f2;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.spinner__image {
+}
+.spinner__text{
+    color: #6C63FF;
+    font-size: 2rem;
+    box-sizing: border-box;
+    margin: 20px 0;
+    max-width: 530px;
+    text-align: center;
+}
+.spinner__video {
+}

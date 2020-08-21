@@ -1,0 +1,116 @@
+$smallTextSize: 10px;
+$labelTextSize: 24px;
+$descTextSize: 20px;
+$titleTextSize: 32px;
+$greyColor: rgba(77, 92, 94, 0.6);
+$borderRadius: 12px;
+
+.auth {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  font-family: "Montserrat", sans-serif;
+  &__content {
+    display: flex;
+    width: 700px;
+    flex-wrap: wrap;
+  }
+  &__title {
+    display: flex;
+    text-align: center;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    &-text {
+      font-size: $titleTextSize;
+      color: #213336;
+    }
+    &-description {
+      font-size: $descTextSize;
+      padding: 10px 0;
+      color: rgba(33, 51, 54, 0.5);
+    }
+  }
+  &__section {
+    display: flex;
+    width: 50%;
+  }
+  &__form {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+  }
+  &__label {
+    padding: 10px 0;
+    font-size: $labelTextSize;
+    color: rgba(33, 51, 54, 0.8);
+  }
+  &__input {
+    border: 2px solid rgba(208, 205, 225, 0.8);
+    box-sizing: border-box;
+    border-radius: $borderRadius;
+    padding: 10px 0 10px 10px;
+    outline: none;
+    font-family: "Montserrat",sans-serif;
+    font-size: 16px;
+    &_password {
+      background-image: url("/public/favicon.ico");
+      background-position: right center;
+    }
+  }
+  &__text_position {
+    position: relative;
+    width: 100%;
+    height: 60px;
+    padding: 5px 0;
+    &_last {
+      width: 70%;
+      box-sizing: border-box;
+      margin: 0 auto;
+      height: 70px;
+    }
+  }
+  &__text_small_grey {
+    position: absolute;
+    font-size: $smallTextSize;
+    color: $greyColor;
+    left: 0;
+    &_last {
+      bottom: 0;
+    }
+  }
+  &__text_small_green {
+    position: absolute;
+    right: 0;
+    font-size: $smallTextSize;
+    cursor: pointer;
+    color: var(--neobisColor);
+    &_last {
+      bottom: 0;
+    }
+    &:hover{
+      text-shadow: 1px 1px 4px grey;
+    }
+  }
+  &__submit {
+    background-color: var(--neobisColor);
+    width: 100%;
+    border: none;
+    outline: none;
+    color: white;
+    height: 40px;
+    border-radius: $borderRadius;
+    cursor: pointer;
+    font-size: 24px;
+    margin: 0 0 10px 0;
+    box-sizing: border-box;
+  }
+  &__image {
+    box-sizing: border-box;
+    padding: 0 0 15px 15px;
+    width: 400px;
+    height: 400px;
+  }
+}

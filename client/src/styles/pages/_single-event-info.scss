@@ -1,0 +1,89 @@
+$text-color: rgba(33, 51, 54, 0.8);
+
+.event-info {
+  display: flex;
+  &__content {
+    display: flex;
+    width: 50%;
+    flex-direction: column;
+    font-family: "Montserrat";
+    color: $text-color;
+    box-sizing: border-box;
+    margin-left: 20px;
+    position: relative;
+    &-title {
+      color: #1665D8;
+      font-size: 36px;
+      font-weight: bold;
+      line-height: 1.2;
+    }
+    &-date {
+      margin: 5px 0 0 0;
+      font-size: 18px;
+    }
+    &-description {
+      margin: 20px 0;
+      font-size: 20px;
+      font-weight: 500;
+    }
+    &-address {
+      margin: 5px 0 20px 0;
+      font-size: 16px;
+      &-image {
+        width: 20px;
+      }
+    }
+    &-right-image{
+      max-width: 100%;
+    }
+    &-text {
+      margin: 10px 0;
+      font-size: 16px;
+      &_deadline {
+        color: #eb0f0f;
+        font-size: 10px;
+        text-transform: uppercase;
+        margin: 0 0 10px 0;
+      }
+      &_m_t {
+        // margin: 10px 0 0 0;
+        font-size: 16px;
+      }
+    }
+    &-form {
+      &-label {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        margin: 5px 0;
+      }
+      &-textarea {
+        resize: vertical;
+        max-width: 400px;
+        box-sizing: border-box;
+        outline: none;
+        border: none;
+        padding: 10px;
+        display: block;
+        font-family: "Montserrat";
+        color: $text-color;
+        background: #eceeff;
+        border-radius: 5px;
+      }
+      &-submit {
+        background: #eceeff;
+        border-radius: 5px;
+        border: 0;
+        outline: none;
+        cursor: pointer;
+        min-width: 200px;
+        box-sizing: border-box;
+        margin-top: 15px;
+        padding: 6px 0;
+        font-size: 18px;
+        font-family: "Montserrat";
+        color: $text-color;
+      }
+    }
+  }
+}
