@@ -108,7 +108,7 @@ class EventViewSet(viewsets.ModelViewSet):
         if self.request.user.is_authenticated:
             event_data = serializer.save(owner=self.request.user)
 
-            if self.request.data["my_event"].lower() == "false":
+            if self.request.data["public"].lower() == "true":
                 departments = self.request.data.get("departments", "")
                 individual_users = self.request.data.get("individual_users", "")
                 departments_list = list(map(int, re.findall("\d+", departments)))  # noqa
@@ -142,7 +142,7 @@ class EventViewSet(viewsets.ModelViewSet):
             # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
 
-        if request.data["my_event"].lower() == "false":
+        if request.data["public"].lower() == "true":
             departments = request.data.get("departments", "")
             individual_users = request.data.get("individual_users", "")
             departments_list = list(map(int, re.findall("\d+", departments)))  # noqa
