@@ -3,7 +3,6 @@ from telebot import types
 import requests
 from decouple import config
 
-# TODO add BOT_TOKEN to env
 bot = telebot.TeleBot(config('BOT_TOKEN'))
 
 
@@ -78,8 +77,7 @@ def get_credentials(message):
                 "password": password,
                 "chat_id": message.chat.id
             }
-            # TODO add real login url
-            login_url = 'http://127.0.0.1:8000/api/users/rest-auth/login/'
+            login_url = config('URL') + '/api/users/rest-auth/login/'
             login_data = {'email': user_data['username'],
                           'password': user_data['password']}
             token = requests.post(login_url, data=login_data)
@@ -88,8 +86,7 @@ def get_credentials(message):
                 "token": token['key'],
                 "chat_id": user_data['chat_id']
             }
-            # TODO remove localhost to real url
-            add_chat_id_url = 'http://127.0.0.1:8000/api/users/add_chat_id/'
+            add_chat_id_url = config('URL') + '/api/users/add_chat_id/'
             post_telegram_id_for_user = requests.post(add_chat_id_url, data=new_chat_id_for_user)
             bot.send_message(message.chat.id,
                              'Авторизация прошла успешно!\n'
@@ -102,8 +99,7 @@ def get_credentials(message):
 
 
 def telegram_notify_user(chat_id, title, event_id):
-    # TODO add real detail api url
-    url = f'http://127.0.0.1:8000/api/events/{event_id}/'
+    url = config('URL') + f'/api/events/{event_id}/'
     markup = telebot.types.InlineKeyboardMarkup(row_width=1)
     button = telebot.types.InlineKeyboardButton(text='Посмотреть подробнее',
                                                 url=url)
