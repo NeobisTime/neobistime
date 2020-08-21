@@ -15,7 +15,8 @@ urlpatterns = [
     url(r'^accounts-rest/registration/account-confirm-email/(?P<key>.+)/$', confirm_email,
         name='account_confirm_email'),
     re_path(
-        r'^rest-auth/password/reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$ ',
+        r'^rest-auth/password/reset/confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,'
+        '20})/$',
         PasswordResetConfirmView.as_view(),
         name='password_reset_confirm'),
     path('is_user_staff/', is_user_staff, name='user_is_staff'),
