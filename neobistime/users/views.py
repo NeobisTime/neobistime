@@ -42,3 +42,23 @@ def is_user_staff(request):
     except ObjectDoesNotExist:
         return JsonResponse({"error": "User не найден! Введите корректный токен"})
     return JsonResponse({"is_staff": user.is_staff})
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def add_chat_id(request):
+    """
+    returns true if user is an admin
+    :param request: token
+    :return: json {"is_staff":true/false}
+    """
+    try:
+        token = request.data['token']
+        user = Token.objects.get(key=token).user
+        user.chat_id = request.data['chat_id']
+        user.save()
+    except KeyError:
+        return JsonResponse({"error": "enter a parameter 'token'"})
+    except ObjectDoesNotExist:
+        return JsonResponse({"error": "User не найден! Введите корректный токен"})
+    return JsonResponse({"result": "Telegram account successfully added"})

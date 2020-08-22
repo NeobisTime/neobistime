@@ -27,7 +27,7 @@ class Event(models.Model):
     # if event will be in Neobis office
     place = models.ForeignKey(Place, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Адрес',
                               related_name='events')
-    image = ThumbnailerImageField(upload_to="event_imgs/%Y/%m/%d/", resize_source=dict(quality=95, size=(1200, 1200)),
+    image = ThumbnailerImageField(upload_to="event_imgs/%Y/%m/%d/", resize_source=dict(quality=95, size=(1000, 1000)),
                                   default="event_imgs/default.png")
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
                               verbose_name='Организатор')
@@ -103,10 +103,16 @@ class Notes(models.Model):
         return f'{self.title}'
 
 
-def save_profile(sender, instance, **kwargs):
-    if instance.was_on_event:
-        instance.user.points += 10
-        instance.user.save()
+def save_profile(sender, instance, created, **kwargs):
+    if created:
+        if instance.was_on_event:
+            instance.user.points += 10
+    else:
+        if not instance.was_on_event:
+            instance.user.points -= 10
+        else:
+            instance.user.points += 10
+    instance.user.save()
 
 
 signals.post_save.connect(receiver=save_profile, sender=Poll)

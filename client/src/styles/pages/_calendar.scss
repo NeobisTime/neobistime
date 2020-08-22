@@ -1,0 +1,9 @@
+// * google calendar events style
+.google-calendar {
+  // background: linear-gradient(90deg, #2C3E50, #4CA1AF);
+  background: purple;
+  color: white;
+  &:hover {
+    background: purple !important;
+  }
+}

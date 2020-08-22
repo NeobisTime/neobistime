@@ -1,0 +1,93 @@
+$flex-basis: 80%;
+$font: "Montserrat";
+
+.wrapper {
+  position: relative;
+  display: flex;
+  box-sizing: border-box;
+  margin: 0 auto;
+  flex-basis: 100%;
+  font-family: $font;
+  &_bg_grey {
+    background-color: #f5f7ff;
+  }
+}
+.d-flex {
+  display: flex;
+}
+.p-1 {
+  padding: 1rem;
+}
+.content__wrapper {
+  display: block;
+  flex-basis: $flex-basis;
+  margin: 5px auto 0 auto;
+  &_no_margin {
+    width: 100%;
+    margin: 0 auto;
+  }
+}
+.link {
+  text-decoration: none;
+  cursor: pointer;
+}
+.button {
+  text-align: center;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background: none;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.number_active {
+  color: var(--neobisColor);
+}
+.w-100 {
+  width: 100%;
+}
+.m-0 {
+  margin: 0;
+}
+.modal__wrapper {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border-radius: 10px;
+  box-sizing: border-box;
+  box-shadow: 0 24px 38px 3px rgba(0, 0, 0, 0.14),
+    0 9px 46px 8px rgba(0, 0, 0, 0.12), 0 11px 15px -7px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  animation-name: ModalOut;
+  animation-duration: 0.8s;
+}
+
+.modal_centered{
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  z-index: 90;
+}
+
+.error__span {
+  font-size: 12px;
+  color: red;
+}
+
+.rotate_180 {
+  transform: rotate(180deg);
+}
+
+@keyframes ModalOut {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

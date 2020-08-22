@@ -1,0 +1,81 @@
+.registration {
+  &__label {
+    padding: 10px 0;
+    font-size: 18px;
+    color: rgba(33, 51, 54, 0.8);
+  }
+  &__password {
+    border: 2px solid rgba(208, 205, 225, 0.8);
+    box-sizing: border-box;
+    border-radius: 12px;
+    outline: none;
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+    display: flex;
+    &-input {
+      padding: 7px 5px 6px 10px;
+      width: 90%;
+      box-sizing: border-box;
+      border-radius: 12px;
+      outline: none;
+      border: none;
+      font-family: "Montserrat", sans-serif;
+      font-size: 14px;
+    }
+    &-image {
+      cursor: pointer;
+    }
+  }
+  &__input {
+    border: 2px solid rgba(208, 205, 225, 0.8);
+    box-sizing: border-box;
+    border-radius: 12px;
+    padding: 7px 0 6px 10px;
+    outline: none;
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+  }
+  &__image {
+    box-sizing: border-box;
+    padding: 0 0 15px 15px;
+    width: 460px;
+    height: 460px;
+  }
+  &__submit {
+    box-sizing: border-box;
+    margin: 30px 0 0 0;
+    background-color: var(--neobisColor);
+    width: 100%;
+    border: none;
+    outline: none;
+    color: white;
+    height: 40px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 24px;
+  }
+  &__section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    margin-top: 10px;
+    &_w_40 {
+      width: 40%;
+    }
+    &_w_60 {
+      width: 60%;
+    }
+  }
+  &__content {
+    display: flex;
+    width: 800px;
+    flex-wrap: wrap;
+  }
+}
+.registration__select .css-yk16xz-control {
+  border: 2px solid rgba(208, 205, 225, 0.8) !important;
+  box-sizing: border-box !important;
+  border-radius: 12px !important;
+  height: 32px !important;
+}
