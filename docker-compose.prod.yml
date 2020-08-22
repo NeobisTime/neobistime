@@ -58,13 +58,13 @@ services:
       - db
     restart: on-failure
 
-  front-end:
-    build:
-      context: .
-      dockerfile: ./compose/react.Dockerfile
-    image: neobistime-front
-    depends_on:
-      - backend
+#   front-end:
+#     build:
+#       context: .
+#       dockerfile: ./compose/react.Dockerfile
+#     image: neobistime-front
+#     depends_on:
+#       - backend
 
 volumes:
   data:
