@@ -7,6 +7,7 @@ import { withRouter } from "react-router-dom";
 const EndEventInfo = (props: any) => {
   const eventId = props.match.params.id;
   const [peoples, setPeoples] = useState<any>([]);
+  console.log("EndEventInfo -> peoples", peoples);
   const [eventData, setEventData] = useState<any>([]);
   let date = new Date(eventData.start);
 
@@ -68,11 +69,24 @@ const EndEventInfo = (props: any) => {
                             const data = {
                               was_on_event: !poll.was_on_event,
                             };
-                            API.patchMyEventPoll(eventId, poll.id, data);
+                            API.patchMyEventPoll(eventId, poll.id, data).then(
+                              (data) => {
+                                // update poll data in peoples
+                                let newPoll = data.data;
+                                setPeoples(
+                                  peoples.map((poll: any) => {
+                                    if (+poll.id === +newPoll.id) {
+                                      poll = newPoll;
+                                    }
+                                    return poll;
+                                  })
+                                );
+                              }
+                            );
                           }}
                           type="checkbox"
                           value={poll.was_on_event}
-                          // checked={poll.was_on_event}
+                          checked={poll.was_on_event}
                         />
                       </td>
                     </tr>
@@ -89,14 +103,6 @@ const EndEventInfo = (props: any) => {
             </tbody>
           </table>
           <div className="end-event-info__pagination">
-            <span className="end-event-info__pagination-text_bold">
-              {currentPage * pageSize + 1}-
-              {currentPage * pageSize + pageSize > totalProducts
-                ? totalProducts
-                : currentPage * pageSize + pageSize}{" "}
-              &nbsp;
-            </span>{" "}
-            of {totalProducts}
             <div className="end-event-info__pagination-buttons">
               <img
                 className="end-event-info__pagination-buttons-image"
@@ -109,6 +115,14 @@ const EndEventInfo = (props: any) => {
                     : null;
                 }}
               />
+              <span className="end-event-info__pagination-text_bold">
+                {currentPage * pageSize + 1}-
+                {currentPage * pageSize + pageSize > totalProducts
+                  ? totalProducts
+                  : currentPage * pageSize + pageSize}{" "}
+                &nbsp;
+              </span>{" "}
+              of {totalProducts}
               <img
                 className="end-event-info__pagination-buttons-image"
                 src={arrow}
@@ -121,11 +135,16 @@ const EndEventInfo = (props: any) => {
           </div>
         </div>
       </div>
-      {/* <div className="end-event-info__submit">
-        <button className="end-event-info__submit-button button">
+      <div className="end-event-info__submit">
+        <button
+          className="end-event-info__submit-button button"
+          onClick={() => {
+            window.location.reload(true);
+          }}
+        >
           Сохранить
         </button>
-      </div> */}
+      </div>
     </>
   );
 };
