@@ -7,6 +7,7 @@ import API from "../../../../API";
 
 const EditEventsPage = () => {
   const [events, setEvents] = useState([]);
+  console.log("EditEventsPage -> events", events);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [totalProducts, setTotalProducts] = useState(0);
@@ -50,18 +51,22 @@ const EditEventsPage = () => {
                   <td className="end-event-info__table-tbody-date">
                     {date.getDate()}/{date.getMonth() + 1}/{date.getFullYear()}
                   </td>
-                  <td>Маленькая комната</td>
+                  <td>
+                    {event.place.name} {event.address}
+                  </td>
                   <td className="all-events__edit-wrapper">
-                    <Link
-                      to={`/admin/create_event/${event.id}`}
-                      className="link"
-                    >
-                      <img
-                        src={editPen}
-                        alt="edit pen"
-                        className="all-events__edit-image"
-                      />
-                    </Link>
+                    {event.my_event ? (
+                      <Link
+                        to={`/admin/create_event/${event.id}`}
+                        className="link"
+                      >
+                        <img
+                          src={editPen}
+                          alt="edit pen"
+                          className="all-events__edit-image"
+                        />
+                      </Link>
+                    ) : null}
                   </td>
                 </tr>
               );
@@ -69,14 +74,6 @@ const EditEventsPage = () => {
           </tbody>
         </table>
         <div className="end-event-info__pagination">
-          <span className="end-event-info__pagination-text_bold">
-            {currentPage * pageSize + 1}-
-            {currentPage * pageSize + pageSize > totalProducts
-              ? totalProducts
-              : currentPage * pageSize + pageSize}{" "}
-            &nbsp;
-          </span>{" "}
-          of {totalProducts}
           <div className="end-event-info__pagination-buttons">
             <img
               className="end-event-info__pagination-buttons-image"
@@ -87,6 +84,14 @@ const EditEventsPage = () => {
                 return currentPage > 0 ? setCurrentPage(currentPage - 1) : null;
               }}
             />
+            <span className="end-event-info__pagination-text_bold">
+              {currentPage * pageSize + 1}-
+              {currentPage * pageSize + pageSize > totalProducts
+                ? totalProducts
+                : currentPage * pageSize + pageSize}{" "}
+              &nbsp;
+            </span>{" "}
+            of {totalProducts}
             <img
               className="end-event-info__pagination-buttons-image"
               src={arrow}

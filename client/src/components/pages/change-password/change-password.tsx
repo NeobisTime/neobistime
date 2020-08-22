@@ -1,47 +1,24 @@
 import React, { useState, useEffect } from "react";
 import designPhoto from "../../../images/pages/forgot_password_gi2d.svg";
-import Select from "react-select";
-// import eye from "../../../images/pages/password_eye.svg";
 import { Input } from "../registration/registration";
 import withDataContainer from "../../../HOC/withData";
 import API from "../../../API";
 
 const ChangePassword = (props: any) => {
   const [name, setName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [image, setImage] = useState<any>([]);
-  console.log("ChangePassword -> image", image);
-  const [department, setDepartment] = useState<string>("");
-  // password values
-  const [password, setPassword] = useState<string>("");
-  const [hidden1, setHidden1] = useState<boolean>(true);
 
-  const handleChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
-    validate();
-  };
   const handleChangeTel = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPhone(event.target.value);
     validate();
   };
   // validation
-  const [errors, setErrors] = useState({
-    emailError: "",
-  });
   const [telErrors, setTelErrors] = useState({
     numberError: "",
   });
   const validate = () => {
-    const errors = {
-      emailError: "",
-      passwordSimilarity: "",
-    };
-    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
-      setErrors({ ...errors, emailError: "Неправильный email" });
-    } else {
-      setErrors({ ...errors, emailError: "" });
-    }
+    const errors = {};
     if (isNaN(Number(phone))) {
       setTelErrors({ ...errors, numberError: "Только цифры" });
     } else {
