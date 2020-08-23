@@ -1,7 +1,7 @@
-import telebot
-from telebot import types
 import requests
+import telebot
 from decouple import config
+from telebot import types
 
 bot = telebot.TeleBot(config('BOT_TOKEN'))
 
@@ -29,12 +29,12 @@ def start(message):
     no = types.InlineKeyboardButton(text='Нет', callback_data="no")
     markup.add(yes, no)
     bot.send_message(message.chat.id,
-                            f'Привет {username}, я - бот NeobisTime, '
-                            f'буду уведомлять тебя об ивентах, на которые '
-                            f'тебя пригласили. Для работы данного '
-                            f'бота, нужно иметь аккаунт на сайте:'
-                            f' calendar.neobis.kg. У тебя есть аккаунт? ',
-                            reply_markup=markup)
+                     f'Привет {username}, я - бот NeobisTime, '
+                     f'буду уведомлять тебя об ивентах, на которые '
+                     f'тебя пригласили. Для работы данного '
+                     f'бота, нужно иметь аккаунт на сайте:'
+                     f' calendar.neobis.kg. У тебя есть аккаунт? ',
+                     reply_markup=markup)
 
 
 @bot.callback_query_handler(func=lambda query: query.data == "yes")
@@ -63,15 +63,15 @@ def login(message):
 def get_credentials(message):
     try:
         username, password = message.text.split('/')
-    except Exception as e:
-        error = bot.reply_to(message,
-                             'Неправильный ввод!\n'
-                             'Повтори еще раз.\n'
-                             'Пример: test@gmail.com/password123')
+    except Exception as e: # noqa
+        bot.reply_to(message,
+                     'Неправильный ввод!\n'
+                     'Повтори еще раз.\n'
+                     'Пример: test@gmail.com/password123')
         login(message)
     else:
         try:
-            attempt_to_login = bot.reply_to(message, 'Пробуем залогиниться в системе ...')
+            bot.reply_to(message, 'Пробуем залогиниться в системе ...')
             user_data = {
                 "username": username,
                 "password": password,
@@ -87,14 +87,15 @@ def get_credentials(message):
                 "chat_id": user_data['chat_id']
             }
             add_chat_id_url = config('URL') + '/api/users/add_chat_id/'
-            post_telegram_id_for_user = requests.post(add_chat_id_url, data=new_chat_id_for_user)
+            requests.post(add_chat_id_url, data=new_chat_id_for_user)
+
             bot.send_message(message.chat.id,
                              'Авторизация прошла успешно!\n'
                              'Теперь вы будете получать уведомления'
                              ' в Telegram.')
         except KeyError:
-            error = bot.reply_to(message,
-                                 'Вы не прошли авторизацию в системе, возможно вы ввели неправильный логин/пароль')
+            bot.reply_to(message,
+                         'Вы не прошли авторизацию в системе, возможно вы ввели неправильный логин/пароль')
             login(message)
 
 
@@ -105,7 +106,6 @@ def telegram_notify_user(chat_id, title, event_id):
                                                 url=url)
     markup.add(button)
     bot.send_message(chat_id, title, parse_mode='html', reply_markup=markup)
-
 
 # TODO uncomment this part on deploy
 # bot.polling(none_stop=True)
