@@ -7,6 +7,10 @@ server {
   return 444;
 }
 
+upstream front {
+	server front-end:80;
+}
+
 server {
   listen 80 deferred;
   listen [::]:80 deferred;
@@ -26,7 +30,7 @@ server {
   }
 
   location / {
-    return 404;
+    proxy_pass http://front;
   }
 
 }

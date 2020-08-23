@@ -56,6 +56,24 @@ class PollRetrieveUpdateSerializer(serializers.ModelSerializer):
         fields = ('id', 'answer', 'rejection_reason', 'event', 'address', 'place', 'start_date', 'end_date')
 
 
+class EventListSerializer(serializers.ModelSerializer):
+    """
+    Serializing Event
+    """
+    owner = serializers.ReadOnlyField(source='owner.name_surname')
+    start = serializers.CharField(source='start_date')
+    end = serializers.CharField(source='end_date')
+
+    class Meta:
+        model = Event
+        fields = (
+            "title",
+            "start",
+            "end",
+            "owner",
+        )
+
+
 class EventGetSerializer(serializers.ModelSerializer):
     """
          Class for serializing Event models for get method
@@ -112,46 +130,42 @@ class UserNotificationSerializer(serializers.Serializer):
     def notify(self, event_id):
         departments = self.validated_data["departments"]
         individual_users = self.validated_data["individual_users"]
-        # TODO: add delay to function
-        notify_users(departments, individual_users, event_id)
+        notify_users.delay(departments, individual_users, event_id)
 
 
-def available_date_for_event(validated_data):
+def available_date_for_event(validated_data, **kwargs):
     """
     Checking if event violates someone's scheduled event
     :param validated_data:
     :return: information of conflict event
     """
-    try:
-        start = validated_data['start_date']
-        end = validated_data['end_date']
-        # list contains events that already exist in this time
-        event = []
-        filter_params = dict(start_date__lte=end, end_date__gte=start)
-        # only checking events that take place in the office
-        if 'Маленькая' in validated_data['place'].name:
-            event = Event.objects.filter(Q(place__name='Маленькая комната') | Q(place__name='Весь офис'),
-                                         **filter_params)
-        elif 'Большая' in validated_data['place'].name:
-            event = Event.objects.filter(Q(place__name='Большая комната') | Q(place__name='Весь офис'), **filter_params)
-        elif 'Весь' in validated_data['place'].name:
-            event = Event.objects.filter(**filter_params).exclude(place__name='Другое')
-        if event:
-            raise serializers.ValidationError({"Error": "place is not empty",
-                                               "Event title": event[0].title,
-                                               "Place": event[0].place.name,
-                                               "start": event[0].start_date,
-                                               "end": event[0].end_date})
-    except KeyError:
-        pass
-    except AttributeError:
-        pass
+    start = validated_data['start_date']
+    end = validated_data['end_date']
+    # only checking events that take place in the office
+    place = validated_data['place']
+
+    events = Event.objects.all()
+    if kwargs.get("update", False):
+        events = events.exclude(pk=kwargs["event_id"])
+    else:
+        if 'Весь офис' in place.name:
+            events = events.filter(Q(start_date__gte=start, start_date__lte=end) |
+                                   Q(end_date__gte=start, end_date__lte=end)).exclude(place__name="Другое")
+        else:
+            events = events.filter(Q(start_date__gte=start, start_date__lte=end) |
+                                           Q(end_date__gte=start, end_date__lte=end),
+                                           Q(place__pk=place.pk))
+
+    if events.exists():
+        serializer = EventListSerializer(events, many=True)
+        raise serializers.ValidationError({"error": "place is not empty",
+                                           "events": serializer.data})
 
 
 class EventCreateUpdateSerializer(serializers.ModelSerializer):
     """
-         Class for serializing Event models for post and update methods
-     """
+    Class for serializing Event models for post and update methods
+    """
     owner = serializers.ReadOnlyField(source='owner.name_surname')
     place = serializers.PrimaryKeyRelatedField(queryset=Place.objects.all(), allow_null=True)
     start = serializers.CharField(source='start_date')
@@ -179,15 +193,15 @@ class EventCreateUpdateSerializer(serializers.ModelSerializer):
         instance.end_date = validated_data.get('end_date', instance.end_date)
         instance.deadline = validated_data.get('deadline', instance.deadline)
         instance.link = validated_data.get('link', instance.link)
-        available_date_for_event(validated_data)
+        available_date_for_event(validated_data, event_id=instance.pk, update=True)
         instance.save()
         return instance
 
 
 class MyEventListSerializer(serializers.ModelSerializer):
     """
-         Class for serializing Events that related to his owner
-     """
+    Class for serializing Events that related to his owner
+    """
     owner = serializers.ReadOnlyField(source='owner.name_surname')
     place = PlaceSerializer()
     start = serializers.CharField(source='start_date')

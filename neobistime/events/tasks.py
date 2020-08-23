@@ -4,7 +4,7 @@ from typing import List
 from celery import shared_task
 from django.core.mail import send_mail
 from django.db import IntegrityError
-from .bot import telegram_notify_user
+from bot import telegram_notify_user
 from events.models import Event, Poll, Attendees
 from users.models import CustomUser
 
@@ -37,8 +37,7 @@ def notify_users(departments: List, individual_users: List, event_id):
             continue
 
     recipients_emails = [user.email for user in set(recipients)]
-    body_message = f'Здравствуй, мы организовали ' \
-                   f'новое мероприятие "{event.title}" от {event.owner}\n' \
+    body_message = f'Здравствуй, мы организовали новое мероприятие "{event.title}" от {event.owner}\n' \
                    f'Дата {event.start_date}\n' \
                    f'Место {event.place}\n' \
                    f'С уважением, команда Необис'
@@ -47,11 +46,12 @@ def notify_users(departments: List, individual_users: List, event_id):
     send_mail('Новый Ивент от Необиса', body_message,
               'neobistime.kg@gmail.com',
               recipients_emails)
+
     url = f'http://127.0.0.1:8000/api/events/{event.id}/'
     for user in recipients:
         try:
             Poll.objects.create(event=event, user=user)
-            if user.chat_id is not '':
+            if user.chat_id:
                 telegram_notify_user(user.chat_id, body_message, event.id)
         except IntegrityError:
             continue

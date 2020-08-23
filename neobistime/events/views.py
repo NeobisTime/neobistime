@@ -6,12 +6,14 @@ from rest_framework import generics, permissions, status, viewsets, filters
 from rest_framework.exceptions import PermissionDenied, NotFound, ValidationError
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
+from django_filters import rest_framework as filters
 
 from . import permissions as custom_permissions, serializers
 from .models import Event, Place, Poll, Notes
 from .permissions import EventOwner
 from .serializers import AdminPolls, EventCreateUpdateSerializer, EventGetSerializer, \
     MyEventListSerializer, PlaceSerializer, NotesSerializer
+from .filters import RoomTimeFilter
 
 
 class PlaceListView(generics.ListAPIView):
@@ -30,6 +32,8 @@ class EventsInPlaceView(generics.ListAPIView):
     """
     serializer_class = EventGetSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_class = RoomTimeFilter
 
     def get_queryset(self):
         try:
@@ -106,13 +110,11 @@ class EventViewSet(viewsets.ModelViewSet):
         """
 
         if self.request.user.is_authenticated:
-
             event_data = serializer.save(owner=self.request.user)
-            if self.request.data["my_event"].lower() == "false":
 
+            if self.request.data["public"].lower() == "true":
                 departments = self.request.data.get("departments", "")
                 individual_users = self.request.data.get("individual_users", "")
-
                 departments_list = list(map(int, re.findall("\d+", departments)))  # noqa
                 users_list = individual_users.split(",")
 
@@ -144,10 +146,9 @@ class EventViewSet(viewsets.ModelViewSet):
             # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
 
-        if request.data["my_event"].lower() == "false":
+        if request.data["public"].lower() == "true":
             departments = request.data.get("departments", "")
             individual_users = request.data.get("individual_users", "")
-
             departments_list = list(map(int, re.findall("\d+", departments)))  # noqa
             users_list = individual_users.split(",")
 

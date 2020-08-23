@@ -28,7 +28,7 @@ def start(message):
     yes = types.InlineKeyboardButton(text='Да', callback_data="yes")
     no = types.InlineKeyboardButton(text='Нет', callback_data="no")
     markup.add(yes, no)
-    sent = bot.send_message(message.chat.id,
+    bot.send_message(message.chat.id,
                             f'Привет {username}, я - бот NeobisTime, '
                             f'буду уведомлять тебя об ивентах, на которые '
                             f'тебя пригласили. Для работы данного '
@@ -108,4 +108,4 @@ def telegram_notify_user(chat_id, title, event_id):
 
 
 # TODO uncomment this part on deploy
-bot.polling(none_stop=True)
+# bot.polling(none_stop=True)

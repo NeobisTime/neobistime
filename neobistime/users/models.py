@@ -71,7 +71,7 @@ class CustomUser(AbstractUser):
     Model for Custom User
     """
     username = None
-    profile_img = ThumbnailerImageField(upload_to="profile_imgs/", resize_source=dict(quality=95, size=(1200, 1200)),
+    profile_img = ThumbnailerImageField(upload_to="profile_imgs/", resize_source=dict(quality=95, size=(600, 600)),
                                         default="profile_imgs/default.jpg")
     email = models.EmailField(_('email address'), unique=True)
 
