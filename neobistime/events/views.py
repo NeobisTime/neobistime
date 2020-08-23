@@ -6,12 +6,14 @@ from rest_framework import generics, permissions, status, viewsets, filters
 from rest_framework.exceptions import PermissionDenied, NotFound, ValidationError
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
+from django_filters import rest_framework as filters
 
 from . import permissions as custom_permissions, serializers
 from .models import Event, Place, Poll, Notes
 from .permissions import EventOwner
 from .serializers import AdminPolls, EventCreateUpdateSerializer, EventGetSerializer, \
     MyEventListSerializer, PlaceSerializer, NotesSerializer
+from .filters import RoomTimeFilter
 
 
 class PlaceListView(generics.ListAPIView):
@@ -30,6 +32,8 @@ class EventsInPlaceView(generics.ListAPIView):
     """
     serializer_class = EventGetSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_class = RoomTimeFilter
 
     def get_queryset(self):
         try:
