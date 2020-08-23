@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.db.models import Q
 from django_filters import rest_framework as filters
@@ -24,11 +24,14 @@ class RoomTimeFilter(filters.FilterSet):
         )
 
     def filter_by_period(self, queryset, name, value):
-        if value == "week":
-            start = datetime.datetime.now()
-        if value == "month":
-            pass
-        if value == "year":
-            pass
+        start = datetime.datetime.now()
+        end = datetime.datetime.now()
 
-        # return queryset.filter(Q(start_date__gte=start, start_date__lte=end)
+        if value == "week":
+            end = start + timedelta(days=7)
+        if value == "month":
+            end = start + timedelta(days=31)
+        if value == "year":
+            end = start + timedelta(days=365)
+
+        return queryset.filter(Q(start_date__gte=start, start_date__lte=end))
