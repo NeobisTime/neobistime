@@ -8,7 +8,7 @@ upstream front{
 server {
 	listen 80 default_server;
 	listen [::]:80 default_server;
-	server_name 220-accentuation.co www.220-accentuation.co;
+	server_name calendar.neobis.kg;
 	return 301 https://$host$request_uri;
 }
 
@@ -17,7 +17,7 @@ server {
 	listen 443 ssl http2 default_server;
 	listen [::]:443 ssl http2 default_server;
 
-	server_name 220-accentuation.co www.220-accentuation.co;
+	server_name calendar.neobis.kg;
 
 	# all ssl related config moved to ssl.conf
 	include /config/nginx/ssl.conf;

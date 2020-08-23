@@ -76,8 +76,8 @@ class EventListSerializer(serializers.ModelSerializer):
 
 class EventGetSerializer(serializers.ModelSerializer):
     """
-         Class for serializing Event models for get method
-     """
+    Class for serializing Event models for get method
+    """
     owner = serializers.ReadOnlyField(source='owner.name_surname')
     backgroundColor = serializers.SerializerMethodField()
     department = serializers.SerializerMethodField()
@@ -89,9 +89,9 @@ class EventGetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = (
-            'id', "image", 'owner', 'department', 'title', 'description', 'deadline', 'start', 'end', 'place',
-            'link',
-            'address', 'backgroundColor', 'my_event')
+            'id', "image", 'owner', 'department', 'title', 'description', 'deadline', 'start', 'end', 'place', 'link',
+            'address', 'backgroundColor', 'my_event'
+        )
 
     def get_backgroundColor(self, obj):
         """
@@ -141,25 +141,25 @@ def available_date_for_event(validated_data, **kwargs):
     """
     start = validated_data['start_date']
     end = validated_data['end_date']
-    # only checking events that take place in the office
     place = validated_data['place']
-
     events = Event.objects.all()
-    if kwargs.get("update", False):
-        events = events.exclude(pk=kwargs["event_id"])
-    else:
-        if 'Весь офис' in place.name:
-            events = events.filter(Q(start_date__gte=start, start_date__lte=end) |
-                                   Q(end_date__gte=start, end_date__lte=end)).exclude(place__name="Другое")
-        else:
-            events = events.filter(Q(start_date__gte=start, start_date__lte=end) |
-                                           Q(end_date__gte=start, end_date__lte=end),
-                                           Q(place__pk=place.pk))
 
-    if events.exists():
-        serializer = EventListSerializer(events, many=True)
-        raise serializers.ValidationError({"error": "place is not empty",
-                                           "events": serializer.data})
+    if place:
+        if kwargs.get("update", False):
+            events = events.exclude(pk=kwargs["event_id"])
+
+        if 'Весь офис' in place.name:
+            events = events.filter(Q(start_date__gt=start, start_date__lt=end) |
+                                   Q(end_date__gt=start, end_date__lt=end)).exclude(place__name="Другое")
+        else:
+            events = events.filter(Q(start_date__gt=start, start_date__lt=end) |
+                                   Q(end_date__gt=start, end_date__lt=end),
+                                   Q(place__pk=place.pk)).exclude(place__name="Другое")
+
+        if events.exists():
+            serializer = EventListSerializer(events, many=True)
+            raise serializers.ValidationError({"error": "place is not empty",
+                                               "events": serializer.data})
 
 
 class EventCreateUpdateSerializer(serializers.ModelSerializer):
