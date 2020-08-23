@@ -15,12 +15,12 @@ class RoomTimeFilter(filters.FilterSet):
         ("month", "month"),
         ("year", "year"),
     )
-    period = filters.ChoiceFilter(choices=PERIOD_CHOICES, method="filter_by_period")
+    start = filters.ChoiceFilter(choices=PERIOD_CHOICES, method="filter_by_period")
 
     class Meta:
         model = Event
         fields = (
-            "period"
+            "start"
         )
 
     def filter_by_period(self, queryset, name, value):
