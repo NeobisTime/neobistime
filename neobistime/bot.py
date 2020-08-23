@@ -63,7 +63,7 @@ def login(message):
 def get_credentials(message):
     try:
         username, password = message.text.split('/')
-    except Exception as e:
+    except Exception as e: # noqa
         bot.reply_to(message,
                      'Неправильный ввод!\n'
                      'Повтори еще раз.\n'
