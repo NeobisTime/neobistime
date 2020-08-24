@@ -150,6 +150,7 @@ const CreateEventPage = (props: any) => {
     formData.append("departments", departmentNumbers);
     formData.append("individual_users", usersForSendEmails);
     formData.append("my_event", "false");
+    formData.append("public", "true");
 
     // let json = JSON.parse(
     //   JSON.stringify(Object.fromEntries(formData.entries()))

@@ -228,7 +228,7 @@ const PersonalOffice = (props: any) => {
                 </p>
               </div>
 
-              <Link to="/change_password" className="link">
+              <Link to="/change_personal_data" className="link">
                 <button className="button personal-office__info-edit">
                   Редактировать
                 </button>

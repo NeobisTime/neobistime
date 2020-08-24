@@ -35,7 +35,7 @@ const RecoveryPassword = () => {
     // TODO toggle modal if POST request was good
     if (errors.emailError === "") {
       toggleModal();
-    }
+    } 
   }
 
   return (

@@ -15,7 +15,7 @@ const RecoveryPassword = lazy(() => import('./components/pages/recovery-password
 const Notification = lazy(() => import('./components/pages/notifications'));
 const TodayTimetable = React.lazy(() => import('./components/pages/today-timetable'));
 const EventInfo = React.lazy(() => import('./components/pages/single-event-info/single-event-info'));
-const ChangePassword = React.lazy(() => import('./components/pages/change-password'));
+const ChangePersonalData = React.lazy(() => import('./components/pages/change-personal-data'));
 const AdminStat = React.lazy(() => import('./components/pages/admin/admin-statistics'));
 const PersonalOffice = React.lazy(() => import('./components/pages/person-cabinet/person-cabinet'));
 const EndEvents = React.lazy(() => import('./components/pages/admin/admin-end-events/admin-end-events'));
@@ -39,7 +39,7 @@ const App: React.FC = () => {
               <Route exact path="/notifications" component={Notification} />
               <Route exact path="/today" component={TodayTimetable} />
               <Route exact path="/today/:id" component={EventInfo} />
-              <Route exact path="/change_password" component={ChangePassword} />
+              <Route exact path="/change_personal_data" component={ChangePersonalData} />
               <Route exact path="/personal_office" component={PersonalOffice} />
               <Route exact path="/rooms" component={RoomsList} />
               <Route exact path="/rooms/:id" component={RoomsEvent} />
