@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./spinner.css";
 import neobis from "./Group 81.svg";
 
-const Spinner = () => {
+const Spinner = (props: any) => {
   const video = React.useRef(null);
   // play video if it's paused
   //   if (video.current && video.current.paused) video.current.play();
@@ -21,7 +21,7 @@ const Spinner = () => {
 
   useEffect(() => {
     setText(data[random].title);
-    let timeout = setTimeout(() => setShow(false), 600);
+    let timeout = setTimeout(() => setShow(false), props.timeOut);
     return () => {
       clearTimeout(timeout);
     };

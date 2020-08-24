@@ -8,6 +8,7 @@ import Navbar from "../../shared/navbar";
 import API from "../../../API";
 import { Link } from "react-router-dom";
 import withDataContainer from "../../../HOC/withData";
+import Spinner from "../../shared/spinner/spinner";
 
 const BlockEventNotification = (props: any) => {
   const { event, poll } = props;
@@ -60,14 +61,13 @@ const BlockEventNotification = (props: any) => {
         }
       }
     });
-
     // disable input if deadline crossed
     if (+today.getTime() > +deadline.getTime()) {
       setMissedDeadline(true);
     } else {
       setMissedDeadline(false);
     }
-  }, [poll]);
+  }, [poll, correctPollId]);
 
   return (
     <div className="notifications__content">
@@ -148,7 +148,7 @@ const Notification = (props: any) => {
 
   // pagination
   const [currentPage, setCurrentPage] = useState(0);
-  const [pageSize, setPageSize] = useState(3);
+  const [pageSize, setPageSize] = useState(6);
   const [totalProducts, setTotalProducts] = useState(0);
   const [portionSize, setPortionSize] = useState(5);
   const [next, setNext] = useState<string | null>("");
@@ -181,6 +181,7 @@ const Notification = (props: any) => {
     <div className="wrapper wrapper_bg_grey">
       <Navbar />
       <div className="content__wrapper">
+        <Spinner timeOut={1500} />
         <div className="notifications">
           <PageTitle text="Уведомления" />
           <div className="notifications__buttons">
@@ -200,6 +201,7 @@ const Notification = (props: any) => {
               onChange={(e: any) => {
                 setPeriod(e.value);
               }}
+              placeholder="Выберите период"
             />
           </div>
 
@@ -219,109 +221,13 @@ const Notification = (props: any) => {
             <div className="notifications__section-content">
               {events
                 ? events.map((event: any) => {
-                    // let deadline = new Date(event.deadline);
-                    // let startDate = new Date(event.start);
-                    // let today = new Date();
-
-                    // let correctPoll = myPoll.find(
-                    //   (poll: any) => poll.event === event.title
-                    // );
-                    // console.log("Notification -> correctPoll", correctPoll);
-
-                    // function submitPoll(finalAnswer: boolean) {
-                    //   const data = {
-                    //     event: event.id,
-                    //     answer: finalAnswer,
-                    //   };
-                    //   if (correctPoll) {
-                    //     API.patchPoll(data, correctPoll.id);
-                    //   } else {
-                    //     API.postPoll(data).then((data) => {
-                    //       correctPoll = data.data;
-                    //     });
-                    //   }
-                    // }
-                    // const handleWillGo = () => {
-                    //   submitPoll(true);
-                    //   correctPoll.answer = false;
-                    // };
-                    // const handleWillNotGo = () => {
-                    //   submitPoll(false);
-                    //   correctPoll.answer = false;
-                    // };
                     return (
                       <BlockEventNotification
+                        key={event.id}
                         poll={myPoll}
                         event={event}
                         {...props}
                       />
-                      // <div className="notifications__content">
-                      //   <div className="notifications__content-image-wrapper">
-                      //     <img
-                      //       className="notifications__content-image"
-                      //       src={event.image || eventImage}
-                      //       // src={eventImage}
-                      //       alt="event"
-                      //     />
-                      //   </div>
-                      //   <div className="notifications__content-block">
-                      //     <p className="notifications__content-date">
-                      //       {(startDate.getHours() < 10 ? "0" : "") +
-                      //         startDate.getHours()}
-                      //       .
-                      //       {(startDate.getMinutes() < 10 ? "0" : "") +
-                      //         startDate.getMinutes()}{" "}
-                      //       {props.days[startDate.getDay()]},{" "}
-                      //       {props.monthListRus[startDate.getMonth()]}{" "}
-                      //       {startDate.getDate()}
-                      //     </p>
-                      //     <p className="notifications__content-title">
-                      //       {event.title}
-                      //     </p>
-                      //     <p className="notifications__content-description">
-                      //       {event.description}
-                      //     </p>
-                      //     <p className="notifications__content-address">
-                      //       <img
-                      //         className="notifications__content-address-image"
-                      //         src={address}
-                      //         alt="address"
-                      //       />
-                      //       Адрес: {event.place.name || event.address}
-                      //     </p>
-                      //   </div>
-                      //   <div className="notifications__content-buttons">
-                      //     <Link to={`/today/${event.id}`} className="link">
-                      //       <button className="button notifications__content-button notifications__content-button_blue">
-                      //         Подробнее
-                      //       </button>
-                      //     </Link>
-                      //     {correctPoll ? (
-                      //       correctPoll.answer === true ? (
-                      //         <button
-                      //           onClick={handleWillNotGo}
-                      //           className="button notifications__content-button notifications__content-button_cyan"
-                      //         >
-                      //           Я пойду
-                      //         </button>
-                      //       ) : (
-                      //         <button
-                      //           onClick={handleWillGo}
-                      //           className="button notifications__content-button notifications__content-button_red"
-                      //         >
-                      //           Я не пойду
-                      //         </button>
-                      //       )
-                      //     ) : (
-                      //       <button
-                      //         onClick={handleWillGo}
-                      //         className="button notifications__content-button notifications__content-button_red"
-                      //       >
-                      //         Я не пойду
-                      //       </button>
-                      //     )}
-                      //   </div>
-                      // </div>
                     );
                   })
                 : null}
