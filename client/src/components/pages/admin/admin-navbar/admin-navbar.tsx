@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, withRouter } from "react-router-dom";
 import ConfirmExit from "../../../shared/navbar/confirm-exit";
-import API from "../../../../API";
+import API, { getCookie } from "../../../../API";
 
 // *icons
 import avatar from "../../../../images/shared/user.svg";
@@ -29,6 +29,10 @@ const AdminNavbar = (props: any) => {
       );
       setDepartment(departmentNumber[0]);
     });
+    let token = getCookie("XSRF-Token");
+    if (!token) {
+      props.history.push("/auth");
+    }
   }, []);
 
   return (
@@ -129,4 +133,4 @@ const AdminNavbar = (props: any) => {
   );
 };
 
-export default withDataContainer(AdminNavbar);
+export default withDataContainer(withRouter(AdminNavbar));

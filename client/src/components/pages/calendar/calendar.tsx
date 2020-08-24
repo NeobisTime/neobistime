@@ -18,6 +18,7 @@ import AdminChooseModal from "./modals/admin-choose";
 import PersonalEventCreateModal from "./modals/create-personal-event";
 import AdminEventCreateModal from "./modals/admin-event";
 import API, { getCookie } from "../../../API";
+import { withRouter } from "react-router-dom";
 
 export const CloseModalButton = (props: any) => {
   return (
@@ -32,7 +33,7 @@ export const CloseModalButton = (props: any) => {
   );
 };
 
-const Calendar = () => {
+const Calendar = (props: any) => {
   const [currentEvent, setCurrentEvent] = useState<any>({});
   const [role, setRole] = useState<string | undefined>("");
   const [editable, setEditable] = useState(false);
@@ -50,6 +51,10 @@ const Calendar = () => {
       setEditable(true);
     } else {
       setEditable(false);
+    }
+    let token = getCookie("XSRF-Token");
+    if (!token) {
+      props.history.push('/auth')
     }
   }, []);
 
@@ -95,35 +100,7 @@ const Calendar = () => {
       public: true,
     };
     API.patchEventChangeData(dataToPatch, oldEvent.id);
-    // API.getEventInfo(oldEvent.id).then((data) => {
-    //   let attendees = data.data.attendees;
-    //   const dataToPatch = {
-    //     start: oldEvent.start,
-    //     end: oldEvent.end,
-    //     deadline: oldEvent.start,
-    //     my_event: oldEvent.my_event,
-    //     departments: attendees.departments,
-    //     individual_users: attendees.individual_users,
-    //   };
-    //   API.patchEventChangeData(dataToPatch, oldEvent.id);
-    // });
   };
-
-  // create event
-  // let [isEventCreateChooseOpen, setIsEventCreateChooseOpen] = useState<boolean>(
-  //   false
-  // );
-  // const toggleEventCreateChoose = () => {
-  //   setIsEventCreateChooseOpen(!isEventCreateChooseOpen);
-  // };
-
-  // let [isPersonalEventCreate, setIsPersonalEventCreate] = useState<boolean>(
-  //   false
-  // );
-  // const togglePersonalEventCreate = () => {
-  //   setIsPersonalEventCreate(!isPersonalEventCreate);
-  //   setIsEventCreateChooseOpen(false);
-  // };
 
   let [isAdminEventCreate, setIsAdminEventCreate] = useState<boolean>(false);
   const toggleAdminEventCreate = () => {
@@ -181,16 +158,6 @@ const Calendar = () => {
       {isEventInfoOpen && (
         <EventInfoModal onClose={toggleEventInfoOpen} event={currentEvent} />
       )}
-      {/* {isEventCreateChooseOpen && (
-        <AdminChooseModal
-          onClose={toggleEventCreateChoose}
-          openPersonalEventCreateWindow={togglePersonalEventCreate}
-          openAdminEventCreateWindow={toggleAdminEventCreate}
-        />
-      )}
-      {isPersonalEventCreate && (
-        <PersonalEventCreateModal onClose={togglePersonalEventCreate} />
-      )} */}
       {isAdminEventCreate && (
         <AdminEventCreateModal onClose={toggleAdminEventCreate} date={date} />
       )}
@@ -199,4 +166,4 @@ const Calendar = () => {
   );
 };
 
-export default withNavbarContainer(Calendar);
+export default withNavbarContainer(withRouter(Calendar));

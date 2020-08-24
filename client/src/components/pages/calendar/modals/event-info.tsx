@@ -189,44 +189,8 @@ const EventInfoModal = (props: any) => {
                   </button>
                 </Link>
               </div>
-              {/* {role === "user" ? (
-              <div className="event-info-modal__buttons">
-                <button className="event-info-modal__more-info button">
-                  <div>Подробнее</div>
-                  <img
-                    src={moreInfoArrow}
-                    alt="arrow  more info"
-                    className="event-info-modal__more-info-image"
-                  />
-                </button>
-              </div>
-            ) : null} */}
             </div>
           )}
-
-          {/* {role === "admin" ? (
-            <div className="event-info-modal__admin-buttons">
-              <div className="event-info-modal__admin-buttons-wrapper">
-                <button className="event-info-modal__admin-buttons-save button">
-                  Сохранить
-                </button>
-                <button className="event-info-modal__admin-buttons-cancel button">
-                  Отменить
-                </button>
-              </div>
-
-              <div>
-                <button className="event-info-modal__more-info button">
-                  <div>Подробнее</div>
-                  <img
-                    src={moreInfoArrow}
-                    alt="arrow  more info"
-                    className="event-info-modal__more-info-image"
-                  />
-                </button>
-              </div>
-            </div>
-          ) : null} */}
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, withRouter } from "react-router-dom";
 import ConfirmExit from "./confirm-exit";
 
 // *icons
@@ -32,6 +32,10 @@ const Navbar = (props: any) => {
       );
       setDepartment(departmentNumber[0]);
     });
+    let token = getCookie("XSRF-Token");
+    if (!token) {
+      props.history.push('/auth')
+    }
   }, []);
 
   return (
@@ -138,4 +142,4 @@ const Navbar = (props: any) => {
   );
 };
 
-export default withDataContainer(Navbar);
+export default withDataContainer(withRouter(Navbar));

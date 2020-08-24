@@ -8,17 +8,74 @@ import Navbar from "../../shared/navbar";
 import API from "../../../API";
 import { Link } from "react-router-dom";
 import withDataContainer from "../../../HOC/withData";
+import Spinner from "../../shared/spinner/spinner";
 
 const BlockEventNotification = (props: any) => {
-  const { data } = props;
-  let startDate = new Date(data.start);
+  const { event, poll } = props;
+
+  const [willGo, setWillGo] = useState<boolean | undefined>(false);
+  const [willNotGo, setWillNotGo] = useState<boolean | undefined>(false);
+
+  const [missedDeadline, setMissedDeadline] = useState(false);
+  const [correctPollId, setCorrectPollId] = useState<any>(0);
+  let deadline = new Date(event.deadline);
+  let startDate = new Date(event.start);
+  let today = new Date();
+
+  function submitPoll(finalAnswer: boolean) {
+    const data = {
+      event: event.id,
+      answer: finalAnswer,
+    };
+    if (correctPollId) {
+      API.patchPoll(data, correctPollId);
+    } else {
+      API.postPoll(data).then((data) => {
+        setCorrectPollId(data.data.id);
+      });
+    }
+  }
+  const handleWillGo = () => {
+    setWillGo(true);
+    setWillNotGo(false);
+    submitPoll(true);
+  };
+  const handleWillNotGo = () => {
+    setWillGo(false);
+    setWillNotGo(true);
+    submitPoll(false);
+  };
+
+  useEffect(() => {
+    // get data to poll if it exist
+    API.getMyPoll().then((data) => {
+      if (data.data) {
+        let correctPoll: any = [];
+        correctPoll = data.data.filter((poll: any) => {
+          return poll.event === event.title;
+        });
+        // if exist fill correct data in inputs
+        if (correctPoll[0]) {
+          correctPoll[0].answer ? setWillGo(true) : setWillNotGo(true);
+          setCorrectPollId(correctPoll[0].id);
+        }
+      }
+    });
+    // disable input if deadline crossed
+    if (+today.getTime() > +deadline.getTime()) {
+      setMissedDeadline(true);
+    } else {
+      setMissedDeadline(false);
+    }
+  }, [poll, correctPollId]);
+
   return (
     <div className="notifications__content">
       <div className="notifications__content-image-wrapper">
         <img
           className="notifications__content-image"
-          // src={data.image || eventImage}
-          src={eventImage}
+          src={event.image || eventImage}
+          // src={eventImage}
           alt="event"
         />
       </div>
@@ -29,26 +86,49 @@ const BlockEventNotification = (props: any) => {
           {props.days[startDate.getDay()]},{" "}
           {props.monthListRus[startDate.getMonth()]} {startDate.getDate()}
         </p>
-        <p className="notifications__content-title">{data.title}</p>
-        <p className="notifications__content-description">{data.description}</p>
+        <p className="notifications__content-title">{event.title}</p>
+        <p className="notifications__content-description">
+          {event.description}
+        </p>
         <p className="notifications__content-address">
           <img
             className="notifications__content-address-image"
             src={address}
             alt="address"
           />
-          Адрес: {data.place.name || data.address}
+          Адрес: {event.place.name || event.address}
         </p>
       </div>
       <div className="notifications__content-buttons">
-        <Link to={`/today/${data.id}`} className="link">
+        <Link to={`/today/${event.id}`} className="link">
           <button className="button notifications__content-button notifications__content-button_blue">
             Подробнее
           </button>
         </Link>
-        <button className="button notifications__content-button notifications__content-button_cyan">
-          Я пойду
-        </button>
+        {correctPollId ? (
+          willGo ? (
+            <button
+              onClick={handleWillNotGo}
+              className="button notifications__content-button notifications__content-button_cyan"
+            >
+              Я пойду
+            </button>
+          ) : (
+            <button
+              onClick={handleWillGo}
+              className="button notifications__content-button notifications__content-button_red"
+            >
+              Я не пойду
+            </button>
+          )
+        ) : (
+          <button
+            onClick={handleWillGo}
+            className="button notifications__content-button notifications__content-button_red"
+          >
+            Я не пойду
+          </button>
+        )}
       </div>
     </div>
   );
@@ -64,6 +144,7 @@ const Notification = (props: any) => {
   const [events, setEvents] = useState([]);
   const [search, setSearch] = useState("");
   const [period, setPeriod] = useState("");
+  const [myPoll, setMyPoll] = useState<any>({});
 
   // pagination
   const [currentPage, setCurrentPage] = useState(0);
@@ -89,12 +170,18 @@ const Notification = (props: any) => {
         setNext(data.data.next);
       }
     );
+
+    // get data to poll if it exist
+    API.getMyPoll().then((data) => {
+      setMyPoll(data.data);
+    });
   }, [pageSize, currentPage, search, period]);
 
   return (
     <div className="wrapper wrapper_bg_grey">
       <Navbar />
       <div className="content__wrapper">
+        <Spinner timeOut={1500} />
         <div className="notifications">
           <PageTitle text="Уведомления" />
           <div className="notifications__buttons">
@@ -114,6 +201,7 @@ const Notification = (props: any) => {
               onChange={(e: any) => {
                 setPeriod(e.value);
               }}
+              placeholder="Выберите период"
             />
           </div>
 
@@ -133,7 +221,14 @@ const Notification = (props: any) => {
             <div className="notifications__section-content">
               {events
                 ? events.map((event: any) => {
-                    return <BlockEventNotification data={event} {...props} />;
+                    return (
+                      <BlockEventNotification
+                        key={event.id}
+                        poll={myPoll}
+                        event={event}
+                        {...props}
+                      />
+                    );
                   })
                 : null}
             </div>

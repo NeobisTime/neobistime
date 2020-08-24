@@ -4,7 +4,7 @@ import { Input } from "../registration/registration";
 import withDataContainer from "../../../HOC/withData";
 import API from "../../../API";
 
-const ChangePassword = (props: any) => {
+const ChangePersonalData = (props: any) => {
   const [name, setName] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [image, setImage] = useState<any>([]);
@@ -63,32 +63,6 @@ const ChangePassword = (props: any) => {
               ФИО
             </label>
             <Input type="text" name="name" value={name} setValue={setName} />
-
-            {/* <label className="registration__label" htmlFor="email">
-              E-mail
-            </label>
-            <input
-              className="registration__input"
-              type="text"
-              name="email"
-              required
-              value={email}
-              onChange={handleChangeEmail}
-              onBlur={validate}
-            />
-            {errors && <div className="error__span">{errors.emailError}</div>} */}
-            {/* 
-            <label className="registration__label" htmlFor="department">
-              Департамент
-            </label>
-            <Select
-              options={props.departments}
-              className="registration__select"
-              onChange={(e: any) => {
-                setDepartment(e.value);
-              }}
-            /> */}
-
             <label className="registration__label" htmlFor="department">
               Фото
             </label>
@@ -101,31 +75,6 @@ const ChangePassword = (props: any) => {
                 }}
               />
             </div>
-            {/* <label className="registration__label" htmlFor="password">
-              Пароль
-            </label>
-            <div className="registration__password">
-              <input
-                className="registration__password-input"
-                type={hidden1 ? "password" : "text"}
-                minLength={8}
-                name="password1"
-                required
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
-              />
-              <img
-                onClick={() => {
-                  setHidden1(!hidden1);
-                }}
-                src={eye}
-                alt="eye"
-                className="registration__password-image"
-              />
-            </div> */}
-
             <label className="registration__label" htmlFor="phone">
               Телефон
             </label>
@@ -162,4 +111,4 @@ const ChangePassword = (props: any) => {
   );
 };
 
-export default withDataContainer(ChangePassword);
+export default withDataContainer(ChangePersonalData);
