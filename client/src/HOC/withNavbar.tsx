@@ -11,7 +11,7 @@ const withNavbarContainer = (Component: any, type?: string) => {
           <div className="wrapper">
             <AdminNavbar />
             <div className="content__wrapper">
-              <Spinner />
+              <Spinner timeOut={600} />
               <Component />
             </div>
           </div>
@@ -19,7 +19,7 @@ const withNavbarContainer = (Component: any, type?: string) => {
           <div className="wrapper">
             <Navbar />
             <div className="content__wrapper">
-              <Spinner />
+              <Spinner timeOut={600} />
               <Component />
             </div>
           </div>

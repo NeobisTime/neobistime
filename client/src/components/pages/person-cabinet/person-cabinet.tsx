@@ -76,8 +76,8 @@ const PersonalOffice = (props: any) => {
     datasets: [
       {
         data: [
-          statsData.quantity_of_attended_events,
-          statsData.quantity_of_missed_events,
+          statsData.quantity_of_attended_events || 0,
+          statsData.quantity_of_missed_events || -1,
         ],
         backgroundColor: ["#FFCE56", "#EC4C47"],
       },
@@ -228,7 +228,7 @@ const PersonalOffice = (props: any) => {
                 </p>
               </div>
 
-              <Link to="/change_password" className="link">
+              <Link to="/change_personal_data" className="link">
                 <button className="button personal-office__info-edit">
                   Редактировать
                 </button>

@@ -79,11 +79,15 @@ $blockWidth: 270px;
     box-sizing: border-box;
     &-image-wrapper {
       max-width: $blockWidth;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     &-image {
       width: 100%;
-      max-height: 100px;
+      height: 100px;
       border-radius: 10px 10px 0 0;
+      object-fit: cover;
     }
     &-block {
       height: 160px;
@@ -98,7 +102,7 @@ $blockWidth: 270px;
       line-height: 1.1;
     }
     &-date {
-      margin: 0 0 2px 0;
+      margin: 5px 0 3px 0;
       font-size: 12px;
       color: #eb0f0f;
     }
@@ -139,9 +143,12 @@ $blockWidth: 270px;
       &_cyan {
         background-color: #1feac5 !important;
       }
+      &_red {
+        background-color: red !important;
+      }
     }
   }
-  &__wrapper-table{
+  &__wrapper-table {
     background: #e2e6f5;
     border-radius: 10px;
     box-sizing: border-box;
