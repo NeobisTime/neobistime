@@ -80,8 +80,11 @@ class Attendees(models.Model):
     Storing attendees, useful only for frontend part
     """
     event = models.OneToOneField(Event, on_delete=models.CASCADE, related_name="attendees")
-    departments = postgres_fields.ArrayField(models.IntegerField())
-    individual_users = postgres_fields.ArrayField(models.CharField(max_length=200))
+    departments = postgres_fields.ArrayField(models.IntegerField(), null=True, blank=True)
+    individual_users = postgres_fields.ArrayField(models.CharField(max_length=200), blank=True, null=True)
+
+    def __str__(self):
+        return f"Departments: {self.departments}, Individual Users:{self.individual_users}"
 
 
 class Notes(models.Model):

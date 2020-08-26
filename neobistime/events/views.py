@@ -109,27 +109,27 @@ class EventViewSet(viewsets.ModelViewSet):
         :return:
         """
 
-        if self.request.user.is_authenticated:
+        if self.request.data.get("public", "").lower() == "true":
+            departments = self.request.data.get("departments", "")
+            individual_users = self.request.data.get("individual_users", "")
+
+            departments_list = list(map(int, re.findall("\d+", departments)))  # noqa
+            users_list = individual_users.split(",")
+
+            if not departments and not individual_users:
+                raise ValidationError("Attendees required")
+
             event_data = serializer.save(owner=self.request.user)
 
-            if self.request.data["public"].lower() == "true":
-                departments = self.request.data.get("departments", "")
-                individual_users = self.request.data.get("individual_users", "")
-                departments_list = list(map(int, re.findall("\d+", departments)))  # noqa
-                users_list = individual_users.split(",")
-
-                if not departments and not individual_users:
-                    raise ValidationError("Attendees required")
-
-                serializer = serializers.UserNotificationSerializer(
-                    data={"departments": departments_list, "individual_users": users_list}
-                )
-                serializer.is_valid(raise_exception=True)
-                serializer.notify(event_data.id)
-
-            return event_data
+            serializer = serializers.UserNotificationSerializer(
+                data={"departments": departments_list, "individual_users": users_list}
+            )
+            serializer.is_valid(raise_exception=True)
+            serializer.notify(event_data.id)
         else:
-            raise PermissionDenied('Авторизуйтесь в системе для добавления ивентов!')
+            event_data = serializer.save(owner=self.request.user)
+
+        return event_data
 
     def update(self, request, *args, **kwargs):
         """
@@ -146,14 +146,19 @@ class EventViewSet(viewsets.ModelViewSet):
             # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
 
-        if request.data["public"].lower() == "true":
+        if self.request.data.get("public", "").lower() == "true":
             departments = request.data.get("departments", "")
             individual_users = request.data.get("individual_users", "")
+
             departments_list = list(map(int, re.findall("\d+", departments)))  # noqa
             users_list = individual_users.split(",")
 
             if not departments and not individual_users:
-                raise ValidationError("Attendees required")
+                try:
+                    departments_list = instance.attendees.departments
+                    users_list = instance.attendees.individual_users
+                except Exception:
+                    raise ValidationError("Attendees were not given or improperly created event")
 
             serializer = serializers.UserNotificationSerializer(
                 data={"departments": departments_list, "individual_users": users_list}
