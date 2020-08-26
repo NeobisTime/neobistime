@@ -2,6 +2,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.utils import timezone
 from rest_framework import serializers
+from datetime import datetime
+import pytz
 
 from .models import Event, Place, Poll, Notes
 from .tasks import notify_users
@@ -125,12 +127,30 @@ class UserNotificationSerializer(serializers.Serializer):
     Serializing email notification data
     """
     departments = serializers.ListField(child=serializers.IntegerField(), required=False)
-    individual_users = serializers.ListField(child=serializers.EmailField(), required=False, default=[])
+    individual_users = serializers.ListField(child=serializers.EmailField(allow_blank=True), required=False, default=[])
 
     def notify(self, event_id):
         departments = self.validated_data["departments"]
         individual_users = self.validated_data["individual_users"]
         notify_users.delay(departments, individual_users, event_id)
+
+
+def check_date_for_events(start, end, events):
+    closest_to_start = events.filter(start_date__lt=start).first()
+    closest_to_end = events.filter(end_date__gt=end).first()
+    inside_events = events.filter(Q(start_date__gt=start, start_date__lt=end) |
+                                  Q(end_date__gt=start, end_date__lt=end) |
+                                  Q(start_date=start, end_date=end))
+
+    existing_events = [*inside_events]
+
+    if closest_to_start and not closest_to_start.end_date <= start:
+        existing_events.append(closest_to_start)
+
+    if closest_to_end and not closest_to_end.start_date >= end:
+        existing_events.append(closest_to_end)
+
+    return existing_events
 
 
 def available_date_for_event(validated_data, **kwargs):
@@ -139,27 +159,25 @@ def available_date_for_event(validated_data, **kwargs):
     :param validated_data:
     :return: information of conflict event
     """
-    start = validated_data['start_date']
-    end = validated_data['end_date']
-    place = validated_data['place']
-    events = Event.objects.all()
+    timezone_ = pytz.timezone('Asia/Bishkek')
 
+    start = timezone_.localize(datetime.strptime(validated_data['start_date'], "%Y-%m-%dT%H:%M:%S"))
+    end = timezone_.localize(datetime.strptime(validated_data['end_date'], "%Y-%m-%dT%H:%M:%S"))
+
+    place = validated_data['place']
+    events = Event.objects.all().exclude(place__name="Другое")
     if place:
         if kwargs.get("update", False):
             events = events.exclude(pk=kwargs["event_id"])
 
         if 'Весь офис' in place.name:
-            events = events.filter(Q(start_date__gt=start, start_date__lt=end) |
-                                   Q(end_date__gt=start, end_date__lt=end)).exclude(place__name="Другое")
+            existing_events = check_date_for_events(start, end, events)
         else:
-            events = events.filter(Q(start_date__gt=start, start_date__lt=end) |
-                                   Q(end_date__gt=start, end_date__lt=end),
-                                   Q(place__pk=place.pk)).exclude(place__name="Другое")
+            existing_events = check_date_for_events(start, end, events.filter(place=place.pk))
 
-        if events.exists():
-            serializer = EventListSerializer(events, many=True)
-            raise serializers.ValidationError({"error": "place is not empty",
-                                               "events": serializer.data})
+        if existing_events:
+            serializer = EventListSerializer(existing_events, many=True)
+            raise serializers.ValidationError({"error": "place is not empty", "events": serializer.data})
 
 
 class EventCreateUpdateSerializer(serializers.ModelSerializer):
