@@ -65,6 +65,8 @@ def stats_by_department(request):
         # организованный данным департаментом,
         # и разделить на количество мероприятий
         applied_polls = []
+        # берем в расчет только те ивенты, которые закончились
+        event_queryset = event_queryset.filter(end_date__lte=timezone.now())
         for event in event_queryset:
             was_on_event_polls = event.polls.prefetch_related('polls').filter(was_on_event=True).count()
             applied_polls.append(was_on_event_polls)
@@ -130,7 +132,8 @@ def general_statistics(request):
     # average number of people per event
     # getting all polls that was marked as True by admin
     applied_polls = []
-    for event in Event.objects.all():
+    finished_events = Event.objects.filter(end_date__lt=timezone.now())
+    for event in finished_events:
         was_on_event_polls = event.polls.prefetch_related('polls').filter(was_on_event=True).count()
         applied_polls.append(was_on_event_polls)
     try:
