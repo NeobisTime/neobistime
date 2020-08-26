@@ -2,8 +2,25 @@ import telebot
 from telebot import types
 import requests
 from decouple import config
+from django.http import HttpResponse
+from django.core.exceptions import PermissionDenied
+from django.views.decorators.csrf import csrf_exempt
 
 bot = telebot.TeleBot(config('BOT_TOKEN'))
+
+
+@csrf_exempt
+def django_bot(request):
+    if request.META['CONTENT_TYPE'] == 'application/json':
+
+        json_data = request.body.decode('utf-8')
+        update = telebot.types.Update.de_json(json_data)
+        bot.process_new_updates([update])
+
+        return HttpResponse("")
+
+    else:
+        raise PermissionDenied
 
 
 @bot.message_handler(commands=['feedback'])
@@ -105,7 +122,3 @@ def telegram_notify_user(chat_id, title, event_id):
                                                 url=url)
     markup.add(button)
     bot.send_message(chat_id, title, parse_mode='html', reply_markup=markup)
-
-
-# TODO uncomment this part on deploy
-bot.polling(none_stop=True)
