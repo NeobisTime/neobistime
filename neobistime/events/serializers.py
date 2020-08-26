@@ -143,11 +143,15 @@ def check_date_for_events(start, end, events):
                                   Q(start_date=start, end_date=end))
 
     existing_events = [*inside_events]
-
-    if closest_to_start and not closest_to_start.end_date <= start:
+    print()
+    print()
+    print(closest_to_start, closest_to_end)
+    print()
+    print()
+    if closest_to_start and closest_to_start.end_date <= start:
         existing_events.append(closest_to_start)
 
-    if closest_to_end and not closest_to_end.start_date >= end:
+    if closest_to_end and closest_to_end.start_date >= end:
         existing_events.append(closest_to_end)
 
     return existing_events
