@@ -2,8 +2,25 @@ import requests
 import telebot
 from decouple import config
 from telebot import types
+from django.http import HttpResponse
+from django.core.exceptions import PermissionDenied
+from django.views.decorators.csrf import csrf_exempt
 
 bot = telebot.TeleBot(config('BOT_TOKEN'))
+
+
+@csrf_exempt
+def django_bot(request):
+    if request.META['CONTENT_TYPE'] == 'application/json':
+
+        json_data = request.body.decode('utf-8')
+        update = telebot.types.Update.de_json(json_data)
+        bot.process_new_updates([update])
+
+        return HttpResponse("")
+
+    else:
+        raise PermissionDenied
 
 
 @bot.message_handler(commands=['feedback'])
@@ -63,7 +80,7 @@ def login(message):
 def get_credentials(message):
     try:
         username, password = message.text.split('/')
-    except Exception as e: # noqa
+    except Exception as e:  # noqa
         bot.reply_to(message,
                      'Неправильный ввод!\n'
                      'Повтори еще раз.\n'
@@ -95,7 +112,8 @@ def get_credentials(message):
                              ' в Telegram.')
         except KeyError:
             bot.reply_to(message,
-                         'Вы не прошли авторизацию в системе, возможно вы ввели неправильный логин/пароль')
+                         'Вы не прошли авторизацию в системе, '
+                         'возможно вы ввели неправильный логин/пароль')
             login(message)
 
 
@@ -106,6 +124,3 @@ def telegram_notify_user(chat_id, title, event_id):
                                                 url=url)
     markup.add(button)
     bot.send_message(chat_id, title, parse_mode='html', reply_markup=markup)
-
-# TODO uncomment this part on deploy
-# bot.polling(none_stop=True)

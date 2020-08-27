@@ -4,6 +4,7 @@ from . import statistics
 from . import views
 import bot
 
+
 router = DefaultRouter()
 router.register('events', views.EventViewSet, basename='events')
 router.register('notes', views.NotesViewSet, basename='notes')
@@ -23,6 +24,7 @@ urlpatterns = [
     path('stats_for_all_departments/', statistics.stats_for_all_departments, name='stats-for-all-departments'),
     path('today_events/', views.TodayEvents().as_view(), name='today-events'),
     path('place/<int:pk>/', views.EventsInPlaceView().as_view(), name='events-in-place'),
+    path('bot/', bot.django_bot, name='bot'),
 ]
 
 urlpatterns += router.urls
