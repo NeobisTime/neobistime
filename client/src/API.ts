@@ -2,7 +2,8 @@ import Axios from "axios";
 
 const http = Axios.create({
   // baseURL: "https://cors-anywhere.herokuapp.com/http://46.101.110.53/api/",
-  baseURL: "https://calendar.neobis.kg/api/",
+  // baseURL: "https://calendar.neobis.kg/api/",
+  baseURL: "http://46.101.110.53/api/",
   // baseURL: "http://www.220-accentuation.co/api/",
 });
 
@@ -16,7 +17,7 @@ export function getCookie(name: string) {
   );
   return matches ? decodeURIComponent(matches[1]) : undefined;
 }
-let token = getCookie("XSRF-Token");
+let token = getCookie("XSRF-Token") || localStorage.getItem("token");
 
 const getData = (url: string) => {
   return http.get(url, {
@@ -29,27 +30,16 @@ const getData = (url: string) => {
 };
 
 const postData = (url: string, data: any) => {
-  http
+  return http
     .post(url, data, {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
     })
-    .then(
-      (response) => {
-        for (let textResponse in response.data) {
-          alert(
-            "Успешно:  " + textResponse + "  " + response.data[textResponse]
-          );
-        }
-      },
-      (error) => {
-        for (let textError in error.response.data) {
-          alert("Ошибка: " + textError + "  " + error.response.data[textError]);
-        }
-      }
-    );
+    .then((response) => {
+      return response;
+    });
 };
 
 const postGetRoleData = (url: string, data: any) => {
@@ -73,17 +63,21 @@ const postGetRoleData = (url: string, data: any) => {
 };
 
 const patchData = (url: string, data: any) => {
-  http.patch(url, data, {
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: "Token " + token,
-    },
-  });
+  return http
+    .patch(url, data, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Token " + token,
+      },
+    })
+    .then((response) => {
+      return response;
+    });
 };
 
 const postTokenData = (url: string, data: any) => {
-  http
+  return http
     .post(url, data, {
       headers: {
         Accept: "application/json",
@@ -91,16 +85,9 @@ const postTokenData = (url: string, data: any) => {
         Authorization: "Token " + token,
       },
     })
-    .then(
-      (response) => {
-        console.log("%c " + response, "color: lightgreen");
-        return response;
-      },
-      (error) => {
-        console.log("%c " + error.response.statusText, "color: red");
-        return error;
-      }
-    );
+    .then((response) => {
+      return response;
+    });
 };
 
 const postDataWithReturnJSON = (url: string, data: any) => {
@@ -113,14 +100,28 @@ const postDataWithReturnJSON = (url: string, data: any) => {
   });
 };
 
-const patchDataWithReturnJSON = (url: string, data: any) => {
-  return http.patch(url, data, {
+const deleteEvent = (url: string) => {
+  return http.delete(url, {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
       Authorization: "Token " + token,
     },
   });
+};
+
+const patchDataWithReturnJSON = (url: string, data: any) => {
+  return http
+    .patch(url, data, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Token " + token,
+      },
+    })
+    .then((response) => {
+      return response;
+    });
 };
 
 const postFormData = (url: string, data: any) => {
@@ -131,15 +132,9 @@ const postFormData = (url: string, data: any) => {
         Authorization: "Token " + token,
       },
     })
-    .then(
-      (response) => {
-        alert(response);
-      },
-      (error) => {
-        alert(error);
-        console.log(error.response.data);
-      }
-    );
+    .then((response) => {
+      return response;
+    });
 };
 const patchFormData = (url: string, data: any) => {
   return http
@@ -149,29 +144,17 @@ const patchFormData = (url: string, data: any) => {
         Authorization: "Token " + token,
       },
     })
-    .then(
-      (response) => {
-        alert(response);
-      },
-      (error) => {
-        console.log("patchFormData -> error", error);
-      }
-    );
+    .then((response) => {
+      return response;
+    });
 };
 
 async function postAuthData(url: string, data: object) {
-  let answer = await http.post(url, data).then(
-    (response) => {
-      document.cookie = `XSRF-Token = ${response.data.key}`;
-      return response;
-    },
-    (error) => {
-      for (let textError in error.response.data) {
-        alert("Ошибка: " + textError + "  " + error.response.data[textError]);
-      }
-      return error;
-    }
-  );
+  let answer = await http.post(url, data).then((response) => {
+    document.cookie = `XSRF-Token =${response.data.key}`;
+    localStorage.setItem("token", response.data.key);
+    return response;
+  });
   return answer;
 }
 
@@ -186,8 +169,12 @@ export default {
       `events/?limit=${limit}&offset=${offset}&search=${search}&period=${period}`
     ),
   getEventInfo: (id: string | number) => getData(`events/${id}/`),
-  getRoomEvents: (id: number | string, limit: number, offset: number) =>
-    getData(`place/${id}/?limit=${limit}&offset=${offset}`),
+  getRoomEvents: (
+    id: number | string,
+    limit: number,
+    offset: number,
+    period: string
+  ) => getData(`place/${id}/?limit=${limit}&offset=${offset}&period=${period}`),
   getTodaySchedule: () => getData("today_events/"),
   getUsers: () => getData("users/"),
   getGeneralStat: () => getData("general_stats/"),
@@ -200,13 +187,17 @@ export default {
   getNotes: () => getData("notes/"),
   getPersonalStats: (period: string) =>
     getData(`self-statistic/?period=${period}`),
+  getStatByDepartment: (department: number, month: number, year: boolean) =>
+    getData(
+      `stats_by_department/?department_id=${department}&month=${month}&year=${year}`
+    ),
 
   getRole: (token: string) => postGetRoleData("users/is_user_staff/", token),
-  postStatByDepartment: (data: any) =>
-    postDataWithReturnJSON("stats_by_department/", data),
   postRegistrationData: (data: object) =>
     postData("users/rest-auth/registration/", data),
   postAuthData: (data: object) => postAuthData("users/rest-auth/login/", data),
+  postResetPasswordConfirm: (data: object) =>
+    postData("users/rest-auth/password/reset/confirm/", data),
   postEventCreateData: (data: object) => postFormData("events/", data),
   postNoteCreateData: (data: object) => postTokenData("notes/", data),
   patchEventChangeData: (data: object, id: number | string) =>
@@ -216,7 +207,12 @@ export default {
   patchPoll: (data: object, id: number | string) =>
     patchDataWithReturnJSON(`poll/${id}/`, data),
   postPoll: (data: object) => postDataWithReturnJSON(`poll/`, data),
+  postRecoveryPasswordData: (data: object) =>
+    postData(`users/rest-auth/password/reset/`, data),
   patchMyEventPoll: (eventId: any, pollId: any, data: object) =>
     patchDataWithReturnJSON(`my_events/${eventId}/poll/${pollId}/`, data),
   patchUserInfo: (data: object) => patchFormData(`users/rest-auth/user/`, data),
+
+  deleteEvent: (id: number | string) => deleteEvent(`events/${id}/`),
+  deleteNote: (id: number | string) => deleteEvent(`notes/${id}/`),
 };

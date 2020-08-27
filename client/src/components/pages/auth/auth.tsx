@@ -4,6 +4,7 @@ import "../../../styles/pages/_auth.scss";
 import { Link } from "react-router-dom";
 import eye from "../../../images/pages/password_eye.svg";
 import API, { getCookie } from "../../../API";
+import Alert from "../../shared/alert";
 
 const Authorization: React.FC = (props: any) => {
   const [email, setEmail] = useState<string>("");
@@ -34,27 +35,51 @@ const Authorization: React.FC = (props: any) => {
     return errors;
   };
 
+  const [alertType, setAlertType] = useState("success");
+  const [alertText, setAlertText] = useState("");
+  let [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
+  const toggleAlertOpen = () => {
+    setIsAlertOpen(!isAlertOpen);
+  };
+  const openAlert = (response: any) => {
+    if (response.status >= 200 && response.status <= 299) {
+      setAlertType("success");
+      setAlertText("Проверьте почту");
+    } else {
+      setAlertType("error");
+      setAlertText(response.response || "непредвиденная ошибка");
+    }
+    setIsAlertOpen(true);
+    setTimeout(()=>{
+      setIsAlertOpen(false);
+    },3000)
+  };
+
   async function handleSubmit(event: any) {
     event.preventDefault();
     const data = { email, password };
     validate();
 
-    let answer = await API.postAuthData(data);
-    if (answer.status >= 200 && answer.status <= 299) {
-      let token: string = getCookie("XSRF-Token") || "";
-      let requestDataToPush: any = {
-        token,
-      };
-      await API.getRole(requestDataToPush).then((data: any) => {
-        if (data.data.is_staff) {
-          document.cookie = `role =admin`;
-        } else {
-          document.cookie = `role =user`;
-        }
+    let answer = await API.postAuthData(data)
+      .then((response) => {
+        openAlert(response);
+        let token: string = getCookie("XSRF-Token") || "";
+        let requestDataToPush: any = {
+          token,
+        };
+        API.getRole(requestDataToPush).then((data: any) => {
+          if (data.data.is_staff) {
+            document.cookie = `role =admin`;
+          } else {
+            document.cookie = `role =user`;
+          }
+        });
+        props.history.push("/");
+        window.location.reload(true);
+      })
+      .catch((error) => {
+        openAlert(error.request);
       });
-      props.history.push("/");
-      window.location.reload(true);
-    }
   }
 
   return (
@@ -130,6 +155,9 @@ const Authorization: React.FC = (props: any) => {
             alt="girl introducin login"
           />
         </section>
+        {isAlertOpen && (
+          <Alert type={alertType} text={alertText} onClose={toggleAlertOpen} />
+        )}
       </div>
     </div>
   );

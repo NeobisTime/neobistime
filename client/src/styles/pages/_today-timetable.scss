@@ -41,7 +41,13 @@ $listHeight: calc(100vh - 77px - 5px);
           width: 34px;
           height: 34px;
           border-radius: 50%;
-          //   background-color: var(--neobisColor);
+          background-color: var(--neobisColor);
+          &_red {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background-color: #eb0f0f !important;
+          }
         }
       }
       &-content {

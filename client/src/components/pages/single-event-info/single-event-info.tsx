@@ -5,6 +5,7 @@ import withNavbarContainer from "../../../HOC/withNavbar";
 import { withRouter } from "react-router-dom";
 import API from "../../../API";
 import withDataContainer from "../../../HOC/withData";
+import Alert from "../../shared/alert";
 
 let days = [
   "Воскресенье",
@@ -50,6 +51,7 @@ const EventInfo = (props: any) => {
     setwillGo(true);
     setwillNotGo(false);
     setFinalAnswer(true);
+    setRejectionReason("");
   };
   const handlewillNotGo = () => {
     setwillGo(false);
@@ -88,6 +90,26 @@ const EventInfo = (props: any) => {
     });
   }, []);
 
+  const [alertType, setAlertType] = useState("success");
+  const [alertText, setAlertText] = useState("");
+  let [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
+  const toggleAlertOpen = () => {
+    setIsAlertOpen(!isAlertOpen);
+  };
+  const openAlert = (response: any) => {
+    if (response.status >= 200 && response.status <= 299) {
+      setAlertType("success");
+      setAlertText("Все прошло без ошибок");
+    } else {
+      setAlertType("error");
+      setAlertText(response.response || "непредвиденная ошибка");
+    }
+    setIsAlertOpen(true);
+    setTimeout(() => {
+      setIsAlertOpen(false);
+    }, 3000);
+  };
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const data = {
@@ -96,14 +118,16 @@ const EventInfo = (props: any) => {
       rejection_reason: rejectionReason,
     };
     if (correctPollId) {
-      API.patchPoll(data, correctPollId);
-      // .then((data) => {
-      //   console.log("handleSubmit -> data", data.data);
-      // });
+      API.patchPoll(data, correctPollId)
+        .then((response) => {
+          openAlert(response);
+        })
+        .catch((error) => {
+          openAlert(error.request);
+        });
     } else {
       API.postPoll(data).then((data) => {
         setCorrectPollId(data.data.id);
-        // window.location.reload(true);
       });
     }
   };
@@ -139,7 +163,9 @@ const EventInfo = (props: any) => {
             {(deadline.getMinutes() < 10 ? "0" : "") + deadline.getMinutes()}
           </p>
           {missedDeadline ? (
-            <p className="event-info__content-text">Вы пропустили deadline</p>
+            <p className="event-info__content-text_big_red">
+              К СОЖАЛЕНИЮ, ВЫ ПРОПУСТИЛИ ДЭДЛАЙН
+            </p>
           ) : (
             <form className="event-info__content-form" onSubmit={handleSubmit}>
               <label className="event-info-modal__label">
@@ -184,9 +210,16 @@ const EventInfo = (props: any) => {
           )}
         </div>
         <div className="event-info__content">
-          <img src={eventData.image || preview} alt="event" className="event-info__content-right-image" />
+          <img
+            src={eventData.image || preview}
+            alt="event"
+            className="event-info__content-right-image"
+          />
         </div>
       </div>
+      {isAlertOpen && (
+        <Alert type={alertType} text={alertText} onClose={toggleAlertOpen} />
+      )}
     </>
   );
 };

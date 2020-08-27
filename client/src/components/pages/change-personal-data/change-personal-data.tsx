@@ -3,6 +3,7 @@ import designPhoto from "../../../images/pages/forgot_password_gi2d.svg";
 import { Input } from "../registration/registration";
 import withDataContainer from "../../../HOC/withData";
 import API from "../../../API";
+import Alert from "../../shared/alert";
 
 const ChangePersonalData = (props: any) => {
   const [name, setName] = useState<string>("");
@@ -37,6 +38,26 @@ const ChangePersonalData = (props: any) => {
     });
   }, []);
 
+  const [alertType, setAlertType] = useState("success");
+  const [alertText, setAlertText] = useState("");
+  let [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
+  const toggleAlertOpen = () => {
+    setIsAlertOpen(!isAlertOpen);
+  };
+  const openAlert = (response: any) => {
+    if (response.status >= 200 && response.status <= 299) {
+      setAlertType("success");
+      setAlertText("Все прошло без ошибок");
+    } else {
+      setAlertType("error");
+      setAlertText(response.response || "непредвиденная ошибка");
+    }
+    setIsAlertOpen(true);
+    setTimeout(() => {
+      setIsAlertOpen(false);
+    }, 5000);
+  };
+
   const handleSubmit = (event: any) => {
     event.preventDefault();
     validate();
@@ -47,7 +68,13 @@ const ChangePersonalData = (props: any) => {
     if (image[0]) {
       formData.append("profile_img", image[0]);
     }
-    API.patchUserInfo(formData);
+    API.patchUserInfo(formData)
+      .then((response) => {
+        openAlert(response);
+      })
+      .catch((error) => {
+        openAlert(error.request);
+      });
   };
 
   return (
@@ -67,13 +94,17 @@ const ChangePersonalData = (props: any) => {
               Фото
             </label>
             <div className="registration__input">
-              <input
-                type="file"
-                name="image"
-                onChange={(e) => {
-                  setImage(e.target.files);
-                }}
-              />
+              <label className="custom-file-upload">
+                <input
+                  type="file"
+                  name="image"
+                  className="custom-file-input"
+                  onChange={(e) => {
+                    setImage(e.target.files);
+                  }}
+                />
+                {image[0] ? image[0].name : "Загрузите фото"}
+              </label>
             </div>
             <label className="registration__label" htmlFor="phone">
               Телефон
@@ -106,6 +137,9 @@ const ChangePersonalData = (props: any) => {
             alt="girl introducin login"
           />
         </section>
+        {isAlertOpen && (
+          <Alert type={alertType} text={alertText} onClose={toggleAlertOpen} />
+        )}
       </div>
     </div>
   );

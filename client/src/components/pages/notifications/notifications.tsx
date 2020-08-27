@@ -17,6 +17,7 @@ const BlockEventNotification = (props: any) => {
   const [willNotGo, setWillNotGo] = useState<boolean | undefined>(false);
 
   const [missedDeadline, setMissedDeadline] = useState(false);
+  console.log("BlockEventNotification -> missedDeadline", missedDeadline);
   const [correctPollId, setCorrectPollId] = useState<any>(0);
   let deadline = new Date(event.deadline);
   let startDate = new Date(event.start);
@@ -108,23 +109,38 @@ const BlockEventNotification = (props: any) => {
         {correctPollId ? (
           willGo ? (
             <button
+              disabled={missedDeadline ? true : false}
               onClick={handleWillNotGo}
-              className="button notifications__content-button notifications__content-button_cyan"
+              className={
+                missedDeadline
+                  ? "button notifications__content-button notifications__content-button_grey"
+                  : "button notifications__content-button notifications__content-button_cyan"
+              }
             >
               Я пойду
             </button>
           ) : (
             <button
+              disabled={missedDeadline ? true : false}
               onClick={handleWillGo}
-              className="button notifications__content-button notifications__content-button_red"
+              className={
+                missedDeadline
+                  ? "button notifications__content-button notifications__content-button_grey"
+                  : "button notifications__content-button notifications__content-button_red"
+              }
             >
               Я не пойду
             </button>
           )
         ) : (
           <button
+            disabled={missedDeadline ? true : false}
             onClick={handleWillGo}
-            className="button notifications__content-button notifications__content-button_red"
+            className={
+              missedDeadline
+                ? "button notifications__content-button notifications__content-button_grey"
+                : "button notifications__content-button notifications__content-button_red"
+            }
           >
             Я не пойду
           </button>

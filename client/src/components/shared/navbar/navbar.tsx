@@ -32,7 +32,7 @@ const Navbar = (props: any) => {
       );
       setDepartment(departmentNumber[0]);
     });
-    let token = getCookie("XSRF-Token");
+    let token = localStorage.getItem('token')
     if (!token) {
       props.history.push('/auth')
     }
@@ -118,7 +118,7 @@ const Navbar = (props: any) => {
           {role === "admin" ? (
             <NavLink
               exact
-              to="/admin"
+              to="/lead_admin"
               activeStyle={{ backgroundColor: "#1DA48B" }}
               className="navbar__list-link"
             >

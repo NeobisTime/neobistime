@@ -48,7 +48,13 @@ const PersonalEventCreateModal = (props: any) => {
       start: start_time,
       end: end_time,
     };
-    API.postNoteCreateData(data);
+    API.postNoteCreateData(data)
+      .then((response) => {
+        props.OpenAlert(response);
+      })
+      .catch((error) => {
+        props.OpenAlert(error.request);
+      });
   }
 
   return (
