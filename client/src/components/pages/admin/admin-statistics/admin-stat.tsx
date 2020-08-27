@@ -48,8 +48,8 @@ const AdminStat = (props: any) => {
     datasets: [
       {
         data: [
-          departmentData.average_attendance,
-          100 - departmentData.average_attendance,
+          departmentData.average_attendance || 0,
+          100 - departmentData.average_attendance || 100,
         ],
         backgroundColor: ["#F7D154", "lightgrey"],
       },
@@ -76,31 +76,19 @@ const AdminStat = (props: any) => {
     labels: departmentsChartLabels,
   };
 
-  function updateDepartmentData() {
-    const data = {
-      month: month,
-      department_id: +department,
-      year,
-    };
-    API.postStatByDepartment(data).then((data: any) => {
-    console.log("updateDepartmentData -> data", data.data)
+  useEffect(() => {
+    API.getStatByDepartment(department, month, year).then((data: any) => {
       setDepartmentData(data.data);
     });
-  }
-
-  useEffect(() => {
-    updateDepartmentData();
   }, [month, year, department]);
 
   const handleDepartmentChange = (e: any) => {
     setDepartment(e.value);
-    updateDepartmentData();
   };
 
   const handleMonthChange = (e: any) => {
     setMonth(+e.value + 1);
     setYear(false);
-    updateDepartmentData();
   };
 
   useEffect(() => {
@@ -119,8 +107,6 @@ const AdminStat = (props: any) => {
       setDepartmentsChartData(values);
       setDepartmentsChartLabels(keys);
     });
-
-    updateDepartmentData();
   }, []);
 
   return (
@@ -213,12 +199,14 @@ const AdminStat = (props: any) => {
         <div className="admin-stat__charts-doughnut">
           <div className="admin-stat__charts-doughnut-filters">
             <Select
+              placeholder="Департамент"
               options={props.departments}
               className="admin-stat__charts-doughnut-select"
               required
               onChange={handleDepartmentChange}
             />
             <Select
+              placeholder="Месяц"
               options={props.yearsMonth}
               className="admin-stat__charts-doughnut-select"
               required

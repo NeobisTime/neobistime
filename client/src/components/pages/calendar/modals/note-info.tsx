@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { CloseModalButton } from "../calendar";
 import { Link } from "react-router-dom";
+import API from "../../../../API";
 
 const NoteInfoModal = (props: any) => {
   const { event } = props;
+  console.log("NoteInfoModal -> event", event);
   let startDate = new Date(event.start);
 
   let months = [
@@ -29,6 +31,16 @@ const NoteInfoModal = (props: any) => {
     "Пятница",
     "Суббота",
   ];
+
+  const handleDelete = () => {
+    API.deleteNote(event.id)
+      .then((response) => {
+        props.OpenAlert(response);
+      })
+      .catch((error) => {
+        props.OpenAlert(error.request);
+      });
+  };
 
   return (
     <div className="modal_centered">
@@ -58,6 +70,12 @@ const NoteInfoModal = (props: any) => {
             >
               {event.description}
             </p>
+            <button
+              onClick={handleDelete}
+              className="personal-create__buttons-delete button"
+            >
+              Удалить
+            </button>
           </div>
         </div>
       </div>

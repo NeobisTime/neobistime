@@ -47,7 +47,7 @@ $filterBtnColor: #2c3e50;
     }
     &-text {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       box-sizing: border-box;
       margin: 5px 0 10px 0;
       color: rgba(255, 255, 255, 0.8);
@@ -67,7 +67,7 @@ $filterBtnColor: #2c3e50;
       &-container {
       }
       &-value {
-        width: 120px;
+        width: 130px;
         height: 120px;
         font-size: 36px;
         display: flex;
@@ -101,7 +101,6 @@ $filterBtnColor: #2c3e50;
         }
         &-value {
           box-sizing: border-box;
-          
         }
       }
     }
@@ -109,12 +108,24 @@ $filterBtnColor: #2c3e50;
     &-edit {
       font-family: "Roboto", sans-serif;
       font-weight: bold;
-      font-size: 18px;
-      color: white;
+      font-size: 20px;
+      color: var(--neobisColor) !important;
       display: block;
+      background-color: white !important;
+      border-radius: 10px;
       box-sizing: border-box;
-      padding: 0;
+      padding: 2px 7px 4px 2px;
       margin: 0;
+      width: 180px;
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      text-align: center;
+      &-image {
+        width: 15px;
+        box-sizing: border-box;
+        margin: 0 5px 0 ;
+      }
     }
     &-name {
       font-size: 26px;

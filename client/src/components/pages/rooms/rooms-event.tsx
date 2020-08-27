@@ -4,11 +4,18 @@ import withNavbarContainer from "../../../HOC/withNavbar";
 import { withRouter } from "react-router-dom";
 import API from "../../../API";
 import arrow from "../../../images/shared/arrow.svg";
+import Select from "react-select";
 
 const RoomsEvent = (props: any) => {
   let roomId = props.match.params.id;
   const [events, setEvents] = useState([]);
-  console.log("RoomsEvent -> events", events);
+  const [period, setPeriod] = useState("");
+  const periods = [
+    { value: "week", label: "Неделя" },
+    { value: "month", label: "Месяц" },
+    { value: "year", label: "Год" },
+    { value: "", label: "Все" },
+  ];
 
   // pagination
   const [currentPage, setCurrentPage] = useState(0);
@@ -32,23 +39,34 @@ const RoomsEvent = (props: any) => {
   ];
 
   useEffect(() => {
-    API.getRoomEvents(roomId, pageSize, currentPage * pageSize).then((data) => {
+    API.getRoomEvents(roomId, pageSize, currentPage * pageSize,period).then((data) => {
       setEvents(data.data.results);
       setTotalProducts(data.data.count);
       setNext(data.data.next);
     });
-  }, [pageSize, currentPage]);
+  }, [pageSize, currentPage, period]);
   return (
     <div>
       <div className="end-event-info">
         <div>
-          <p className="end-event-info__title">
-            {roomId && +roomId === 1
-              ? "Маленькая комната"
-              : +roomId === 2
-              ? "Большая комната"
-              : "Весь офис"}
-          </p>
+          <div className='rooms-event__top-side'>
+            <p className="end-event-info__title">
+              {roomId && +roomId === 1
+                ? "Маленькая комната"
+                : +roomId === 2
+                ? "Большая комната"
+                : "Весь офис"}
+            </p>
+            <Select
+              options={periods}
+              className="rooms-event__select"
+              onChange={(e: any) => {
+                setPeriod(e.value);
+              }}
+              placeholder="Период"
+            />
+          </div>
+
           <table className="end-event-info__table">
             <colgroup className="end-event-info__table-colgroup">
               <col id="person" />

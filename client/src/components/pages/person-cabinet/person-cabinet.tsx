@@ -3,6 +3,7 @@ import Navbar from "../../shared/navbar";
 import { Link } from "react-router-dom";
 import PersonalEventCreateModal from "../calendar/modals/create-personal-event";
 import NoteInfoModal from "../calendar/modals/note-info";
+import Alert from "../../shared/alert";
 
 // images
 import avatar from "../../../images/shared/user.svg";
@@ -12,6 +13,7 @@ import missed from "../../../images/pages/missed_events.svg";
 import firstAchievement from "../../../images/pages/personal_achievment_1.svg";
 import secondAchievement from "../../../images/pages/personal_achievment_2.svg";
 import thirdAchievement from "../../../images/pages/personal_achievment_3.svg";
+import editImage from "../../../images/shared/edit_pencil_neobis_color.svg";
 
 // charts
 import { Doughnut } from "react-chartjs-2";
@@ -41,7 +43,6 @@ const PersonalOffice = (props: any) => {
 
   // person info
   const [userInfo, setUserInfo] = useState<any>({});
-  console.log("PersonalOffice -> userInfo", userInfo);
   const [department, setDepartment] = useState<any>({});
 
   const FIRST_MILE_STONE = 100;
@@ -62,6 +63,16 @@ const PersonalOffice = (props: any) => {
       );
       setDepartment(departmentNumber[0]);
     });
+    // chanching the localization of calendar buttons
+    document.getElementsByClassName("fc-today-button")[0].innerHTML = "Сегодня";
+    document.getElementsByClassName("fc-dayGridMonth-button")[0].innerHTML =
+      "Месяц";
+    document.getElementsByClassName("fc-timeGridWeek-button")[0].innerHTML =
+      "Неделя";
+    document.getElementsByClassName("fc-timeGridDay-button")[0].innerHTML =
+      "День";
+    document.getElementsByClassName("fc-listMonth-button")[0].innerHTML =
+      "Лист";
   }, []);
 
   // hide statistics on load
@@ -168,13 +179,19 @@ const PersonalOffice = (props: any) => {
       start: oldEvent.start,
       end: oldEvent.end,
     };
-    console.log("handleEventDropAndResize -> dataToPatch", dataToPatch);
-    API.patchNoteChangeData(dataToPatch, oldEvent.id);
+    API.patchNoteChangeData(dataToPatch, oldEvent.id)
+      .then((response) => {
+        openAlert(response);
+      })
+      .catch((error) => {
+        openAlert(error.request);
+      });
   };
 
   let [isEventInfoOpen, setIsEventInfoOpen] = useState<boolean>(false);
   const toggleEventInfoOpen = () => {
     setIsEventInfoOpen(!isEventInfoOpen);
+    updateEvents()
   };
   const handleEventClick = (eventClickInfo: any) => {
     let eventId = Number(eventClickInfo.event._def.publicId);
@@ -189,6 +206,26 @@ const PersonalOffice = (props: any) => {
     API.getNotes().then((data) => {
       setServerEvents(data.data);
     });
+  };
+
+  const [alertType, setAlertType] = useState("success");
+  const [alertText, setAlertText] = useState("");
+  let [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
+  const toggleAlertOpen = () => {
+    setIsAlertOpen(!isAlertOpen);
+  };
+  const openAlert = (response: any) => {
+    if (response.status >= 200 && response.status <= 299) {
+      setAlertType("success");
+      setAlertText("Все прошло без ошибок");
+    } else {
+      setAlertType("error");
+      setAlertText(response.response || "Непредвиденная ошибка");
+    }
+    setIsAlertOpen(true);
+    setTimeout(() => {
+      setIsAlertOpen(false);
+    }, 5000);
   };
 
   return (
@@ -209,30 +246,32 @@ const PersonalOffice = (props: any) => {
                 <p className="personal-office__info-name">
                   {userInfo.name_surname}
                 </p>
-                <p className="personal-office__info-dep">
+                {/* <p className="personal-office__info-dep">
                   {department.label || "Neobis"} Department
-                </p>
-              </div>
-              <div className="personal-office__info-section">
+                </p> */}
                 <p className="personal-office__info-text">
-                  E-mail:
+                  E-mail: &nbsp;
                   <span className="personal-office__info-text-content">
                     {userInfo.email}
                   </span>
                 </p>
                 <p className="personal-office__info-text">
-                  Телефон:
+                  Телефон: &nbsp;
                   <span className="personal-office__info-text-content">
                     {userInfo.phone}
                   </span>
                 </p>
+                <Link to="/change_personal_data" className="link">
+                  <button className="button personal-office__info-edit">
+                    <img
+                      src={editImage}
+                      alt="pencil"
+                      className="personal-office__info-edit-image"
+                    />
+                    Редактировать
+                  </button>
+                </Link>
               </div>
-
-              <Link to="/change_personal_data" className="link">
-                <button className="button personal-office__info-edit">
-                  Редактировать
-                </button>
-              </Link>
             </div>
 
             <div className="personal-office__info-points">
@@ -467,16 +506,28 @@ const PersonalOffice = (props: any) => {
               </div>
             </div>
           </section>
+          {isAlertOpen && (
+            <Alert
+              type={alertType}
+              text={alertText}
+              onClose={toggleAlertOpen}
+            />
+          )}
         </div>
       </div>
       {isEventInfoOpen && (
-        <NoteInfoModal onClose={toggleEventInfoOpen} event={currentEvent} />
+        <NoteInfoModal
+          OpenAlert={openAlert}
+          onClose={toggleEventInfoOpen}
+          event={currentEvent}
+        />
       )}
       {isPersonalEventCreate && (
         <PersonalEventCreateModal
           onClose={togglePersonalEventCreate}
           updateEvents={updateEvents}
           date={date}
+          OpenAlert={openAlert}
         />
       )}
     </>

@@ -8,6 +8,7 @@ import MinutesScrollbar from "./minutes-scrollbar";
 import withDataContainer from "../../../../HOC/withData";
 import API from "../../../../API";
 import { withRouter } from "react-router-dom";
+import Alert from "../../../shared/alert";
 
 const CreateEventPage = (props: any) => {
   const eventId = props.match.params.id;
@@ -29,8 +30,29 @@ const CreateEventPage = (props: any) => {
   const [addressDisable, setAddressDisable] = useState<boolean>(true);
   const [place, setPlace] = useState<any>(null);
 
+  // final users = users to show in select
   const [finalUsers, setFinalUsers] = useState([]);
   const [usersForSend, setUsersForSend] = useState([]);
+
+  const [alertType, setAlertType] = useState("success");
+  const [alertText, setAlertText] = useState("");
+  let [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
+  const toggleAlertOpen = () => {
+    setIsAlertOpen(!isAlertOpen);
+  };
+  const openAlert = (response: any) => {
+    if (response.status >= 200 && response.status <= 299) {
+      setAlertType("success");
+      setAlertText("Все прошло без ошибок");
+    } else {
+      setAlertType("error");
+      setAlertText(response.response || "непредвиденная ошибка");
+    }
+    setIsAlertOpen(true);
+    setTimeout(()=>{
+      setIsAlertOpen(false);
+    },5000)
+  };
 
   useEffect(() => {
     API.getUsers().then((users) => {
@@ -40,13 +62,11 @@ const CreateEventPage = (props: any) => {
       setFinalUsers(preFinalUsers);
     });
   }, []);
-
   // with params for put request
   useEffect(() => {
     if (eventId) {
       API.getEventInfo(eventId).then((requestData) => {
         let data = requestData.data;
-        console.log("CreateEventPage -> data", data);
         setTitle(data.title);
         setImage(data.image);
         setDescription(data.description);
@@ -57,6 +77,24 @@ const CreateEventPage = (props: any) => {
         if (data.place.id === 4) {
           setAddressDisable(false);
         }
+        // fill departments attendees
+        let requestDepartments = data.attendees.departments;
+        let allDepartments = props.departments;
+        let duplicatesDepartments = allDepartments.filter((val: any) => {
+          return requestDepartments.indexOf(+val.value) != -1;
+        });
+        setDepartments(duplicatesDepartments);
+
+        let requestUsers = data.attendees.individual_users;
+        API.getUsers().then((users) => {
+          let preFinalUsers: any = users.data.map((user: any) => {
+            return { value: user.email, label: user.name_surname };
+          });
+          let duplicateUsers = preFinalUsers.filter((val: any) => {
+            return requestUsers.indexOf(val.value) !== -1;
+          });
+          setUsersForSend(duplicateUsers);
+        });
 
         // set time for scrollbars
         let startDate = new Date(data.start);
@@ -91,7 +129,7 @@ const CreateEventPage = (props: any) => {
     startTime.setHours(startDateHours, startDateMinutes, 0);
     let finalTime = `${startTime.getFullYear()}-${
       startTime.getMonth() + 1
-    }-${startTime.getDate()}T${startTime.getHours()}:${startTime.getMinutes()}`;
+    }-${startTime.getDate()}T${startTime.getHours()}:${startTime.getMinutes()}:00`;
     return finalTime;
   };
   const updateEndTime = () => {
@@ -99,7 +137,7 @@ const CreateEventPage = (props: any) => {
     endTime.setHours(endDateHours, endDateMinutes, 0);
     let finalTime = `${endTime.getFullYear()}-${
       endTime.getMonth() + 1
-    }-${endTime.getDate()}T${endTime.getHours()}:${endTime.getMinutes()}`;
+    }-${endTime.getDate()}T${endTime.getHours()}:${endTime.getMinutes()}:00`;
     return finalTime;
   };
 
@@ -110,21 +148,25 @@ const CreateEventPage = (props: any) => {
     let end_time = await updateEndTime();
 
     // working with forming attendees
-    let CheckForAll = departments.find((item: any) => item.value === "all");
     let departmentNumbers: any = [];
-    if (CheckForAll) {
-      // * if selected all departments we return array with all
-      departmentNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    } else {
-      // * else return selected deparments
-      departmentNumbers = departments.map((item: any) => {
-        return +item.value;
+    if (departments) {
+      let CheckForAll = departments.find((item: any) => item.value === "all");
+      if (CheckForAll) {
+        // * if selected all departments we return array with all
+        departmentNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+      } else {
+        // * else return selected deparments
+        departmentNumbers = departments.map((item: any) => {
+          return +item.value;
+        });
+      }
+    }
+    let usersForSendEmails: any = [];
+    if (usersForSend) {
+      usersForSendEmails = usersForSend.map((item: any) => {
+        return item.value;
       });
     }
-    let usersForSendEmails: any = usersForSend.map((item: any) => {
-      return item.value;
-    });
-    //
 
     let formData = new FormData();
     formData.append("title", title);
@@ -152,263 +194,289 @@ const CreateEventPage = (props: any) => {
     formData.append("my_event", "false");
     formData.append("public", "true");
 
-    // let json = JSON.parse(
-    //   JSON.stringify(Object.fromEntries(formData.entries()))
-    // );
-    // console.log("handleSubmit -> json", json);
-
     if (eventId) {
-      API.patchEventChangeData(formData, eventId);
+      API.patchEventChangeData(formData, eventId)
+        .then((response) => {
+          openAlert(response);
+        })
+        .catch((error) => {
+          openAlert(error.request);
+        });
     } else {
-      API.postEventCreateData(formData);
+      API.postEventCreateData(formData)
+        .then((response) => {
+          openAlert(response);
+        })
+        .catch((error) => {
+          openAlert(error.request);
+        });
     }
   }
 
   return (
-    <div className="wrapper wrapper_bg_grey">
-      <AdminNavbar />
-      <div className="content__wrapper">
-        <div className="create-event">
-          <form
-            className="create-event__form"
-            onSubmit={handleSubmit}
-            method="post"
-            encType="multipart/form-data"
-          >
-            <section className="create-event__form-section">
-              <label className="create-event__form-label" htmlFor="name">
-                Название
-              </label>
-              <input
-                className="create-event__form-input"
-                type="text"
-                name="name"
-                required
-                value={title}
-                onChange={(e) => {
-                  setTitle(e.target.value);
-                }}
-              />
-              <label className="create-event__form-label" htmlFor="description">
-                Описание
-              </label>
-              <textarea
-                cols={30}
-                rows={14}
-                name="description"
-                required
-                value={description}
-                onChange={(e) => {
-                  setDescription(e.target.value);
-                }}
-                placeholder="Some Meet Up"
-                className="create-event__form-textarea"
-              />
-
-              <label className="create-event__form-label">Изображение</label>
-              <div className="create-event__form-file">
+    <>
+      <div className="wrapper wrapper_bg_grey">
+        <AdminNavbar />
+        <div className="content__wrapper">
+          <div className="create-event">
+            <form
+              className="create-event__form"
+              onSubmit={handleSubmit}
+              method="post"
+              encType="multipart/form-data"
+            >
+              <section className="create-event__form-section">
+                <label className="create-event__form-label" htmlFor="name">
+                  Название
+                </label>
                 <input
-                  style={{
-                    width: "100%",
-                    margin: "0 0 10px 0",
-                  }}
                   className="create-event__form-input"
                   type="text"
-                  value={image[0] ? image[0].name || image : "empty"}
-                  readOnly
-                />
-                <input
-                  type="file"
-                  name="file"
-                  id="file"
-                  className="create-event__form-file-input button"
+                  name="name"
+                  required
+                  value={title}
                   onChange={(e) => {
-                    setImage(e.target.files);
+                    setTitle(e.target.value);
                   }}
                 />
                 <label
-                  className="create-event__form-file-input-value"
-                  htmlFor="file"
+                  className="create-event__form-label"
+                  htmlFor="description"
                 >
-                  Загрузить Документ
+                  Описание
                 </label>
-              </div>
-            </section>
-
-            <section className="create-event__form-section_calendar">
-              <DayPicker
-                onDayClick={(date) => {
-                  setStartDate(date);
-                  setEndDate(date);
-                }}
-                selectedDays={startDate}
-              />
-
-              <div className="d-flex">
-                <div className="create-event__form-label_wrapper">
-                  <label
-                    className="create-event__form-label"
-                    htmlFor="time-start"
-                  >
-                    Начало
-                  </label>
-                  <div className="d-flex">
-                    <HoursScrollbar
-                      value={startDateHours}
-                      setValue={setStartDateHours}
-                    />
-                    <MinutesScrollbar
-                      value={startDateMinutes}
-                      setValue={setStartDateMinutes}
-                    />
-                  </div>
-                </div>
-
-                <div className="create-event__form-label_wrapper">
-                  <label
-                    className="create-event__form-label"
-                    htmlFor="time-start"
-                  >
-                    Конец
-                  </label>
-                  <div className="d-flex">
-                    <HoursScrollbar
-                      value={endDateHours}
-                      setValue={setEndDateHours}
-                    />
-                    <MinutesScrollbar
-                      value={endDateMinutes}
-                      setValue={setEndDateMinutes}
-                    />
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            <section className="create-event__form-section">
-              <label className="create-event__form-label" htmlFor="description">
-                Выберите локацию
-              </label>
-              <div className="create-event__form-radio">
-                <div className="create-event__form-radio-container">
-                  <input
-                    type="radio"
-                    name="place"
-                    onChange={handleChangeAddress}
-                    value={1}
-                    checked={
-                      eventId
-                        ? place && +place.id === 1
-                          ? true
-                          : false
-                        : undefined
-                    }
-                  />
-                  <label htmlFor="small">Маленькая комната</label>
-                </div>
-                <div className="create-event__form-radio-container">
-                  <input
-                    type="radio"
-                    name="place"
-                    value={2}
-                    onChange={handleChangeAddress}
-                    checked={
-                      eventId
-                        ? place && +place.id === 2
-                          ? true
-                          : false
-                        : undefined
-                    }
-                  />
-                  <label htmlFor="small">Большая комната</label>
-                </div>
-                <div className="create-event__form-radio-container">
-                  <input
-                    type="radio"
-                    name="place"
-                    value={3}
-                    onChange={handleChangeAddress}
-                    checked={
-                      eventId
-                        ? place && +place.id === 3
-                          ? true
-                          : false
-                        : undefined
-                    }
-                  />
-                  <label htmlFor="small">Весь офис</label>
-                </div>
-                <div className="create-event__form-radio-container">
-                  <input
-                    type="radio"
-                    name="place"
-                    value={4}
-                    onChange={handleChangeAddress}
-                    checked={
-                      eventId
-                        ? place && +place.id === 4
-                          ? true
-                          : false
-                        : undefined
-                    }
-                  />
-                  <label htmlFor="small">Другое</label>
-                </div>
-
-                <input
-                  className="create-event__form-input create-event__form-input_border"
-                  type="text"
-                  name="address"
-                  disabled={addressDisable ? true : false}
-                  required={addressDisable ? false : true}
-                  value={address}
+                <textarea
+                  cols={30}
+                  rows={14}
+                  name="description"
+                  required
+                  value={description}
                   onChange={(e) => {
-                    setAddress(e.target.value);
+                    setDescription(e.target.value);
                   }}
+                  placeholder="Some Meet Up"
+                  className="create-event__form-textarea"
                 />
-              </div>
-              <div className="create-event__form-select-container">
+
+                <label className="create-event__form-label">Изображение</label>
+                <div className="create-event__form-file">
+                  <input
+                    style={{
+                      width: "100%",
+                      margin: "0 0 10px 0",
+                    }}
+                    className="create-event__form-input"
+                    type="text"
+                    value={image[0] ? image[0].name || image : "empty"}
+                    readOnly
+                  />
+                  <input
+                    type="file"
+                    name="file"
+                    id="file"
+                    className="create-event__form-file-input button"
+                    onChange={(e) => {
+                      setImage(e.target.files);
+                    }}
+                  />
+                  <label
+                    className="create-event__form-file-input-value"
+                    htmlFor="file"
+                  >
+                    Загрузить Документ
+                  </label>
+                </div>
+              </section>
+
+              <section className="create-event__form-section_calendar">
+                <DayPicker
+                  onDayClick={(date) => {
+                    setStartDate(date);
+                    setEndDate(date);
+                  }}
+                  selectedDays={startDate}
+                />
+
+                <div className="d-flex">
+                  <div className="create-event__form-label_wrapper">
+                    <label
+                      className="create-event__form-label"
+                      htmlFor="time-start"
+                    >
+                      Начало
+                    </label>
+                    <div className="d-flex">
+                      <HoursScrollbar
+                        value={startDateHours}
+                        setValue={setStartDateHours}
+                      />
+                      <MinutesScrollbar
+                        value={startDateMinutes}
+                        setValue={setStartDateMinutes}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="create-event__form-label_wrapper">
+                    <label
+                      className="create-event__form-label"
+                      htmlFor="time-start"
+                    >
+                      Конец
+                    </label>
+                    <div className="d-flex">
+                      <HoursScrollbar
+                        value={endDateHours}
+                        setValue={setEndDateHours}
+                      />
+                      <MinutesScrollbar
+                        value={endDateMinutes}
+                        setValue={setEndDateMinutes}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section className="create-event__form-section">
+                <label
+                  className="create-event__form-label"
+                  htmlFor="description"
+                >
+                  Выберите локацию
+                </label>
+                <div className="create-event__form-radio">
+                  <div className="create-event__form-radio-container">
+                    <input
+                      type="radio"
+                      name="place"
+                      onChange={handleChangeAddress}
+                      value={1}
+                      checked={
+                        eventId
+                          ? place && +place.id === 1
+                            ? true
+                            : false
+                          : undefined
+                      }
+                    />
+                    <label htmlFor="small">Маленькая комната</label>
+                  </div>
+                  <div className="create-event__form-radio-container">
+                    <input
+                      type="radio"
+                      name="place"
+                      value={2}
+                      onChange={handleChangeAddress}
+                      checked={
+                        eventId
+                          ? place && +place.id === 2
+                            ? true
+                            : false
+                          : undefined
+                      }
+                    />
+                    <label htmlFor="small">Большая комната</label>
+                  </div>
+                  <div className="create-event__form-radio-container">
+                    <input
+                      type="radio"
+                      name="place"
+                      value={3}
+                      onChange={handleChangeAddress}
+                      checked={
+                        eventId
+                          ? place && +place.id === 3
+                            ? true
+                            : false
+                          : undefined
+                      }
+                    />
+                    <label htmlFor="small">Весь офис</label>
+                  </div>
+                  <div className="create-event__form-radio-container">
+                    <input
+                      type="radio"
+                      name="place"
+                      value={4}
+                      onChange={handleChangeAddress}
+                      checked={
+                        eventId
+                          ? place && +place.id === 4
+                            ? true
+                            : false
+                          : undefined
+                      }
+                    />
+                    <label htmlFor="small">Другое</label>
+                  </div>
+
+                  <input
+                    className="create-event__form-input create-event__form-input_border"
+                    type="text"
+                    name="address"
+                    disabled={addressDisable ? true : false}
+                    required={addressDisable ? false : true}
+                    value={address}
+                    onChange={(e) => {
+                      setAddress(e.target.value);
+                    }}
+                  />
+                </div>
+                {/* <div className="create-event__form-select-container"> */}
                 <label className="create-event__form-label" htmlFor="invite">
                   Пригласить департамент
                 </label>
                 <Select
                   isMulti
+                  value={departments}
                   isClearable={true}
                   isSearchable={true}
                   options={props.selectDepartments}
                   className="basic-multi-select"
+                  placeholder="Выбрать департамент"
                   classNamePrefix="select"
                   onChange={(e: any) => {
                     setDepartments(e);
                   }}
                 />
-              </div>
+                {/* </div> */}
 
-              <label className="create-event__form-label" htmlFor="invite">
-                Пригласить отдельных людей
-              </label>
-              <Select
-                isMulti
-                isClearable={true}
-                isSearchable={true}
-                options={finalUsers}
-                className="basic-multi-select"
-                classNamePrefix="select"
-                onChange={(e: any) => {
-                  setUsersForSend(e);
-                }}
-              />
-              <button
-                className="button create-event__form-submit "
-                type="submit"
-              >
-                Сохранить
-              </button>
-            </section>
-          </form>
+                <label className="create-event__form-label" htmlFor="invite">
+                  Пригласить отдельных людей
+                </label>
+                <Select
+                  isMulti
+                  isClearable={true}
+                  value={usersForSend}
+                  isSearchable={true}
+                  options={finalUsers}
+                  className="basic-multi-select"
+                  classNamePrefix="select"
+                  placeholder="Выбрать людей"
+                  onChange={(e: any) => {
+                    setUsersForSend(e);
+                  }}
+                />
+                <button
+                  className="button create-event__form-submit "
+                  type="submit"
+                >
+                  Сохранить
+                </button>
+              </section>
+            </form>
+          </div>
+          {isAlertOpen && (
+            <Alert
+              type={alertType}
+              text={alertText}
+              onClose={toggleAlertOpen}
+            />
+          )}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

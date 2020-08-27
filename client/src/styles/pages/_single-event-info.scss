@@ -39,6 +39,7 @@ $text-color: rgba(33, 51, 54, 0.8);
     &-text {
       margin: 10px 0;
       font-size: 16px;
+      color: #eb0f0f;
       &_deadline {
         color: #eb0f0f;
         font-size: 10px;
@@ -48,6 +49,12 @@ $text-color: rgba(33, 51, 54, 0.8);
       &_m_t {
         // margin: 10px 0 0 0;
         font-size: 16px;
+      }
+      &_big_red{
+        font-size: 18px;
+        color: #eb0f0f;
+        text-transform: uppercase;
+        font-weight: bold;
       }
     }
     &-form {

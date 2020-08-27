@@ -75,7 +75,7 @@ const AdminEventCreateModal = (props: any) => {
     startTime.setHours(startDateHours, startDateMinutes, 0);
     let finalTime = `${startTime.getFullYear()}-${
       startTime.getMonth() + 1
-    }-${startTime.getDate()}T${startTime.getHours()}:${startTime.getMinutes()}`;
+    }-${startTime.getDate()}T${startTime.getHours()}:${startTime.getMinutes()}:00`;
     return finalTime;
   };
   const updateEndTime = () => {
@@ -83,7 +83,7 @@ const AdminEventCreateModal = (props: any) => {
     endTime.setHours(endDateHours, endDateMinutes, 0);
     let finalTime = `${endTime.getFullYear()}-${
       endTime.getMonth() + 1
-    }-${endTime.getDate()}T${endTime.getHours()}:${endTime.getMinutes()}`;
+    }-${endTime.getDate()}T${endTime.getHours()}:${endTime.getMinutes()}:00`;
     return finalTime;
   };
 
@@ -94,20 +94,25 @@ const AdminEventCreateModal = (props: any) => {
     let end_time = await updateEndTime();
 
     // working with forming attendees
-    let CheckForAll = departments.find((item: any) => item.value === "all");
     let departmentNumbers: any = [];
-    if (CheckForAll) {
-      // * if selected all departments we return array with all
-      departmentNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    } else {
-      // * else return selected deparments
-      departmentNumbers = departments.map((item: any) => {
-        return +item.value;
+    if (departments) {
+      let CheckForAll = departments.find((item: any) => item.value === "all");
+      if (CheckForAll) {
+        // * if selected all departments we return array with all
+        departmentNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+      } else {
+        // * else return selected deparments
+        departmentNumbers = departments.map((item: any) => {
+          return +item.value;
+        });
+      }
+    }
+    let usersForSendEmails: any = [];
+    if (usersForSend) {
+      usersForSendEmails = usersForSend.map((item: any) => {
+        return item.value;
       });
     }
-    let usersForSendEmails: any = usersForSend.map((item: any) => {
-      return item.value;
-    });
     //
 
     let formData = new FormData();
@@ -124,8 +129,15 @@ const AdminEventCreateModal = (props: any) => {
     formData.append("departments", departmentNumbers);
     formData.append("individual_users", usersForSendEmails);
     formData.append("my_event", "false");
+    formData.append("public", "true");
 
-    API.postEventCreateData(formData);
+    API.postEventCreateData(formData)
+      .then((response) => {
+        props.OpenAlert(response);
+      })
+      .catch((error) => {
+        props.OpenAlert(error.request);
+      });
   }
 
   return (
@@ -304,15 +316,20 @@ const AdminEventCreateModal = (props: any) => {
               className="admin-create-event-modal-icon"
               alt="people"
             />
-            <input
-              className="admin-create-event-modal-input"
-              type="file"
-              name="file"
-              id="file"
-              onChange={(e) => {
-                setImage(e.target.files);
-              }}
-            />
+            <label
+              className="custom-file-upload"
+              style={{ fontSize: "14px", padding: "8px" }}
+            >
+              <input
+                type="file"
+                name="image"
+                className="custom-file-input"
+                onChange={(e) => {
+                  setImage(e.target.files);
+                }}
+              />
+              {image[0] ? image[0].name : "Загрузите фото"}
+            </label>
           </div>
 
           <div className="admin-create-event-modal-row">

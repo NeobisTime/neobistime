@@ -22,3 +22,20 @@
       width: 300px;
   }
 }
+.rooms-event{
+  &__top-side{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  &__select{
+    width: 160px;
+    font-family: "Montserrat";
+    color: #1665D8;
+    font-weight: bold;
+    letter-spacing: 2px;
+  }
+}
+.css-1uccc91-singleValue{
+  color: #1665D8 !important;
+}
