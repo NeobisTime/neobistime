@@ -4,7 +4,7 @@ from typing import List
 from celery import shared_task
 from django.core.mail import send_mail
 from django.db import IntegrityError
-from bot import telegram_notify_user
+from .bot import telegram_notify_user
 from events.models import Event, Poll, Attendees
 from users.models import CustomUser
 
@@ -52,7 +52,7 @@ def notify_users(departments: List, individual_users: List, event_id):
               'neobistime.kg@gmail.com',
               recipients_emails)
 
-    url = f'http://127.0.0.1:8000/api/events/{event.id}/' # noqa
+    url = f'http://127.0.0.1:8000/api/events/{event.id}/'  # noqa
     for user in recipients:
         try:
             Poll.objects.create(event=event, user=user)

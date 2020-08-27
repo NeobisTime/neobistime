@@ -2,7 +2,7 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 from . import statistics
 from . import views
-from neobistime import bot
+from . import bot
 
 router = DefaultRouter()
 router.register('events', views.EventViewSet, basename='events')

@@ -1,3 +1,5 @@
+from json import JSONDecodeError
+
 import requests
 import telebot
 from decouple import config
@@ -110,7 +112,7 @@ def get_credentials(message):
                              'Авторизация прошла успешно!\n'
                              'Теперь вы будете получать уведомления'
                              ' в Telegram.')
-        except KeyError:
+        except (JSONDecodeError, KeyError):
             bot.reply_to(message,
                          'Вы не прошли авторизацию в системе, '
                          'возможно вы ввели неправильный логин/пароль')
