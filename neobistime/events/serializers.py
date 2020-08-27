@@ -136,23 +136,20 @@ class UserNotificationSerializer(serializers.Serializer):
 
 
 def check_date_for_events(start, end, events):
-    closest_to_start = events.filter(start_date__lt=start).first()
-    closest_to_end = events.filter(end_date__gt=end).first()
+    closest_to_start = events.filter(start_date__lt=start)
+    closest_to_end = events.filter(start_date__gt=start)
+
     inside_events = events.filter(Q(start_date__gt=start, start_date__lt=end) |
                                   Q(end_date__gt=start, end_date__lt=end) |
                                   Q(start_date=start, end_date=end))
 
     existing_events = [*inside_events]
-    print()
-    print()
-    print(closest_to_start, closest_to_end)
-    print()
-    print()
-    if closest_to_start and closest_to_start.end_date <= start:
-        existing_events.append(closest_to_start)
 
-    if closest_to_end and closest_to_end.start_date >= end:
-        existing_events.append(closest_to_end)
+    if closest_to_start and closest_to_start.latest("start_date").end_date > start:
+        existing_events.append(closest_to_start.latest("start_date"))
+
+    if closest_to_end and closest_to_end.earliest("start_date").start_date < end:
+        existing_events.append(closest_to_end.earliest("start_date"))
 
     return existing_events
 
