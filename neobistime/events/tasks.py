@@ -1,6 +1,6 @@
 from itertools import chain
 from typing import List
-
+from decouple import config
 from celery import shared_task
 from django.core.mail import send_mail
 from django.db import IntegrityError
@@ -42,17 +42,17 @@ def notify_users(departments: List, individual_users: List, event_id):
         place = event.address
 
     recipients_emails = [user.email for user in set(recipients)]
+    url = config('ROOT_URL') + f'/today/{event.id}/'
     body_message = f'Здравствуй, мы организовали новое мероприятие "{event.title}" от {event.owner}\n' \
                    f'Дата {event.start_date}\n' \
                    f'Место {place}\n' \
+                   f'Ссылка <a href="{url}">{url}</a>' \
                    f'С уважением, команда Необис'
 
-    # TODO добавить ссылку на ивент в тело сообщения
     send_mail('Новый Ивент от Необиса', body_message,
               'neobistime.kg@gmail.com',
               recipients_emails)
 
-    url = f'http://127.0.0.1:8000/api/events/{event.id}/'  # noqa
     for user in recipients:
         try:
             Poll.objects.create(event=event, user=user)

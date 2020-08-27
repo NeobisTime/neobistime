@@ -104,18 +104,3 @@ class Notes(models.Model):
 
     def __str__(self):
         return f'{self.title}'
-
-
-def save_profile(sender, instance, created, **kwargs):
-    if created:
-        if instance.was_on_event:
-            instance.user.points += 10
-    else:
-        if not instance.was_on_event:
-            instance.user.points -= 10
-        else:
-            instance.user.points += 10
-    instance.user.save()
-
-
-signals.post_save.connect(receiver=save_profile, sender=Poll)

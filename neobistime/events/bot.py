@@ -96,7 +96,7 @@ def get_credentials(message):
                 "password": password,
                 "chat_id": message.chat.id
             }
-            login_url = config('BOT_URL') + '/api/users/rest-auth/login/'
+            login_url = config('ROOT_URL') + '/api/users/rest-auth/login/'
             login_data = {'email': user_data['username'],
                           'password': user_data['password']}
             token = requests.post(login_url, data=login_data)
@@ -105,7 +105,7 @@ def get_credentials(message):
                 "token": token['key'],
                 "chat_id": user_data['chat_id']
             }
-            add_chat_id_url = config('BOT_URL') + '/api/users/add_chat_id/'
+            add_chat_id_url = config('ROOT_URL') + '/api/users/add_chat_id/'
             requests.post(add_chat_id_url, data=new_chat_id_for_user)
 
             bot.send_message(message.chat.id,
@@ -120,7 +120,7 @@ def get_credentials(message):
 
 
 def telegram_notify_user(chat_id, title, event_id):
-    url = config('BOT_URL') + f'/today/{event_id}/'
+    url = config('ROOT_URL') + f'/today/{event_id}/'
     markup = telebot.types.InlineKeyboardMarkup(row_width=1)
     button = telebot.types.InlineKeyboardButton(text='Посмотреть подробнее',
                                                 url=url)
