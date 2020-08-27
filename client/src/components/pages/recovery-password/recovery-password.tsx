@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import designPhoto from "../../../images/pages/forgot_password_gi2d.svg";
 import ModalSuccessRecoveryPassword from "./modal";
 import eye from "../../../images/pages/password_eye.svg";
+import { withRouter } from "react-router-dom";
+import API from "../../../API";
 
-const RecoveryPassword = () => {
+const RecoveryPassword = (props: any) => {
   const [email, setEmail] = useState<string>("");
   let [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -12,8 +14,11 @@ const RecoveryPassword = () => {
     validate();
   };
 
-  const toggleModal = () => {
-    setIsModalOpen(!isModalOpen);
+  const toggleModal = (value: boolean) => {
+    setIsModalOpen(value);
+    if (value === false) {
+      props.history.push("/change_password");
+    }
   };
 
   // validate
@@ -33,9 +38,14 @@ const RecoveryPassword = () => {
     const data = { email };
     await validate();
     // TODO toggle modal if POST request was good
-    if (errors.emailError === "") {
-      toggleModal();
-    } 
+    API.postRecoveryPasswordData(data).then((data) => {
+      if (data.status >= 200 && data.status <= 299) {
+        toggleModal(true);
+        setTimeout(() => {
+          props.history.push("/change_password");
+        }, 3500);
+      }
+    });
   }
 
   return (
@@ -79,4 +89,4 @@ const RecoveryPassword = () => {
   );
 };
 
-export default RecoveryPassword;
+export default withRouter(RecoveryPassword);

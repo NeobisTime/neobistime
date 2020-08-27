@@ -16,12 +16,11 @@ const EndEventsList = ({ events }: EndEventsListProps) => {
           let startDate = new Date(item.start);
           let endDate = new Date(item.end);
           return (
-            <Link to={`/admin/end_event/${item.id}`} className="link">
+            <Link to={`/lead_admin/end_event/${item.id}`} className="link">
               <div className="today__list-item">
                 <div className="today__list-item-answer">
                   <div
-                    className="today__list-item-answer_circle"
-                    style={{ backgroundColor: "#EB0F0F" }}
+                    className="today__list-item-answer_circle_red"
                   ></div>
                 </div>
                 <div className="today__list-item-content">
@@ -54,7 +53,6 @@ const EndEvents = () => {
 
   useEffect(() => {
     API.getEndEvents().then((data) => {
-      console.log(data.data);
       setEndEvents(data.data);
     });
   }, []);

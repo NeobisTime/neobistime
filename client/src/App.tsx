@@ -12,6 +12,7 @@ import Spinner from "./components/shared/spinner/spinner";
 const Authorization = lazy(() => import('./components/pages/auth'));
 const Registration = lazy(() => import('./components/pages/registration'));
 const RecoveryPassword = lazy(() => import('./components/pages/recovery-password'));
+const ChangePassword = lazy(() => import('./components/pages/recovery-password/change-password'));
 const Notification = lazy(() => import('./components/pages/notifications'));
 const TodayTimetable = React.lazy(() => import('./components/pages/today-timetable'));
 const EventInfo = React.lazy(() => import('./components/pages/single-event-info/single-event-info'));
@@ -36,6 +37,7 @@ const App: React.FC = () => {
               <Route exact path="/auth" component={Authorization} />
               <Route exact path="/registration" component={Registration} />
               <Route exact path="/recovery_password" component={RecoveryPassword} />
+              <Route exact path="/change_password" component={ChangePassword} />
               <Route exact path="/notifications" component={Notification} />
               <Route exact path="/today" component={TodayTimetable} />
               <Route exact path="/today/:id" component={EventInfo} />
@@ -43,12 +45,12 @@ const App: React.FC = () => {
               <Route exact path="/personal_office" component={PersonalOffice} />
               <Route exact path="/rooms" component={RoomsList} />
               <Route exact path="/rooms/:id" component={RoomsEvent} />
-              <Route exact path="/admin" component={AdminStat} />
-              <Route exact path="/admin/end_events" component={EndEvents} />
-              <Route exact path="/admin/end_event/:id" component={EndEventInfo} />
-              <Route exact path="/admin/create_event" component={CreateEventPage} />
-              <Route exact path="/admin/create_event/:id" component={CreateEventPage} />
-              <Route exact path="/admin/all_events" component={EditEventsPage} />
+              <Route exact path="/lead_admin" component={AdminStat} />
+              <Route exact path="/lead_admin/end_events" component={EndEvents} />
+              <Route exact path="/lead_admin/end_event/:id" component={EndEventInfo} />
+              <Route exact path="/lead_admin/create_event" component={CreateEventPage} />
+              <Route exact path="/lead_admin/create_event/:id" component={CreateEventPage} />
+              <Route exact path="/lead_admin/all_events" component={EditEventsPage} />
 
               {/* <Route path="*" component={NotFound} /> */}
             </Switch>

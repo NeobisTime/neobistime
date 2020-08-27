@@ -22,8 +22,11 @@ export const TodayList = ({ events }: TodayListProps) => {
               <div className="today__list-item">
                 <div className="today__list-item-answer">
                   <div
-                    className="today__list-item-answer_circle"
-                    style={{ backgroundColor: "var(--neobisColor)" }}
+                    className={
+                      +today.getTime() > +startDate.getTime()
+                        ? "today__list-item-answer_circle_red"
+                        : "today__list-item-answer_circle"
+                    }
                   ></div>
                 </div>
                 <div className="today__list-item-content">
@@ -48,30 +51,29 @@ export const TodayList = ({ events }: TodayListProps) => {
   );
 };
 
-const monthNames = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+let months = [
+  "Январь",
+  "Февраль",
+  "Март",
+  "Апрель",
+  "Май",
+  "Июнь",
+  "Июль",
+  "Август",
+  "Cентябрь",
+  "Октябрь",
+  "Ноябрь",
+  "Декабрь",
 ];
 let today = new Date();
 export let finalDate = `${
-  monthNames[today.getMonth()]
+  months[today.getMonth()]
 }${" "}${today.getDate()}  ${today.getFullYear()}`;
 
 const TodayTimetable = (props: any) => {
   const [todayEvents, setTodayEvents] = useState([]);
   useEffect(() => {
     API.getTodaySchedule().then((requestData) => {
-      console.log("TodayTimetable -> requestData", requestData);
       setTodayEvents(requestData.data);
     });
   }, []);

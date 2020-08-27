@@ -91,3 +91,16 @@ $font: "Montserrat";
     opacity: 1;
   }
 }
+.custom-file-input{
+  display: none;
+}
+.custom-file-upload {
+  display: inline-block;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.8);
+  width: 100%;
+}
+
+.DayPickerInput input{
+  font-family: "Montserrat";
+}

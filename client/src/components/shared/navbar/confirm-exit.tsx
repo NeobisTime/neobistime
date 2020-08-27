@@ -9,6 +9,7 @@ type ConfirmProps = {
 const ConfirmExit = ({ onClose }: ConfirmProps) => {
   const handleClose = () => {
     document.cookie = "XSRF-Token = ; role =";
+    localStorage.removeItem('token');
   };
   return (
     <div className="confirm-exit">

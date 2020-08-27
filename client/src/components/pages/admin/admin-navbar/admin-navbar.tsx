@@ -29,7 +29,7 @@ const AdminNavbar = (props: any) => {
       );
       setDepartment(departmentNumber[0]);
     });
-    let token = getCookie("XSRF-Token");
+    let token = localStorage.getItem('token')
     if (!token) {
       props.history.push("/auth");
     }
@@ -72,7 +72,7 @@ const AdminNavbar = (props: any) => {
           </NavLink>
           <NavLink
             exact
-            to="/admin/end_events"
+            to="/lead_admin/end_events"
             activeStyle={{ backgroundColor: "#1DA48B" }}
             className="navbar__list-link"
           >
@@ -85,7 +85,7 @@ const AdminNavbar = (props: any) => {
           </NavLink>
           <NavLink
             exact
-            to="/admin/create_event"
+            to="/lead_admin/create_event"
             activeStyle={{ backgroundColor: "#1DA48B" }}
             className="navbar__list-link"
           >
@@ -98,7 +98,7 @@ const AdminNavbar = (props: any) => {
           </NavLink>
           <NavLink
             exact
-            to="/admin"
+            to="/lead_admin"
             activeStyle={{ backgroundColor: "#1DA48B" }}
             className="navbar__list-link"
           >
@@ -111,7 +111,7 @@ const AdminNavbar = (props: any) => {
           </NavLink>
           <NavLink
             exact
-            to="/admin/all_events"
+            to="/lead_admin/all_events"
             activeStyle={{ backgroundColor: "#1DA48B" }}
             className="navbar__list-link"
           >

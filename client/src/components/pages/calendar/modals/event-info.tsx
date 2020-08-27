@@ -99,7 +99,7 @@ const EventInfoModal = (props: any) => {
       <div className="event-info-modal">
         <CloseModalButton onClose={props.onClose} />
         {role === "admin" ? (
-          <Link to={`/admin/create_event/${event.id}`} className="link">
+          <Link to={`/lead_admin/create_event/${event.id}`} className="link">
             <img
               className="event-info-modal__edit-pen"
               src={editPen}

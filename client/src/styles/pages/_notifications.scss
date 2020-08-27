@@ -146,6 +146,10 @@ $blockWidth: 270px;
       &_red {
         background-color: red !important;
       }
+      &_grey {
+        background-color: grey !important;
+        opacity: 0.2;
+      }
     }
   }
   &__wrapper-table {

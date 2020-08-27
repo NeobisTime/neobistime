@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import arrow from "../../../../images/shared/arrow.svg";
 import editPen from "../../../../images/shared/pencil.png";
+import deleteImage from "../../../../images/pages/cross.svg";
 import { Link } from "react-router-dom";
 import withNavbarContainer from "../../../../HOC/withNavbar";
 import API from "../../../../API";
 
 const EditEventsPage = () => {
   const [events, setEvents] = useState([]);
-  console.log("EditEventsPage -> events", events);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [totalProducts, setTotalProducts] = useState(0);
@@ -19,7 +19,16 @@ const EditEventsPage = () => {
       setTotalProducts(events.data.count);
       setNext(events.data.next);
     });
-  }, [currentPage]);
+  }, [currentPage, events]);
+
+  const deleteEvent = (id: number | string) => {
+    API.deleteEvent(id);
+    API.getEvents(pageSize, pageSize * currentPage).then((events) => {
+      setEvents(events.data.results);
+      setTotalProducts(events.data.count);
+      setNext(events.data.next);
+    });
+  };
   return (
     <div className="end-event-info">
       <div>
@@ -56,16 +65,26 @@ const EditEventsPage = () => {
                   </td>
                   <td className="all-events__edit-wrapper">
                     {event.my_event ? (
-                      <Link
-                        to={`/admin/create_event/${event.id}`}
-                        className="link"
-                      >
+                      <div className="d-flex">
+                        <Link
+                          to={`/lead_admin/create_event/${event.id}`}
+                          className="link"
+                        >
+                          <img
+                            src={editPen}
+                            alt="edit pen"
+                            className="all-events__edit-image"
+                          />
+                        </Link>
                         <img
-                          src={editPen}
+                          onClick={() => {
+                            deleteEvent(event.id);
+                          }}
+                          src={deleteImage}
                           alt="edit pen"
                           className="all-events__edit-image"
                         />
-                      </Link>
+                      </div>
                     ) : null}
                   </td>
                 </tr>

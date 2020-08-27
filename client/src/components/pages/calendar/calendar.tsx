@@ -19,6 +19,7 @@ import PersonalEventCreateModal from "./modals/create-personal-event";
 import AdminEventCreateModal from "./modals/admin-event";
 import API, { getCookie } from "../../../API";
 import { withRouter } from "react-router-dom";
+import Alert from "../../shared/alert";
 
 export const CloseModalButton = (props: any) => {
   return (
@@ -33,12 +34,14 @@ export const CloseModalButton = (props: any) => {
   );
 };
 
+
+
 const Calendar = (props: any) => {
   const [currentEvent, setCurrentEvent] = useState<any>({});
   const [role, setRole] = useState<string | undefined>("");
   const [editable, setEditable] = useState(false);
   const [date, setDate] = useState(new Date());
-
+  
   // ! date не обязателен если есть start
   const [serverEvents, setServerEvents] = useState([]);
 
@@ -52,10 +55,20 @@ const Calendar = (props: any) => {
     } else {
       setEditable(false);
     }
-    let token = getCookie("XSRF-Token");
+    let token = localStorage.getItem("token");
     if (!token) {
-      props.history.push('/auth')
+      props.history.push("/auth");
     }
+    // chanching the localization of calendar buttons
+    document.getElementsByClassName("fc-today-button")[0].innerHTML = "Сегодня";
+    document.getElementsByClassName("fc-dayGridMonth-button")[0].innerHTML =
+      "Месяц";
+    document.getElementsByClassName("fc-timeGridWeek-button")[0].innerHTML =
+      "Неделя";
+    document.getElementsByClassName("fc-timeGridDay-button")[0].innerHTML =
+      "День";
+    document.getElementsByClassName("fc-listMonth-button")[0].innerHTML =
+      "Лист";
   }, []);
 
   // google calendar api integration
@@ -78,6 +91,41 @@ const Calendar = (props: any) => {
     toggleEventInfoOpen();
   };
 
+  const [alertType, setAlertType] = useState("success");
+  const [alertText, setAlertText] = useState("");
+  let [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
+  const toggleAlertOpen = () => {
+    setIsAlertOpen(!isAlertOpen);
+  };
+  const openAlert = (response: any) => {
+    if (response.status >= 200 && response.status <= 299) {
+      setAlertType("success");
+      setAlertText("Все прошло без ошибок");
+    } else {
+      setAlertType("error");
+      setAlertText(response.response || "непредвиденная ошибка");
+    }
+    setIsAlertOpen(true);
+    setTimeout(()=>{
+      setIsAlertOpen(false);
+    },10000)
+  };
+
+  const updateStartTime = (startDate: any) => {
+    let startTime = new Date(startDate);
+    let finalTime = `${startTime.getFullYear()}-${
+      startTime.getMonth() + 1
+    }-${startTime.getDate()}T${startTime.getHours()}:${startTime.getMinutes()}:00`;
+    return finalTime;
+  };
+  const updateEndTime = (endDate: any) => {
+    let endTime = new Date(endDate);
+    let finalTime = `${endTime.getFullYear()}-${
+      endTime.getMonth() + 1
+    }-${endTime.getDate()}T${endTime.getHours()}:${endTime.getMinutes()}:00`;
+    return finalTime;
+  };
+
   const handleEventDropAndResize = (eventDropInfo: any) => {
     let oldEvent = serverEvents.find(
       (item: any) => item.id === Number(eventDropInfo.oldEvent._def.publicId)
@@ -87,19 +135,29 @@ const Calendar = (props: any) => {
       end: "",
       deadline: "",
       my_event: false,
+      place: { id: 0 },
     };
-    oldEvent.start = eventDropInfo.event.startStr;
-    oldEvent.end = eventDropInfo.event.endStr;
-    oldEvent.deadline = eventDropInfo.event.startStr;
+    let finalStart = updateStartTime(eventDropInfo.event.startStr);
+    oldEvent.start = finalStart;
+    let finalEnd = updateEndTime(eventDropInfo.event.endStr);
+    oldEvent.end = finalEnd;
+    oldEvent.deadline = finalStart;
     // TODO if my_event === false we should send attendees
     const dataToPatch = {
       start: oldEvent.start,
       end: oldEvent.end,
       deadline: oldEvent.start,
       my_event: String(oldEvent.my_event),
-      public: true,
+      public: String(true),
+      place: oldEvent.place.id,
     };
-    API.patchEventChangeData(dataToPatch, oldEvent.id);
+    API.patchEventChangeData(dataToPatch, oldEvent.id)
+      .then((response) => {
+        openAlert(response);
+      })
+      .catch((error) => {
+        openAlert(error.request);
+      });
   };
 
   let [isAdminEventCreate, setIsAdminEventCreate] = useState<boolean>(false);
@@ -155,11 +213,18 @@ const Calendar = (props: any) => {
       />
 
       {/* modals start */}
+      {isAlertOpen && (
+        <Alert type={alertType} text={alertText} onClose={toggleAlertOpen} />
+      )}
       {isEventInfoOpen && (
         <EventInfoModal onClose={toggleEventInfoOpen} event={currentEvent} />
       )}
       {isAdminEventCreate && (
-        <AdminEventCreateModal onClose={toggleAdminEventCreate} date={date} />
+        <AdminEventCreateModal
+          OpenAlert={openAlert}
+          onClose={toggleAdminEventCreate}
+          date={date}
+        />
       )}
       {/* modals end */}
     </>
