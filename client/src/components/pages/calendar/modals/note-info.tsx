@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { CloseModalButton } from "../calendar";
-import { Link } from "react-router-dom";
 import API from "../../../../API";
 
 const NoteInfoModal = (props: any) => {
   const { event } = props;
-  console.log("NoteInfoModal -> event", event);
   let startDate = new Date(event.start);
 
   let months = [

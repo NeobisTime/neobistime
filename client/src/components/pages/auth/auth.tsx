@@ -50,9 +50,9 @@ const Authorization: React.FC = (props: any) => {
       setAlertText(response.response || "непредвиденная ошибка");
     }
     setIsAlertOpen(true);
-    setTimeout(()=>{
+    setTimeout(() => {
       setIsAlertOpen(false);
-    },3000)
+    }, 3000);
   };
 
   async function handleSubmit(event: any) {
@@ -70,12 +70,16 @@ const Authorization: React.FC = (props: any) => {
         API.getRole(requestDataToPush).then((data: any) => {
           if (data.data.is_staff) {
             document.cookie = `role =admin`;
+            localStorage.setItem("role", "admin");
+            props.history.push("/");
+            window.location.reload(true);
           } else {
             document.cookie = `role =user`;
+            localStorage.setItem("role", "user");
+            props.history.push("/");
+            window.location.reload(true);
           }
         });
-        props.history.push("/");
-        window.location.reload(true);
       })
       .catch((error) => {
         openAlert(error.request);

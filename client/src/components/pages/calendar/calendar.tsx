@@ -34,14 +34,12 @@ export const CloseModalButton = (props: any) => {
   );
 };
 
-
-
 const Calendar = (props: any) => {
   const [currentEvent, setCurrentEvent] = useState<any>({});
   const [role, setRole] = useState<string | undefined>("");
   const [editable, setEditable] = useState(false);
   const [date, setDate] = useState(new Date());
-  
+
   // ! date не обязателен если есть start
   const [serverEvents, setServerEvents] = useState([]);
 
@@ -50,7 +48,7 @@ const Calendar = (props: any) => {
       setServerEvents(res.data.results);
     });
     setRole(getCookie("role"));
-    if (getCookie("role") === "admin") {
+    if (getCookie('role') === "admin") {
       setEditable(true);
     } else {
       setEditable(false);
@@ -106,9 +104,9 @@ const Calendar = (props: any) => {
       setAlertText(response.response || "непредвиденная ошибка");
     }
     setIsAlertOpen(true);
-    setTimeout(()=>{
+    setTimeout(() => {
       setIsAlertOpen(false);
-    },10000)
+    }, 10000);
   };
 
   const updateStartTime = (startDate: any) => {
@@ -164,12 +162,13 @@ const Calendar = (props: any) => {
   const toggleAdminEventCreate = () => {
     setIsAdminEventCreate(!isAdminEventCreate);
     updateEvents();
-    // setIsEventCreateChooseOpen(false);
   };
+
   const handleDateSelect = (selectInfo: any) => {
     setDate(selectInfo.start);
-    toggleAdminEventCreate();
-    // toggleEventCreateChoose();
+    if (getCookie('role') === "admin") {
+      toggleAdminEventCreate();
+    }
   };
 
   const updateEvents = () => {
