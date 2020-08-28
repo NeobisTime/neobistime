@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.db.models import signals
 from django.db import models
 from easy_thumbnails.fields import ThumbnailerImageField
 from django.contrib.postgres import fields as postgres_fields
