@@ -29,12 +29,6 @@ class RoomTimeFilter(filters.FilterSet):
         start = d.datetime
         end = start
 
-        print()
-        print()
-        print(queryset, value)
-        print()
-        print()
-
         if value == "week":
             end = d.next_sunday().datetime
         if value == "month":
