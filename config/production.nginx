@@ -17,7 +17,7 @@ server {
   server_name 46.101.110.53;
   server_tokens on;
 
-  client_max_body_size 1.5m;
+  client_max_body_size 1m;
 
   location ~ ^/(api|admin|swagger) {
     proxy_set_header Host $http_host;
