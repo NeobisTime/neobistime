@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 from django.db.models import Q
 from django_filters import rest_framework as filters
+from delorean import Delorean
 
 from events.models import Event
 
@@ -24,14 +25,21 @@ class RoomTimeFilter(filters.FilterSet):
         )
 
     def filter_by_period(self, queryset, name, value):
-        start = datetime.now()
-        end = datetime.now()
+        d = Delorean(timezone="Asia/Bishkek")
+        start = d.datetime
+        end = start
+
+        print()
+        print()
+        print(queryset, value)
+        print()
+        print()
 
         if value == "week":
-            end = start + timedelta(days=7)
+            end = d.next_sunday().datetime
         if value == "month":
-            end = start + timedelta(days=30)
+            end = (d.next_month().truncate("month") - timedelta(days=1)).datetime
         if value == "year":
-            end = start + timedelta(days=365)
+            end = (d.next_year().truncate("year") - timedelta(days=1)).datetime
 
         return queryset.filter(Q(start_date__gte=start, start_date__lte=end))

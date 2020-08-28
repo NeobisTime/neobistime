@@ -4,6 +4,7 @@ import re
 from django.utils import timezone
 from rest_framework import generics, permissions, status, viewsets, filters
 from rest_framework.exceptions import PermissionDenied, NotFound, ValidationError
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
 from django_filters import rest_framework as django_filters
@@ -36,11 +37,8 @@ class EventsInPlaceView(generics.ListAPIView):
     filter_class = RoomTimeFilter
 
     def get_queryset(self):
-        try:
-            Place.objects.get(id=self.kwargs['pk'])
-        except ObjectDoesNotExist:
-            raise NotFound('Укажите верный id для place')
-        return Event.objects.filter(place=self.kwargs['pk'])
+        place = get_object_or_404(Place, pk=self.kwargs['pk'])
+        return Event.objects.filter(place=place.id)
 
 
 class EventViewSet(viewsets.ModelViewSet):
