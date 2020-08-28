@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import PersonalEventCreateModal from "../calendar/modals/create-personal-event";
 import NoteInfoModal from "../calendar/modals/note-info";
 import Alert from "../../shared/alert";
+import Spinner from "../../shared/spinner/spinner";
 
 // images
 import avatar from "../../../images/shared/user.svg";
@@ -191,7 +192,7 @@ const PersonalOffice = (props: any) => {
   let [isEventInfoOpen, setIsEventInfoOpen] = useState<boolean>(false);
   const toggleEventInfoOpen = () => {
     setIsEventInfoOpen(!isEventInfoOpen);
-    updateEvents()
+    updateEvents();
   };
   const handleEventClick = (eventClickInfo: any) => {
     let eventId = Number(eventClickInfo.event._def.publicId);
@@ -233,6 +234,7 @@ const PersonalOffice = (props: any) => {
       <div className="wrapper">
         <Navbar />
         <div className=" content__wrapper content__wrapper_no_margin personal-office">
+          <Spinner timeOut={600} />
           <section className="personal-office__info">
             <div className="personal-office__info-picture-block">
               <img
@@ -414,9 +416,9 @@ const PersonalOffice = (props: any) => {
 
               <div className="personal-office__stat-content">
                 <div className="personal-office__stat-buttons">
-                  <p className="personal-office__stat-buttons-text">
+                  {/* <p className="personal-office__stat-buttons-text">
                     Сортировать по:
-                  </p>
+                  </p> */}
                   <div className="personal-office__stat-buttons-content">
                     <input
                       type="button"

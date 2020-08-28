@@ -76,30 +76,32 @@ const BlockEventNotification = (props: any) => {
         <img
           className="notifications__content-image"
           src={event.image || eventImage}
-          // src={eventImage}
           alt="event"
         />
       </div>
-      <div className="notifications__content-block">
-        <p className="notifications__content-date">
-          {(startDate.getHours() < 10 ? "0" : "") + startDate.getHours()}.
-          {(startDate.getMinutes() < 10 ? "0" : "") + startDate.getMinutes()}{" "}
-          {props.days[startDate.getDay()]},{" "}
-          {props.monthListRus[startDate.getMonth()]} {startDate.getDate()}
-        </p>
-        <p className="notifications__content-title">{event.title}</p>
-        <p className="notifications__content-description">
-          {event.description}
-        </p>
-        <p className="notifications__content-address">
-          <img
-            className="notifications__content-address-image"
-            src={address}
-            alt="address"
-          />
-          Адрес: {event.place.name || event.address}
-        </p>
-      </div>
+      <Link to={`/today/${event.id}`} className="link">
+        <div className="notifications__content-block">
+          <p className="notifications__content-date">
+            {(startDate.getHours() < 10 ? "0" : "") + startDate.getHours()}.
+            {(startDate.getMinutes() < 10 ? "0" : "") + startDate.getMinutes()}{" "}
+            {props.days[startDate.getDay()]},{" "}
+            {props.monthListRus[startDate.getMonth()]} {startDate.getDate()}
+          </p>
+          <p className="notifications__content-title">{event.title}</p>
+          <p className="notifications__content-description">
+            {event.description}
+          </p>
+          <p className="notifications__content-address">
+            <img
+              className="notifications__content-address-image"
+              src={address}
+              alt="address"
+            />
+            Адрес: {event.place.name || event.address}
+          </p>
+        </div>
+      </Link>
+
       <div className="notifications__content-buttons">
         <Link to={`/today/${event.id}`} className="link">
           <button className="button notifications__content-button notifications__content-button_blue">

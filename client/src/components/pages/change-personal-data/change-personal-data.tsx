@@ -4,6 +4,8 @@ import { Input } from "../registration/registration";
 import withDataContainer from "../../../HOC/withData";
 import API from "../../../API";
 import Alert from "../../shared/alert";
+import { withRouter } from "react-router-dom";
+import Spinner from "../../shared/spinner/spinner";
 
 const ChangePersonalData = (props: any) => {
   const [name, setName] = useState<string>("");
@@ -71,6 +73,7 @@ const ChangePersonalData = (props: any) => {
     API.patchUserInfo(formData)
       .then((response) => {
         openAlert(response);
+        props.history.push("/personal_office");
       })
       .catch((error) => {
         openAlert(error.request);
@@ -78,6 +81,8 @@ const ChangePersonalData = (props: any) => {
   };
 
   return (
+    <>
+    <Spinner timeOut={600} />
     <div className="registration auth">
       <div className="registration__content">
         <div className="auth__title">
@@ -142,7 +147,8 @@ const ChangePersonalData = (props: any) => {
         )}
       </div>
     </div>
+    </>
   );
 };
 
-export default withDataContainer(ChangePersonalData);
+export default withDataContainer(withRouter(ChangePersonalData));

@@ -12,7 +12,7 @@ $text-color: rgba(33, 51, 54, 0.8);
     margin-left: 20px;
     position: relative;
     &-title {
-      color: #1665D8;
+      color: #1665d8;
       font-size: 36px;
       font-weight: bold;
       line-height: 1.2;
@@ -33,7 +33,7 @@ $text-color: rgba(33, 51, 54, 0.8);
         width: 20px;
       }
     }
-    &-right-image{
+    &-right-image {
       max-width: 100%;
     }
     &-text {
@@ -50,7 +50,7 @@ $text-color: rgba(33, 51, 54, 0.8);
         // margin: 10px 0 0 0;
         font-size: 16px;
       }
-      &_big_red{
+      &_big_red {
         font-size: 18px;
         color: #eb0f0f;
         text-transform: uppercase;
@@ -81,7 +81,6 @@ $text-color: rgba(33, 51, 54, 0.8);
         background: #eceeff;
         border-radius: 5px;
         border: 0;
-        outline: none;
         cursor: pointer;
         min-width: 200px;
         box-sizing: border-box;
@@ -90,7 +89,25 @@ $text-color: rgba(33, 51, 54, 0.8);
         font-size: 18px;
         font-family: "Montserrat";
         color: $text-color;
+        &:hover {
+          text-shadow: 2px 2px 4px grey;
+        }
+        &:focus {
+          animation: submitEffect 1s;
+        }
       }
     }
+  }
+}
+
+@keyframes submitEffect {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.8);
+  }
+  100% {
+    transform: scale(1);
   }
 }
