@@ -2,19 +2,18 @@ import datetime
 import re
 
 from django.utils import timezone
-from rest_framework import generics, permissions, status, viewsets, filters
-from rest_framework.exceptions import PermissionDenied, NotFound, ValidationError
+from django_filters import rest_framework as django_filters
+from rest_framework import filters, generics, permissions, status, viewsets
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
-from django.core.exceptions import ObjectDoesNotExist
-from django_filters import rest_framework as django_filters
 
 from . import permissions as custom_permissions, serializers
-from .models import Event, Place, Poll, Notes
-from .permissions import EventOwner
-from .serializers import AdminPolls, EventCreateUpdateSerializer, EventGetSerializer, \
-    MyEventListSerializer, PlaceSerializer, NotesSerializer
 from .filters import RoomTimeFilter
+from .models import Event, Notes, Place, Poll
+from .permissions import EventOwner
+from .serializers import AdminPolls, EventCreateUpdateSerializer, EventGetSerializer, MyEventListSerializer, \
+    NotesSerializer, PlaceSerializer
 
 
 class PlaceListView(generics.ListAPIView):
