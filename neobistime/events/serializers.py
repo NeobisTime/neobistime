@@ -166,8 +166,8 @@ def available_date_for_event(validated_data, **kwargs):
     end = timezone_.localize(datetime.strptime(validated_data['end_date'], "%Y-%m-%dT%H:%M:%S"))
 
     event_length = datetime.strptime(str(end - start), "%H:%M:%S")
-    if event_length.minute < 30:
-        raise serializers.ValidationError({"error": "Events can't be less than 15 minutes long."})
+    if event_length.minute < 30 and event_length.hour <= 0:
+        raise serializers.ValidationError({"error": "Events can't be less than 30 minutes long."})
 
     place = validated_data['place']
     events = Event.objects.all().exclude(place__name="Другое")
