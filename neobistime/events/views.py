@@ -37,7 +37,7 @@ class EventsInPlaceView(generics.ListAPIView):
 
     def get_queryset(self):
         place = get_object_or_404(Place, pk=self.kwargs['pk'])
-        return Event.objects.filter(place=place.id)
+        return Event.objects.filter(place=place.id).filter(end_date__gte=timezone.now())
 
 
 class EventViewSet(viewsets.ModelViewSet):
@@ -320,4 +320,34 @@ class NotesViewSet(viewsets.ModelViewSet):
         if self.request.user.is_authenticated:
             return serializer.save(owner=self.request.user)
         else:
-            raise PermissionDenied('Авторизуйтесь в системе для создания заметок!')
+            raise PermissionDenied('Авторизуйтесь в системе для \
+            создания заметок!')
+
+
+class NotificationEvents(generics.ListAPIView):
+    """
+    Class for showing notifications of NOT ended events
+    query parameters:
+    1) ?search (by title)
+    2) ?period (options:day,week,month)
+    also possible to combine these parameters by next syntax:?search=rest&period=month
+    """
+    serializer_class = EventGetSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    search_fields = ['title', ]
+    filter_backends = (filters.SearchFilter,)
+
+    def get_queryset(self):
+        queryset = Event.objects.filter(owner__is_staff=True)
+        if self.request.query_params.get('period') == 'day':
+            day = timezone.now().day
+            queryset = queryset.filter(start_date__day=day)
+        elif self.request.query_params.get('period') == 'week':
+            week_start = timezone.now()
+            week_start -= datetime.timedelta(days=week_start.weekday())
+            week_end = week_start + datetime.timedelta(days=7)
+            queryset = queryset.filter(start_date__gte=week_start, start_date__lt=week_end)
+        elif self.request.query_params.get('period') == 'month':
+            month_start = timezone.now().month
+            queryset = queryset.filter(start_date__month=month_start)
+        return queryset.filter(end_date__gt=timezone.now())
