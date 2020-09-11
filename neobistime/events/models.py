@@ -19,6 +19,14 @@ class Place(models.Model):
         return f'{self.name} {self.address}'
 
 
+class RepeatedEvent(models.Model):
+    """
+    Model for storing repeated event data
+    """
+    weekdays = postgres_fields.ArrayField(models.IntegerField(), null=True, blank=True)
+    repeated = models.BooleanField(default=True)
+
+
 class Event(models.Model):
     """
     Model for event objects
@@ -39,6 +47,11 @@ class Event(models.Model):
     deadline = models.DateTimeField(verbose_name='Дедлайн регистрации')
     # address if event will be outside the Neobis office
     address = models.CharField(max_length=70, blank=True, null=True, verbose_name='Адрес')
+    # uuid value for grouping repeated events
+    group_id = models.CharField(max_length=100, editable=False, blank=True, null=True)
+    parent_event = models.ForeignKey(
+        RepeatedEvent, on_delete=models.CASCADE, related_name="event", null=True, blank=True
+    )
 
     class Meta:
         ordering = ['start_date']
