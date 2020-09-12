@@ -2,6 +2,8 @@ from django.conf import settings
 from django.db import models
 from easy_thumbnails.fields import ThumbnailerImageField
 from django.contrib.postgres import fields as postgres_fields
+from model_utils import FieldTracker
+from django.db.models import signals
 
 
 class Place(models.Model):
@@ -64,6 +66,7 @@ class Poll(models.Model):
                                         null=True, blank=True)
     was_on_event = models.BooleanField(default=False, blank=True, null=True,
                                        verbose_name='Действительно был')
+    was_on_event_tracker = FieldTracker()
 
     class Meta:
         unique_together = ('user', 'event',)
@@ -103,3 +106,20 @@ class Notes(models.Model):
 
     def __str__(self):
         return f'{self.title}'
+
+
+def save_points(sender, instance, **kwargs):
+    print('save progile')
+    print(instance.was_on_event)
+    if instance.was_on_event_tracker.has_changed('was_on_event'):
+        print('poll changed')
+        if instance.was_on_event_tracker.previous('was_on_event'):
+            print('subtract 10')
+            instance.user.points -= 10
+        else:
+            print('add 10')
+            instance.user.points += 10
+        instance.user.save()
+
+
+signals.post_save.connect(receiver=save_points, sender=Poll)

@@ -201,19 +201,13 @@ class PollDetailView(generics.RetrieveUpdateAPIView):
     """
     queryset = Poll.objects.all()
     serializer_class = serializers.PollRetrieveUpdateSerializer
-    permission_classes = (permissions.IsAuthenticated, custom_permissions.PollOwner,)
+    permission_classes = (permissions.IsAdminUser, custom_permissions.PollOwner,)
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
-        if not instance.was_on_event and request.data.get('was_on_event') == 'true':
-            user = instance.user.point + 10
-            user.save()
-        elif instance.was_on_event and request.data.get('was_on_event') == 'false':
-            user = instance.user.point - 10
-            user.save()
         self.perform_update(serializer)
 
         if getattr(instance, '_prefetched_objects_cache', None):

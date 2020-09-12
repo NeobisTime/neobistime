@@ -7,6 +7,7 @@ import pytz
 
 from .models import Event, Place, Poll, Notes
 from .tasks import notify_users
+from .bot import telegram_notify_user
 
 
 class PlaceSerializer(serializers.ModelSerializer):
@@ -180,6 +181,18 @@ def available_date_for_event(validated_data, **kwargs):
         else:
             existing_events = check_date_for_events(start, end, events.filter(place=place.pk))
 
+        # checking for event owner TODO
+        if validated_data['owner'].department_id.name == 'Менеджер курсов':
+            for e in existing_events:
+                event = Event.objects.get(title=e.title)
+                message = "Привет, Вам необходимо поменять время " \
+                          "вашего ивента, " \
+                          "так как Менеджер курсов поставил в это " \
+                          "время курсы."
+                telegram_notify_user(event.owner.chat_id,
+                                     message,
+                                     event.id)
+                existing_events.remove(event)
         if existing_events:
             serializer = EventListSerializer(existing_events, many=True)
             raise serializers.ValidationError({"error": "place is not empty", "events": serializer.data})
