@@ -1,13 +1,22 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
-from django.utils import timezone
 from rest_framework import serializers
 from datetime import datetime
 import pytz
 
-from .models import Event, Place, Poll, Notes
+from .models import Event, Place, Poll, Notes, RepeatedEvent
 from .tasks import notify_users
 from .bot import telegram_notify_user
+
+
+from django.utils import timezone
+
+
+class DateTimeFieldWihTZ(serializers.DateTimeField):
+
+    def to_representation(self, value):
+        value = timezone.localtime(value)
+        return super(DateTimeFieldWihTZ, self).to_representation(value)
 
 
 class PlaceSerializer(serializers.ModelSerializer):
@@ -77,6 +86,19 @@ class EventListSerializer(serializers.ModelSerializer):
         )
 
 
+class ParentEventSerializer(serializers.ModelSerializer):
+    """
+    Serializing Repeated event
+    """
+
+    class Meta:
+        model = RepeatedEvent
+        fields = (
+            'weekdays',
+            "repeated"
+        )
+
+
 class EventGetSerializer(serializers.ModelSerializer):
     """
     Class for serializing Event models for get method
@@ -88,12 +110,14 @@ class EventGetSerializer(serializers.ModelSerializer):
     my_event = serializers.SerializerMethodField()
     start = serializers.CharField(source='start_date')
     end = serializers.CharField(source='end_date')
+    group_id = serializers.CharField(read_only=True, allow_null=True)
+    parent_event = ParentEventSerializer(read_only=True, allow_null=True)
 
     class Meta:
         model = Event
         fields = (
             'id', "image", 'owner', 'department', 'title', 'description', 'deadline', 'start', 'end', 'place', 'link',
-            'address', 'backgroundColor', 'my_event'
+            'address', 'backgroundColor', 'my_event', "group_id", "parent_event"
         )
 
     def get_backgroundColor(self, obj):
@@ -130,10 +154,12 @@ class UserNotificationSerializer(serializers.Serializer):
     departments = serializers.ListField(child=serializers.IntegerField(), required=False)
     individual_users = serializers.ListField(child=serializers.EmailField(allow_blank=True), required=False, default=[])
 
-    def notify(self, event_id):
+    def notify(self, event_id, **kwargs):
         departments = self.validated_data["departments"]
         individual_users = self.validated_data["individual_users"]
-        notify_users.delay(departments, individual_users, event_id)
+        notify_users.delay(
+            departments, individual_users, event_id, user_notification=kwargs.get("user_notification", True)
+        )
 
 
 def check_date_for_events(start, end, events):
@@ -176,7 +202,7 @@ def available_date_for_event(validated_data, **kwargs):
         if kwargs.get("update", False):
             events = events.exclude(pk=kwargs["event_id"])
 
-        if 'Весь офис' in place.name:
+        if 'Whole office' in place.name:
             existing_events = check_date_for_events(start, end, events)
         else:
             existing_events = check_date_for_events(start, end, events.filter(place=place.pk))
@@ -216,10 +242,10 @@ class EventCreateUpdateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         available_date_for_event(validated_data)
-
         return Event.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
+        available_date_for_event(validated_data, event_id=instance.pk, update=True)
         instance.profile_img = validated_data.get("image", instance.image)
         instance.title = validated_data.get('title', instance.title)
         instance.place = validated_data.get('place', instance.place)
@@ -229,9 +255,25 @@ class EventCreateUpdateSerializer(serializers.ModelSerializer):
         instance.end_date = validated_data.get('end_date', instance.end_date)
         instance.deadline = validated_data.get('deadline', instance.deadline)
         instance.link = validated_data.get('link', instance.link)
-        available_date_for_event(validated_data, event_id=instance.pk, update=True)
         instance.save()
         return instance
+
+
+class RepeatedEventSerializer(serializers.ModelSerializer):
+    """
+    Class for creating repeatedEvent models (was created just for the purpose of convenience)
+    """
+    owner = serializers.ReadOnlyField(source='owner.name_surname')
+    place = serializers.PrimaryKeyRelatedField(queryset=Place.objects.all(), allow_null=True)
+    start = DateTimeFieldWihTZ(source='start_date')
+    end = DateTimeFieldWihTZ(source='end_date')
+
+    class Meta:
+        model = Event
+        fields = (
+            'id', "image", 'owner', 'title', 'description', 'deadline', 'start', 'end', 'place', 'link',
+            'address',
+        )
 
 
 class MyEventListSerializer(serializers.ModelSerializer):

@@ -1,6 +1,8 @@
-import datetime
 import re
+from datetime import datetime
 
+import pytz
+from django.conf import settings
 from django.utils import timezone
 from django_filters import rest_framework as django_filters
 from rest_framework import filters, generics, permissions, status, viewsets
@@ -14,6 +16,9 @@ from .models import Event, Notes, Place, Poll
 from .permissions import EventOwner
 from .serializers import AdminPolls, EventCreateUpdateSerializer, EventGetSerializer, MyEventListSerializer, \
     NotesSerializer, PlaceSerializer
+from .tasks import create_repeated_events
+
+timezone_ = pytz.timezone(settings.TIME_ZONE)
 
 
 class PlaceListView(generics.ListAPIView):
@@ -36,7 +41,7 @@ class EventsInPlaceView(generics.ListAPIView):
     filter_class = RoomTimeFilter
 
     def get_queryset(self):
-        place = get_object_or_404(Place, pk=self.kwargs['pk'])
+        place = get_object_or_404(Place, pk=self.kwargs.get("pk", ""))
         return Event.objects.filter(place=place.id).filter(end_date__gte=timezone.now())
 
 
@@ -97,7 +102,49 @@ class EventViewSet(viewsets.ModelViewSet):
         else:
             return EventCreateUpdateSerializer
 
-    def perform_create(self, serializer):
+    def destroy(self, request, *args, **kwargs):
+        if request.data.get("repeated", "").lower() == "true":
+            group_uuid = request.data.get("uuid", "")
+            if not group_uuid:
+                raise ValidationError("To delete repeated events uuid required!")
+
+            Event.objects.filter(group_id=group_uuid).delete()
+
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            instance = self.get_object()
+            self.perform_destroy(instance)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def create(self, request, *args, **kwargs):
+        """
+        Creating single or multiple instances of event objects
+        """
+        if request.data.get("repeated", "").lower() == "true":
+            weekdays = list(map(int, request.data.get("weekdays", "").split(",")))
+            if not weekdays:
+                raise ValidationError(
+                    {"detail": "weekdays required for repeated events"}, code=status.HTTP_400_BAD_REQUEST
+                )
+
+            departments_list = list(map(int, re.findall("\d+", request.data.get("departments", ""))))  # noqa
+            users_list = request.data.get("individual_users", "").split(",")
+
+            if len(departments_list) < 1 and len(users_list) < 1:
+                raise ValidationError("Attendees required")
+
+            # Create repeated events
+            create_repeated_events(request.data.copy(), weekdays, request.user.id, departments_list, users_list)
+
+            return Response({"message": "Successfully created"}, status=status.HTTP_201_CREATED)
+        else:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_create(self, serializer, **kwargs):
         """
         Posting current user in an owner of event
         @daniiarz:
@@ -105,24 +152,19 @@ class EventViewSet(viewsets.ModelViewSet):
         :param serializer:
         :return:
         """
-
         if self.request.data.get("public", "").lower() == "true":
-            departments = self.request.data.get("departments", "")
-            individual_users = self.request.data.get("individual_users", "")
+            departments_list = list(map(int, re.findall("\d+", self.request.data.get("departments", ""))))  # noqa
+            users_list = self.request.data.get("individual_users", "").split(",")
 
-            departments_list = list(map(int, re.findall("\d+", departments)))  # noqa
-            users_list = individual_users.split(",")
-
-            if not departments and not individual_users:
+            if len(departments_list) < 1 and len(users_list) < 1:
                 raise ValidationError("Attendees required")
 
             event_data = serializer.save(owner=self.request.user)
-
             serializer = serializers.UserNotificationSerializer(
                 data={"departments": departments_list, "individual_users": users_list}
             )
             serializer.is_valid(raise_exception=True)
-            serializer.notify(event_data.id)
+            serializer.notify(event_data.id, user_notification=True)
         else:
             event_data = serializer.save(owner=self.request.user)
 
@@ -144,13 +186,10 @@ class EventViewSet(viewsets.ModelViewSet):
             instance._prefetched_objects_cache = {}
 
         if self.request.data.get("public", "").lower() == "true":
-            departments = request.data.get("departments", "")
-            individual_users = request.data.get("individual_users", "")
+            departments_list = list(map(int, re.findall("\d+", request.data.get("departments", ""))))  # noqa
+            users_list = request.data.get("individual_users", "").split(",")
 
-            departments_list = list(map(int, re.findall("\d+", departments)))  # noqa
-            users_list = individual_users.split(",")
-
-            if not departments and not individual_users:
+            if len(departments_list) < 1 and len(users_list) < 1:
                 try:
                     departments_list = instance.attendees.departments
                     users_list = instance.attendees.individual_users
