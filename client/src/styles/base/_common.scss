@@ -6,8 +6,15 @@ $font: "Montserrat";
   display: flex;
   box-sizing: border-box;
   margin: 0 auto;
-  flex-basis: 100%;
+  width: 100%;
   font-family: $font;
+  @include media(
+    (
+      flex-direction: (
+        tablet: column,
+      ),
+    )
+  );
   &_bg_grey {
     background-color: #f5f7ff;
   }
@@ -22,9 +29,21 @@ $font: "Montserrat";
   display: block;
   flex-basis: $flex-basis;
   margin: 5px auto 0 auto;
+  box-sizing: border-box;
+  @include media(
+    (
+      width: (
+        tablet: 100%,
+      ),
+      padding: (
+        tablet: 5px 5px 10px 5px,
+      ),
+    )
+  );
   &_no_margin {
     width: 100%;
     margin: 0 auto;
+    box-sizing: border-box;
   }
 }
 .link {
@@ -104,4 +123,14 @@ $font: "Montserrat";
 
 .DayPickerInput input {
   font-family: "Montserrat";
+}
+
+.fc .fc-toolbar {
+  @include media(
+    (
+      flex-direction: (
+        mobile: column,
+      ),
+    )
+  );
 }

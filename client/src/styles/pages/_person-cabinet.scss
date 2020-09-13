@@ -9,15 +9,49 @@ $filterBtnColor: #2c3e50;
   font-family: "Montserrat";
   margin: 0 5px 0 30px !important;
   white-space: nowrap;
+  @include media(
+    (
+      margin: (
+        tablet: 0 !important,
+      ),
+      padding: (
+        tablet: 0,
+      ),
+    )
+  );
   &__info {
     display: flex;
     width: 100%;
     background-color: var(--neobisColor);
     color: white;
-    height: 150px;
     box-sizing: border-box;
     padding: 10px 20px 10px 0;
     flex-wrap: wrap;
+    justify-content: flex-start;
+    @include media(
+      (
+        justify-content: (
+          tablet: flex-start,
+          mobile: space-evenly,
+        ),
+        padding: (
+          tablet: 10px 0,
+        ),
+        display: (
+          small: none,
+        ),
+      )
+    );
+    &_mobile {
+      display: none;
+      @include media(
+        (
+          display: (
+            mobile: flex,
+          ),
+        )
+      );
+    }
     &-picture-block {
       width: $pictureBlockWidth;
       height: 100%;
@@ -26,12 +60,35 @@ $filterBtnColor: #2c3e50;
       justify-content: center;
       align-items: center;
       border-radius: 50%;
+      @include media(
+        (
+          display: (
+            ipad: none,
+            mobile: flex,
+          ),
+        )
+      );
     }
     &-avatar {
       width: 130px;
-      height: 100%;
+      height: 130px;
       box-sizing: border-box;
       border-radius: 50%;
+      flex-shrink: 0;
+      @include media(
+        (
+          display: (
+            mobile: flex !important,
+            ipad: none,
+          ),
+          width: (
+            mobile: 120px,
+          ),
+          height: (
+            mobile: 120px,
+          ),
+        )
+      );
     }
     &-content-wrapper {
       box-sizing: border-box;
@@ -39,6 +96,35 @@ $filterBtnColor: #2c3e50;
       display: flex;
       width: $infoContentWidth;
       flex-wrap: wrap;
+      @include media(
+        (
+          width: (
+            ipad: 55%,
+            tablet: 60%,
+          ),
+          display: (
+            mobile: none,
+          ),
+        )
+      );
+      &_mobile {
+        box-sizing: border-box;
+        padding: 0 15px 0 30px;
+        display: flex;
+        width: $infoContentWidth;
+        flex-wrap: wrap;
+        width: 100%;
+        @include media(
+          (
+            display: (
+              mobile: flex,
+            ),
+            padding: (
+              small: 0 15px 0 10px,
+            ),
+          )
+        );
+      }
     }
     &-section {
       box-sizing: border-box;
@@ -52,9 +138,25 @@ $filterBtnColor: #2c3e50;
       margin: 5px 0 10px 0;
       color: rgba(255, 255, 255, 0.8);
       font-size: $standartFontSize;
+      @include media(
+        (
+          font-size: (
+            mobile: 16px,
+            small: 14px,
+          ),
+        )
+      );
       &-content {
         color: white;
         font-size: $standartFontSize;
+        @include media(
+          (
+            font-size: (
+              mobile: 16px,
+              small: 14px,
+            ),
+          )
+        );
       }
     }
 
@@ -64,7 +166,15 @@ $filterBtnColor: #2c3e50;
       display: flex;
       justify-content: center;
       align-items: center;
-      &-container {
+      box-sizing: border-box;
+      @include media(
+          (
+            width: (
+              ipad: 35%,
+            ),
+          )
+        )
+        &-container {
       }
       &-value {
         width: 130px;
@@ -79,6 +189,13 @@ $filterBtnColor: #2c3e50;
       &-achievements {
         display: flex;
         width: 100%;
+        @include media(
+          (
+            display: (
+              mobile: none,
+            ),
+          )
+        );
         &-images {
           display: flex;
           flex-direction: column;
@@ -121,14 +238,43 @@ $filterBtnColor: #2c3e50;
       align-items: baseline;
       justify-content: center;
       text-align: center;
+      @include media(
+        (
+          font-size: (
+            mobile: 16px,
+            small: 14px,
+          ),
+          width: (
+            mobile: auto,
+          ),
+          padding: (
+            mobile: 4px 10px,
+          ),
+        )
+      );
       &-image {
         width: 15px;
         box-sizing: border-box;
-        margin: 0 5px 0 ;
+        margin: 0 5px 0;
+        @include media(
+          (
+            display: (
+              mobile: none,
+            ),
+          )
+        );
       }
     }
     &-name {
       font-size: 26px;
+      @include media(
+        (
+          font-size: (
+            mobile: 20px,
+            small: 16px,
+          ),
+        )
+      );
     }
     &-dep {
       box-sizing: border-box;
@@ -155,10 +301,25 @@ $filterBtnColor: #2c3e50;
         text-align: center;
         &_active {
           border-bottom: 7px solid var(--neobisColor);
+          @include media(
+            (
+              border-bottom: 3px solid var(--neobisColor),
+            )
+          );
         }
         &_non_active {
           color: #a6b1bb;
         }
+        @include media(
+          (
+            font-size: (
+              mobile: 20px,
+            ),
+            padding: (
+              mobile: 5px 0,
+            ),
+          )
+        );
       }
     }
   }
@@ -167,15 +328,33 @@ $filterBtnColor: #2c3e50;
       display: flex !important;
       justify-content: space-evenly;
       width: 100%;
+      align-items: center;
+      @include media(
+        (
+          flex-direction: (
+            ipad: column,
+          ),
+          justify-content:
+          (
+            ipad: center,
+          ),
+        )
+      );
     }
     &-doughnut {
       width: 500px;
+      @include media((
+        width: (ipad: 70%, mobile: 90%)
+      ))
     }
     &-content {
       display: flex;
       flex-direction: column;
       width: 35%;
       justify-content: space-evenly;
+      @include media((
+        width: (ipad: 70%, mobile: 90%)
+      ))
     }
     &-buttons {
       box-sizing: border-box;

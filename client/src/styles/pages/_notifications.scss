@@ -61,7 +61,7 @@ $blockWidth: 270px;
       display: flex;
       flex-wrap: wrap;
       flex-basis: 900px;
-      justify-content: space-between;
+      justify-content: space-evenly;
     }
   }
   &__content {

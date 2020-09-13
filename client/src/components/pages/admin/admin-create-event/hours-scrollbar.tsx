@@ -30,40 +30,41 @@ const HoursScrollbar = (props: any) => {
     7,
   ];
   return (
-    <Scrollbars
-      autoHide
-      autoHideTimeout={1000}
-      autoHideDuration={200}
-      autoHeight
-      autoHeightMin={0}
-      autoHeightMax={200}
-      thumbMinSize={30}
-      universal={true}
-      className="create-event__form-scroll"
-      style={{ width: 50, height: 200 }}
-    >
-      <div className="create-event__form-number create-event__form-number_active">
-        ч.
-      </div>
-      {hours.map((number) => {
-        return (
-          <div
-            key={number}
-            className={
-              number === value
-                ? "create-event__form-number create-event__form-number_active-number"
-                : "create-event__form-number"
-            }
-            // className="create-event__form-number"
-            onClick={() => {
-              setValue(number);
-            }}
-          >
-            {number}
-          </div>
-        );
-      })}
-    </Scrollbars>
+    <>
+      <Scrollbars
+        autoHide
+        autoHideTimeout={1000}
+        autoHideDuration={200}
+        autoHeight
+        autoHeightMin={0}
+        autoHeightMax={200}
+        thumbMinSize={30}
+        universal={true}
+        className="create-event__form-scroll"
+        style={{ width: 50, height: 200 }}
+      >
+        <div className="create-event__form-number create-event__form-number_active">
+          ч.
+        </div>
+        {hours.map((number) => {
+          return (
+            <div
+              key={number}
+              className={
+                number === value
+                  ? "create-event__form-number create-event__form-number_active-number"
+                  : "create-event__form-number"
+              }
+              onClick={() => {
+                setValue(number);
+              }}
+            >
+              {number}
+            </div>
+          );
+        })}
+      </Scrollbars>
+    </>
   );
 };
 

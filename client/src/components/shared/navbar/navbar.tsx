@@ -1,23 +1,40 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, Link, withRouter } from "react-router-dom";
 import ConfirmExit from "./confirm-exit";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCalendarAlt,
+  faBell,
+  faKey,
+  faHistory,
+  faUserShield,
+  faUserCircle,
+} from "@fortawesome/free-solid-svg-icons";
 
 // *icons
 import avatar from "../../../images/shared/user.svg";
-import calendar from "../../../images/shared/calendar.svg";
-import notification from "../../../images/shared/Notification.svg";
-import today from "../../../images/shared/today.svg";
-import admin from "../../../images/shared/admin.svg";
-import exit from "../../../images/shared/exit.svg";
-import rooms from "../../../images/shared/rooms.svg";
+// import calendar from "../../../images/shared/calendar.svg";
+// import notification from "../../../images/shared/Notification.svg";
+// import today from "../../../images/shared/today.svg";
+// import admin from "../../../images/shared/admin.svg";
+// import exit from "../../../images/shared/exit.svg";
+// import rooms from "../../../images/shared/rooms.svg";
 import API, { getCookie } from "../../../API";
 import withDataContainer from "../../../HOC/withData";
+
+const links: any = [
+  { name: "Уведомления", link: "/notifications", icon: faBell },
+  { name: "Календарь", link: "/", icon: faCalendarAlt },
+  { name: "Расписание дня", link: "/today", icon: faHistory },
+  { name: "Комнаты", link: "/rooms", icon: faKey },
+];
 
 const Navbar = (props: any) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<any>({});
   const [role, setRole] = useState<string | undefined>("");
   const [department, setDepartment] = useState<any>({});
+  const [openBurger, setOpenBurger] = useState<boolean>(false);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -32,113 +49,123 @@ const Navbar = (props: any) => {
       );
       setDepartment(departmentNumber[0]);
     });
-    let token = localStorage.getItem('token')
+    let token = localStorage.getItem("neoTimeToken");
     if (!token) {
-      props.history.push('/auth')
+      props.history.push("/auth");
     }
   }, []);
 
   return (
-    <div className="navbar">
-      <Link to="/personal_office" className="link">
-        <div className="navbar__person-info">
-          <div className="navbar__person-info-image-container">
-            <img
-              className="navbar__person-info-image"
-              src={userInfo.profile_img || avatar}
-              alt="default avatar"
-            />
-          </div>
-
-          <div className="navbar__person-info-text_wrapper">
-            <p className="navbar__person-info-name">{userInfo.name_surname}</p>
-            <p className="navbar__person-info-text">
-              {department.label || "Neobis"} department{" "}
-            </p>
-            <p className="navbar__person-info-text">{userInfo.email}</p>
-          </div>
+    <>
+      <div className="navbar__burger-wrapper">
+        <div
+          className={
+            openBurger ? "navbar__burger open_burger" : "navbar__burger"
+          }
+          onClick={() => {
+            setOpenBurger(!openBurger);
+          }}
+        >
+          <div className="navbar__burger-button"></div>
         </div>
-      </Link>
+      </div>
+      <div
+        className="navbar"
+        style={{
+          height:
+            window.innerWidth > 769 ? "auto" : openBurger ? "340px" : "0px",
+        }}
+      >
+        <Link to="/personal_office" className="link">
+          <div className="navbar__person-info">
+            <div className="navbar__person-info-image-container">
+              <img
+                className="navbar__person-info-image"
+                src={userInfo.profile_img || avatar}
+                alt="default avatar"
+              />
+            </div>
 
-      <div className="navbar__content">
-        <ul className="navbar__list">
-          <NavLink
-            exact
-            to="/notifications"
-            activeStyle={{ backgroundColor: "#1DA48B" }}
-            className="navbar__list-link"
-          >
-            <img
-              src={notification}
-              className="navbar__list-image navbar__list-image_filter"
-              alt="icon"
-            />
-            <li className="navbar__list-item">Уведомления</li>
-          </NavLink>
-          <NavLink
-            exact
-            to="/"
-            activeStyle={{ backgroundColor: "#1DA48B" }}
-            className="navbar__list-link"
-          >
-            <img
-              src={calendar}
-              className="navbar__list-image navbar__list-image_events navbar__list-image_filter"
-              alt="icon"
-            />
-            <li className="navbar__list-item">Календарь</li>
-          </NavLink>
-          <NavLink
-            exact
-            to="/today"
-            activeStyle={{ backgroundColor: "#1DA48B" }}
-            className="navbar__list-link"
-          >
-            <img
-              src={today}
-              className="navbar__list-image navbar__list-image_filter"
-              alt="icon"
-            />
-            <li className="navbar__list-item">Расписание дня</li>
-          </NavLink>
-          <NavLink
-            exact
-            to="/rooms"
-            activeStyle={{ backgroundColor: "#1DA48B" }}
-            className="navbar__list-link"
-          >
-            <img
-              src={rooms}
-              className="navbar__list-image navbar__list-image_rooms navbar__list-image_filter"
-              alt="icon"
-            />
-            <li className="navbar__list-item">Комнаты</li>
-          </NavLink>
+            <div className="navbar__person-info-text_wrapper">
+              <p className="navbar__person-info-name">
+                {userInfo.name_surname}
+              </p>
+              <p className="navbar__person-info-text">
+                {department.label || "Neobis"} department{" "}
+              </p>
+              <p className="navbar__person-info-text">{userInfo.email}</p>
+            </div>
+          </div>
+        </Link>
 
-          {role === "admin" ? (
+        <div
+          className="navbar__content"
+          style={{
+            clipPath:
+              window.innerWidth > 769
+                ? "polygon(0 0, 100% 0, 100% 100%, 0 100%)"
+                : openBurger
+                ? "polygon(0 0, 100% 0, 100% 100%, 0 100%)"
+                : "polygon(0 0, 100% 0, 100% 0, 0 0)",
+          }}
+        >
+          <ul className="navbar__list">
             <NavLink
               exact
-              to="/lead_admin"
+              to="/personal_office"
               activeStyle={{ backgroundColor: "#1DA48B" }}
-              className="navbar__list-link"
+              className="navbar__list-link navbar__personal-office"
             >
-              <img
-                src={admin}
-                className="navbar__list-image navbar__list-image_filter"
-                alt="icon"
+              <FontAwesomeIcon
+                icon={faUserCircle}
+                className="navbar__list-image "
               />
-              <li className="navbar__list-item">Админ панель</li>
+              <li className="navbar__list-item">Личный кабинет</li>
             </NavLink>
-          ) : null}
+            {links.map((item: any) => (
+              <NavLink
+                exact
+                to={item.link}
+                activeStyle={{ backgroundColor: "#1DA48B" }}
+                className="navbar__list-link"
+              >
+                <FontAwesomeIcon
+                  icon={item.icon}
+                  className="navbar__list-image "
+                />
+                <li className="navbar__list-item">{item.name}</li>
+              </NavLink>
+            ))}
 
-          <div className="navbar__list-link" onClick={toggleModal}>
-            <img src={exit} className="navbar__list-image" alt="icon" />
-            <button className="navbar__button navbar__list-item">Выйти</button>
-          </div>
-        </ul>
-        {isModalOpen && <ConfirmExit onClose={toggleModal} />}
+            {role === "admin" ? (
+              <NavLink
+                exact
+                to="/lead_admin"
+                activeStyle={{ backgroundColor: "#1DA48B" }}
+                className="navbar__list-link"
+              >
+                <FontAwesomeIcon
+                  icon={faUserShield}
+                  className="navbar__list-image "
+                />
+                <li className="navbar__list-item">Админ панель</li>
+              </NavLink>
+            ) : null}
+
+            <div className="navbar__list-link" onClick={toggleModal}>
+              {/* <img src={exit} className="navbar__list-image" alt="icon" /> */}
+              <button
+                className="navbar__button navbar__list-item"
+                style={{ padding: "5px 0" }}
+              >
+                Выйти
+              </button>
+            </div>
+          </ul>
+          {isModalOpen && <ConfirmExit onClose={toggleModal} />}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

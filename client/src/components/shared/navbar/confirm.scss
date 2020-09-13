@@ -1,4 +1,4 @@
-$buttonTextSize: 20px;
+$buttonTextSize: 16px;
 $bottom: 15px;
 $flankPadding: 20px;
 
@@ -24,10 +24,9 @@ $flankPadding: 20px;
     width: 100%;
     height: 70%;
   }
-  &__buttons_wrapper {
+  &__buttons-wrapper {
     display: flex;
     width: 90%;
-    position: relative;
   }
   &__button_red_left {
     font-size: $buttonTextSize;

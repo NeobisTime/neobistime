@@ -3,6 +3,7 @@ import { CloseModalButton } from "../calendar";
 import API from "../../../../API";
 import DayPickerInput from "react-day-picker/DayPickerInput";
 import "react-day-picker/lib/style.css";
+import dateFnsFormat from "date-fns/format";
 
 // icons
 import time from "../../../../images/shared/modal-clock.svg";
@@ -19,6 +20,12 @@ const PersonalEventCreateModal = (props: any) => {
   const [endDate, setEndDate] = useState<Date>(props.date);
   const [endDateHours, setEndDateHours] = useState<number>(0);
   const [endDateMinutes, setEndDateMinutes] = useState<number>(0);
+
+  const FORMAT = "dd/MM";
+  function formatDate(date: any, format: any, locale: any) {
+    return dateFnsFormat(date, format, { locale });
+  }
+
 
   const updateStartTime = () => {
     let startTime = new Date(startDate);
@@ -89,6 +96,8 @@ const PersonalEventCreateModal = (props: any) => {
                   setStartDate(day);
                   setEndDate(day);
                 }}
+                format={FORMAT}
+                formatDate={formatDate}
               />
             </div>
             <div className="admin-create-event-modal-time">
@@ -160,7 +169,7 @@ const PersonalEventCreateModal = (props: any) => {
             </div>
           </div>
 
-          <div className="personal-create-row">
+          <div className="personal-create-row event-info-modal__admin-buttons-wrapper">
             <div className="personal-create__buttons-wrapper">
               <button
                 onClick={handleSubmit}

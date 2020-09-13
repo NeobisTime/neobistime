@@ -17,7 +17,6 @@ const BlockEventNotification = (props: any) => {
   const [willNotGo, setWillNotGo] = useState<boolean | undefined>(false);
 
   const [missedDeadline, setMissedDeadline] = useState(false);
-  console.log("BlockEventNotification -> missedDeadline", missedDeadline);
   const [correctPollId, setCorrectPollId] = useState<any>(0);
   let deadline = new Date(event.deadline);
   let startDate = new Date(event.start);
@@ -181,7 +180,7 @@ const Notification = (props: any) => {
   let rightPortionPageNumber = portionNumber * portionSize;
 
   useEffect(() => {
-    API.getEvents(pageSize, currentPage * pageSize, search, period).then(
+    API.getNotifications(pageSize, currentPage * pageSize, search, period).then(
       (data) => {
         setEvents(data.data.results);
         setTotalProducts(data.data.count);

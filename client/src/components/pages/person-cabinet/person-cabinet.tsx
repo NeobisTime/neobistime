@@ -89,12 +89,18 @@ const PersonalOffice = (props: any) => {
       {
         data: [
           statsData.quantity_of_attended_events || 0,
-          statsData.quantity_of_missed_events || -1,
+          statsData.quantity_of_missed_events == 0
+            ? 0
+            : statsData.quantity_of_missed_events,
+          statsData.quantity_of_missed_events == 0 &&
+          statsData.quantity_of_attended_events == 0
+            ? 1
+            : 0,
         ],
-        backgroundColor: ["#FFCE56", "#EC4C47"],
+        backgroundColor: ["#FFCE56", "#EC4C47", "grey"],
       },
     ],
-    labels: ["Посещенных мероприятий", "Пропущенных мероприятий"],
+    labels: ["Посещенных мероприятий", "Пропущенных мероприятий", "пока пусто"],
     legend: {
       display: false,
     },
@@ -163,7 +169,7 @@ const PersonalOffice = (props: any) => {
 
   const handleDateSelect = (selectInfo: any) => {
     setDate(selectInfo.start);
-    togglePersonalEventCreate();
+    setIsPersonalEventCreate(true)
   };
 
   const handleEventDropAndResize = (eventDropInfo: any) => {
@@ -235,6 +241,7 @@ const PersonalOffice = (props: any) => {
         <Navbar />
         <div className=" content__wrapper content__wrapper_no_margin personal-office">
           <Spinner timeOut={600} />
+
           <section className="personal-office__info">
             <div className="personal-office__info-picture-block">
               <img
@@ -344,6 +351,39 @@ const PersonalOffice = (props: any) => {
             </div>
           </section>
 
+          {/* mobile version */}
+          <section className="personal-office__info personal-office__info_mobile ">
+            <div className="personal-office__info-content-wrapper_mobile">
+              <div className="personal-office__info-section">
+                <p className="personal-office__info-name">
+                  {userInfo.name_surname}
+                </p>
+                <p className="personal-office__info-text">
+                  E-mail: &nbsp;
+                  <span className="personal-office__info-text-content">
+                    {userInfo.email}
+                  </span>
+                </p>
+                <p className="personal-office__info-text">
+                  Телефон: &nbsp;
+                  <span className="personal-office__info-text-content">
+                    {userInfo.phone}
+                  </span>
+                </p>
+                <Link to="/change_personal_data" className="link">
+                  <button className="button personal-office__info-edit">
+                    <img
+                      src={editImage}
+                      alt="pencil"
+                      className="personal-office__info-edit-image"
+                    />
+                    Редактировать
+                  </button>
+                </Link>
+              </div>
+            </div>
+          </section>
+
           <section className="personal-office__buttons">
             <div className="personal-office__buttons-section ">
               <p
@@ -390,6 +430,7 @@ const PersonalOffice = (props: any) => {
               selectable={true}
               selectMirror={true}
               select={handleDateSelect}
+              dateClick={handleDateSelect}
               eventDrop={handleEventDropAndResize}
               eventResize={handleEventDropAndResize}
               eventClick={handleEventClick}

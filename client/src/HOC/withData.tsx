@@ -1,5 +1,9 @@
 import React from "react";
 
+export type roomType = {
+  id: number;
+  name: string;
+};
 const withDataContainer = (Component: any) => {
   const departments = [
     { value: "8", label: "Android" },
@@ -50,6 +54,22 @@ const withDataContainer = (Component: any) => {
     { value: "10", label: "Ноябрь" },
     { value: "11", label: "Декабрь" },
   ];
+
+  const roomsNames: roomType[] = [
+    { id: 1, name: "Classroom" },
+    { id: 2, name: "Hall" },
+    { id: 3, name: "Whole Office" },
+    { id: 4, name: "Staff Room" },
+  ];
+  const rooms: roomType[] = [...roomsNames, { id: 5, name: "Another location" }];
+
+  const roomsForSelect: any = rooms.map((room) => {
+    return {
+      value: String(room.id),
+      label: String(room.name),
+    };
+  });
+
   const withData = (props: any) => {
     return (
       <Component
@@ -58,6 +78,10 @@ const withDataContainer = (Component: any) => {
         departments={departments}
         selectDepartments={selectDepartments}
         yearsMonth={yearsMonth}
+        rooms={rooms}
+        roomsNames={roomsNames}
+        roomsForSelect={roomsForSelect}
+        {...props}
       />
     );
   };

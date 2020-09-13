@@ -17,7 +17,8 @@ export function getCookie(name: string) {
   );
   return matches ? decodeURIComponent(matches[1]) : undefined;
 }
-let token = getCookie("XSRF-Token") || localStorage.getItem("token");
+// let token = getCookie("XSRF-Token") || localStorage.getItem("token");
+let token = localStorage.getItem("neoTimeToken");
 
 const getData = (url: string) => {
   return http.get(url, {
@@ -151,8 +152,8 @@ const patchFormData = (url: string, data: any) => {
 
 async function postAuthData(url: string, data: object) {
   let answer = await http.post(url, data).then((response) => {
-    document.cookie = `XSRF-Token =${response.data.key}`;
-    localStorage.setItem("token", response.data.key);
+    document.cookie = `XSRF-Token=${response.data.key}`;
+    localStorage.setItem("neoTimeToken", response.data.key);
     return response;
   });
   return answer;
@@ -167,6 +168,15 @@ export default {
   ) =>
     getData(
       `events/?limit=${limit}&offset=${offset}&search=${search}&period=${period}`
+    ),
+  getNotifications: (
+    limit: number = 10,
+    offset: number = 0,
+    search: string = "",
+    period: string = ""
+  ) =>
+    getData(
+      `notification/?limit=${limit}&offset=${offset}&search=${search}&period=${period}`
     ),
   getEventInfo: (id: string | number) => getData(`events/${id}/`),
   getRoomEvents: (
@@ -191,6 +201,7 @@ export default {
     getData(
       `stats_by_department/?department_id=${department}&month=${month}&year=${year}`
     ),
+  getRooms: () => getData("place/"),
 
   getRole: (token: string) => postGetRoleData("users/is_user_staff/", token),
   postRegistrationData: (data: object) =>
