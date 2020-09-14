@@ -274,7 +274,7 @@ const CreateEventPage = (props: any) => {
                     }}
                     className="create-event__form-input"
                     type="text"
-                    value={image[0] ? image[0].name || image : "empty"}
+                    value={image[0] ? image[0].name || image : "Изображение"}
                     readOnly
                   />
                   <input

@@ -15,6 +15,7 @@ const withDataContainer = (Component: any) => {
     { value: "2", label: "NodeJS" },
     { value: "3", label: "PM" },
     { value: "1", label: "Python" },
+    { value: "10", label: "Courses Manager" },
   ];
   const selectDepartments = [{ value: "all", label: "All" }, ...departments];
   let days = [
@@ -61,7 +62,10 @@ const withDataContainer = (Component: any) => {
     { id: 3, name: "Whole Office" },
     { id: 4, name: "Staff Room" },
   ];
-  const rooms: roomType[] = [...roomsNames, { id: 5, name: "Another location" }];
+  const rooms: roomType[] = [
+    ...roomsNames,
+    { id: 5, name: "Another location" },
+  ];
 
   const roomsForSelect: any = rooms.map((room) => {
     return {

@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { CloseModalButton } from "../calendar";
 import DayPickerInput from "react-day-picker/DayPickerInput";
+import MomentLocaleUtils from "react-day-picker/moment";
+import "moment/locale/ru";
+
 import "react-day-picker/lib/style.css";
 import Select from "react-select";
 import API from "../../../../API";
@@ -175,6 +178,7 @@ const AdminEventCreateModal = (props: any) => {
             <div className="admin-create-event-modal__day-picker">
               <DayPickerInput
                 value={props.date}
+                placeholder="Дата"
                 onDayChange={(day) => {
                   setStartDate(day);
                   setEndDate(day);

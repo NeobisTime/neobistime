@@ -149,6 +149,7 @@ const Calendar = (props: any) => {
       public: String(true),
       place: oldEvent.place.id,
     };
+    console.log("handleEventDropAndResize -> dataToPatch", dataToPatch)
     API.patchEventChangeData(dataToPatch, oldEvent.id)
       .then((response) => {
         openAlert(response);
