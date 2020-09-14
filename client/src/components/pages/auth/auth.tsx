@@ -63,18 +63,19 @@ const Authorization: React.FC = (props: any) => {
     let answer = await API.postAuthData(data)
       .then((response) => {
         openAlert(response);
-        let token: string = getCookie("XSRF-Token") || "";
+        // let token: string = getCookie("XSRF-Token") || "";
+        let token: string = localStorage.getItem('neoTimeToken') || "";
         let requestDataToPush: any = {
           token,
         };
         API.getRole(requestDataToPush).then((data: any) => {
           if (data.data.is_staff) {
-            document.cookie = `role =admin`;
+            document.cookie = `role=admin`;
             localStorage.setItem("role", "admin");
             props.history.push("/");
             window.location.reload(true);
           } else {
-            document.cookie = `role =user`;
+            document.cookie = `role=user`;
             localStorage.setItem("role", "user");
             props.history.push("/");
             window.location.reload(true);

@@ -4,8 +4,6 @@ import withNavbarContainer from "../../../HOC/withNavbar";
 import API from "../../../API";
 import EmptyRoom from "../rooms/rooms-empty";
 
-// TODO: todayList нужно сделать переиспользуемым компонентом, он используется на  этой странице и на admin-end-events
-
 type TodayListProps = {
   events: object[];
 };
@@ -72,11 +70,44 @@ export let finalDate = `${
 
 const TodayTimetable = (props: any) => {
   const [todayEvents, setTodayEvents] = useState([]);
+  // let {state: todayEvents, setState: setTodayEvents} = useState([])
+
+  // google events from google calendat api
+  const [gevents, setGevents] = useState<any>();
+  const GOOGLE_API_KEY = "AIzaSyCqbA_GExr7SrXh3ZVwCvojL_AGSnXN3X8";
+  const CALENDAR_ID = "neobistime.kg@gmail.com";
+
   useEffect(() => {
-    API.getTodaySchedule().then((requestData) => {
+    API.getTodaySchedule().then((requestData: any) => {
       setTodayEvents(requestData.data);
     });
   }, []);
+
+  // function getEvents() {
+  //   function start() {
+  //     gapi.client
+  //       .init({
+  //         apiKey: GOOGLE_API_KEY,
+  //       })
+  //       .then(function () {
+  //         return gapi.client.request({
+  //           path: `https://www.googleapis.com/calendar/v3/calendars/${CALENDAR_ID}/events`,
+  //         });
+  //       })
+  //       .then(
+  //         (response: any) => {
+  //           let events = response.result.items;
+  //           setGevents(events);
+  //           console.log(gevents?.state?.events);
+  //         },
+  //         function (reason: any) {
+  //           console.log(reason);
+  //         }
+  //       );
+  //   }
+  //   gapi.load("client", start);
+  // }
+
   return (
     <>
       <p className="today__title">{finalDate}</p>

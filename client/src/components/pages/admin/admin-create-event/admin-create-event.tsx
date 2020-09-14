@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import AdminNavbar from "../admin-navbar";
 import DayPicker from "react-day-picker";
+import MomentLocaleUtils from "react-day-picker/moment";
+import "moment/locale/ru";
+
 import "react-day-picker/lib/style.css";
 import Select from "react-select";
 import HoursScrollbar from "./hours-scrollbar";
@@ -9,8 +12,11 @@ import withDataContainer from "../../../../HOC/withData";
 import API from "../../../../API";
 import { withRouter } from "react-router-dom";
 import Alert from "../../../shared/alert";
+import { roomType } from "../../../../HOC/withData";
+import Spinner from "../../../shared/spinner/spinner";
 
 const CreateEventPage = (props: any) => {
+  console.log("CreateEventPage -> props", props);
   const eventId = props.match.params.id;
 
   const [title, setTitle] = useState<string>("");
@@ -49,9 +55,9 @@ const CreateEventPage = (props: any) => {
       setAlertText(response.response || "непредвиденная ошибка");
     }
     setIsAlertOpen(true);
-    setTimeout(()=>{
+    setTimeout(() => {
       setIsAlertOpen(false);
-    },5000)
+    }, 5000);
   };
 
   useEffect(() => {
@@ -110,7 +116,7 @@ const CreateEventPage = (props: any) => {
   const handleChangeAddress = (e: any) => {
     if (eventId) {
       setPlace({ ...place, id: e.target.value });
-      if (e.target.value == 4) {
+      if (e.target.value == 5) {
         setAddressDisable(false);
       }
     } else {
@@ -118,7 +124,7 @@ const CreateEventPage = (props: any) => {
       setAddressDisable(true);
       setAddress("");
 
-      if (e.target.value == 4) {
+      if (e.target.value == 5) {
         setAddressDisable(false);
       }
     }
@@ -218,6 +224,7 @@ const CreateEventPage = (props: any) => {
       <div className="wrapper wrapper_bg_grey">
         <AdminNavbar />
         <div className="content__wrapper">
+          <Spinner timeOut={600} />
           <div className="create-event">
             <form
               className="create-event__form"
@@ -254,7 +261,7 @@ const CreateEventPage = (props: any) => {
                   onChange={(e) => {
                     setDescription(e.target.value);
                   }}
-                  placeholder="Some Meet Up"
+                  placeholder="Описание ивента"
                   className="create-event__form-textarea"
                 />
 
@@ -267,7 +274,7 @@ const CreateEventPage = (props: any) => {
                     }}
                     className="create-event__form-input"
                     type="text"
-                    value={image[0] ? image[0].name || image : "empty"}
+                    value={image[0] ? image[0].name || image : "Изображение"}
                     readOnly
                   />
                   <input
@@ -290,6 +297,9 @@ const CreateEventPage = (props: any) => {
 
               <section className="create-event__form-section_calendar">
                 <DayPicker
+                  locale="ru"
+                  localeUtils={MomentLocaleUtils}
+                  firstDayOfWeek={1}
                   onDayClick={(date) => {
                     setStartDate(date);
                     setEndDate(date);
@@ -346,71 +356,25 @@ const CreateEventPage = (props: any) => {
                   Выберите локацию
                 </label>
                 <div className="create-event__form-radio">
-                  <div className="create-event__form-radio-container">
-                    <input
-                      type="radio"
-                      name="place"
-                      onChange={handleChangeAddress}
-                      value={1}
-                      checked={
-                        eventId
-                          ? place && +place.id === 1
-                            ? true
-                            : false
-                          : undefined
-                      }
-                    />
-                    <label htmlFor="small">Маленькая комната</label>
-                  </div>
-                  <div className="create-event__form-radio-container">
-                    <input
-                      type="radio"
-                      name="place"
-                      value={2}
-                      onChange={handleChangeAddress}
-                      checked={
-                        eventId
-                          ? place && +place.id === 2
-                            ? true
-                            : false
-                          : undefined
-                      }
-                    />
-                    <label htmlFor="small">Большая комната</label>
-                  </div>
-                  <div className="create-event__form-radio-container">
-                    <input
-                      type="radio"
-                      name="place"
-                      value={3}
-                      onChange={handleChangeAddress}
-                      checked={
-                        eventId
-                          ? place && +place.id === 3
-                            ? true
-                            : false
-                          : undefined
-                      }
-                    />
-                    <label htmlFor="small">Весь офис</label>
-                  </div>
-                  <div className="create-event__form-radio-container">
-                    <input
-                      type="radio"
-                      name="place"
-                      value={4}
-                      onChange={handleChangeAddress}
-                      checked={
-                        eventId
-                          ? place && +place.id === 4
-                            ? true
-                            : false
-                          : undefined
-                      }
-                    />
-                    <label htmlFor="small">Другое</label>
-                  </div>
-
+                  {props.rooms.map((item: roomType) => (
+                    <div className="create-event__form-radio-container">
+                      <input
+                        type="radio"
+                        name="place"
+                        className="create-event__form-radio-button"
+                        onChange={handleChangeAddress}
+                        value={item.id}
+                        checked={
+                          eventId
+                            ? place && +place.id === item.id
+                              ? true
+                              : false
+                            : undefined
+                        }
+                      />
+                      <label htmlFor="small">{item.name}</label>
+                    </div>
+                  ))}
                   <input
                     className="create-event__form-input create-event__form-input_border"
                     type="text"
@@ -424,7 +388,11 @@ const CreateEventPage = (props: any) => {
                   />
                 </div>
                 {/* <div className="create-event__form-select-container"> */}
-                <label className="create-event__form-label" htmlFor="invite">
+                <label
+                  className="create-event__form-label"
+                  htmlFor="invite"
+                  style={{ margin: "30px 0 10px 0" }}
+                >
                   Пригласить департамент
                 </label>
                 <Select
@@ -442,7 +410,11 @@ const CreateEventPage = (props: any) => {
                 />
                 {/* </div> */}
 
-                <label className="create-event__form-label" htmlFor="invite">
+                <label
+                  className="create-event__form-label"
+                  htmlFor="invite"
+                  style={{ margin: "30px 0 10px 0" }}
+                >
                   Пригласить отдельных людей
                 </label>
                 <Select

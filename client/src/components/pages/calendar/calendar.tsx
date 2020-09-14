@@ -48,12 +48,12 @@ const Calendar = (props: any) => {
       setServerEvents(res.data.results);
     });
     setRole(getCookie("role"));
-    if (getCookie('role') === "admin") {
+    if (getCookie("role") === "admin") {
       setEditable(true);
     } else {
       setEditable(false);
     }
-    let token = localStorage.getItem("token");
+    let token = localStorage.getItem("neoTimeToken");
     if (!token) {
       props.history.push("/auth");
     }
@@ -149,6 +149,7 @@ const Calendar = (props: any) => {
       public: String(true),
       place: oldEvent.place.id,
     };
+    console.log("handleEventDropAndResize -> dataToPatch", dataToPatch)
     API.patchEventChangeData(dataToPatch, oldEvent.id)
       .then((response) => {
         openAlert(response);
@@ -166,8 +167,8 @@ const Calendar = (props: any) => {
 
   const handleDateSelect = (selectInfo: any) => {
     setDate(selectInfo.start);
-    if (getCookie('role') === "admin") {
-      toggleAdminEventCreate();
+    if (getCookie("role") === "admin") {
+      setIsAdminEventCreate(true)
     }
   };
 
@@ -177,55 +178,58 @@ const Calendar = (props: any) => {
     });
   };
 
+
   return (
     <>
-      <FullCalendar
-        plugins={[
-          dayGridPlugin,
-          interactionPlugin,
-          timeGridPlugin,
-          listPlugin,
-          googleCalendarPlugin,
-          bootstrapPlugin,
-        ]}
-        height="610px"
-        headerToolbar={{
-          left: "prev,next today",
-          center: "title",
-          right: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
-        }}
-        initialView="dayGridMonth"
-        // dateClick={handleDateClick} //TODO: edit
-        editable={editable}
-        firstDay={1}
-        googleCalendarApiKey="AIzaSyCqbA_GExr7SrXh3ZVwCvojL_AGSnXN3X8"
-        eventSources={[events, serverEvents]}
-        dayMaxEventRows={true}
-        selectable={true}
-        selectMirror={true}
-        select={handleDateSelect}
-        eventDrop={handleEventDropAndResize}
-        eventResize={handleEventDropAndResize}
-        eventClick={handleEventClick}
-        slotDuration="00:15:00" // интервал при изменении на календаре
-        locale="ru"
-      />
-
-      {/* modals start */}
-      {isAlertOpen && (
-        <Alert type={alertType} text={alertText} onClose={toggleAlertOpen} />
-      )}
-      {isEventInfoOpen && (
-        <EventInfoModal onClose={toggleEventInfoOpen} event={currentEvent} />
-      )}
-      {isAdminEventCreate && (
-        <AdminEventCreateModal
-          OpenAlert={openAlert}
-          onClose={toggleAdminEventCreate}
-          date={date}
+      <div style={{ boxSizing: "border-box", marginLeft: window.innerWidth > 400 ? '10px' : '0px' }}>
+        <FullCalendar
+          plugins={[
+            dayGridPlugin,
+            interactionPlugin,
+            timeGridPlugin,
+            listPlugin,
+            googleCalendarPlugin,
+            bootstrapPlugin,
+          ]}
+          height="98vh"
+          headerToolbar={{
+            left: "prev,next today",
+            center: "title",
+            right: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
+          }}
+          initialView={window.innerWidth > 600 ? "dayGridMonth" : "listMonth"}
+          dateClick={handleDateSelect} //TODO: edit
+          editable={editable}
+          firstDay={1}
+          googleCalendarApiKey="AIzaSyCqbA_GExr7SrXh3ZVwCvojL_AGSnXN3X8"
+          eventSources={[events, serverEvents]}
+          dayMaxEventRows={true}
+          selectable={true}
+          selectMirror={true}
+          select={handleDateSelect}
+          eventDrop={handleEventDropAndResize}
+          eventResize={handleEventDropAndResize}
+          eventClick={handleEventClick}
+          slotDuration="00:15:00" // интервал при изменении на календаре
+          locale="ru"
         />
-      )}
-      {/* modals end */}
+
+        {/* modals start */}
+        {isAlertOpen && (
+          <Alert type={alertType} text={alertText} onClose={toggleAlertOpen} />
+        )}
+        {isEventInfoOpen && (
+          <EventInfoModal onClose={toggleEventInfoOpen} event={currentEvent} />
+        )}
+        {isAdminEventCreate && (
+          <AdminEventCreateModal
+            OpenAlert={openAlert}
+            onClose={toggleAdminEventCreate}
+            date={date}
+          />
+        )}
+        {/* modals end */}
+      </div>
     </>
   );
 };

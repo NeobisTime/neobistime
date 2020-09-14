@@ -6,6 +6,20 @@
   flex-direction: column;
   box-sizing: border-box;
   margin: 0 0 0 20px;
+  @include media(
+    (
+      width: (
+        small: 280px,
+      ),
+      min-width: (
+        mobile: 280px,
+        small: 280px,
+      ),
+      max-width: (
+        mobile: 85vw,
+      ),
+    )
+  );
   &-row {
     display: flex;
     width: 90%;
@@ -46,6 +60,13 @@
       display: flex;
       justify-content: space-between;
       flex-basis: 70%;
+      @include media(
+        (
+          flex-basis: (
+            mobile: 100%,
+          ),
+        )
+      );
     }
     &-save,
     &-cancel,

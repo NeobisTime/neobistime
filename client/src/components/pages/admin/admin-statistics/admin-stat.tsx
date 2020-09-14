@@ -201,14 +201,14 @@ const AdminStat = (props: any) => {
             <Select
               placeholder="Департамент"
               options={props.departments}
-              className="admin-stat__charts-doughnut-select"
+              className="admin-stat__charts-doughnut-select_big"
               required
               onChange={handleDepartmentChange}
             />
             <Select
               placeholder="Месяц"
               options={props.yearsMonth}
-              className="admin-stat__charts-doughnut-select"
+              className="admin-stat__charts-doughnut-select_small"
               required
               onChange={handleMonthChange}
             />

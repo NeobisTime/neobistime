@@ -12,6 +12,13 @@ $listHeight: calc(100vh - 77px - 5px);
     box-sizing: border-box;
     height: $titleHeight;
     padding: 15px 0 20px;
+    @include media(
+      (
+        font-size: (
+          mobile: 23px,
+        ),
+      )
+    );
   }
   &__list {
     min-height: $listHeight;
@@ -19,7 +26,8 @@ $listHeight: calc(100vh - 77px - 5px);
     border-radius: 10px;
     display: flex;
     width: 98%;
-    margin-left: 12px;
+    // margin: 0 0 10px 12px;
+    margin: 0 auto 10px;
     flex-direction: column;
     box-sizing: border-box;
     padding: 5px 10px 10px 10px;
@@ -37,7 +45,15 @@ $listHeight: calc(100vh - 77px - 5px);
         align-items: center;
         width: 90px;
         height: 100%;
-        &_circle {
+        flex-shrink: 0;
+        @include media(
+            (
+              width: (
+                mobile: 70px,
+              ),
+            )
+          );
+          &_circle {
           width: 34px;
           height: 34px;
           border-radius: 50%;
@@ -61,7 +77,23 @@ $listHeight: calc(100vh - 77px - 5px);
         font-size: 22px;
         font-weight: bold;
         width: 100%;
+        max-height: 32px;
         color: rgba(33, 51, 54, 0.8);
+        overflow-x: auto;
+        @include media(
+          (
+            font-size: (
+              mobile: 18px,
+            ),
+            line-height: (
+              mobile: 1,
+            ),
+            max-height: (
+              tablet: 26px,
+              mobile: 32px,
+            ),
+          )
+        );
       }
       &-time {
         font-size: 14px;

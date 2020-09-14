@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { CloseModalButton } from "../calendar";
 import DayPickerInput from "react-day-picker/DayPickerInput";
+import MomentLocaleUtils from "react-day-picker/moment";
+import "moment/locale/ru";
+
 import "react-day-picker/lib/style.css";
 import Select from "react-select";
 import API from "../../../../API";
+import dateFnsFormat from "date-fns/format";
+import withDataContainer from "../../../../HOC/withData";
 
 // icons
 import time from "../../../../images/shared/modal-clock.svg";
@@ -33,12 +38,13 @@ const AdminEventCreateModal = (props: any) => {
   const [finalUsers, setFinalUsers] = useState([]);
   const [usersForSend, setUsersForSend] = useState([]);
 
-  const places = [
-    { value: "1", label: "Маленькая комната" },
-    { value: "2", label: "Большая комната" },
-    { value: "3", label: "Весь Офис" },
-    { value: "4", label: "Другое" },
-  ];
+  const [showAddress, setShowAddress] = useState<boolean>(false);
+
+  const FORMAT = "dd/MM";
+  function formatDate(date: any, format: any, locale: any) {
+    return dateFnsFormat(date, format, { locale });
+  }
+
   const selectDepartments = [
     { value: "all", label: "All" },
     { value: "8", label: "Android" },
@@ -65,8 +71,11 @@ const AdminEventCreateModal = (props: any) => {
     setPlace(+e.value);
     setAddressDisable(true);
     setAddress("");
-    if (+e.value === 4) {
+    if (+e.value === 5) {
       setAddressDisable(false);
+      setShowAddress(true);
+    } else {
+      setShowAddress(false);
     }
   };
 
@@ -169,10 +178,13 @@ const AdminEventCreateModal = (props: any) => {
             <div className="admin-create-event-modal__day-picker">
               <DayPickerInput
                 value={props.date}
+                placeholder="Дата"
                 onDayChange={(day) => {
                   setStartDate(day);
                   setEndDate(day);
                 }}
+                format={FORMAT}
+                formatDate={formatDate}
               />
             </div>
             <div className="admin-create-event-modal-time">
@@ -264,30 +276,34 @@ const AdminEventCreateModal = (props: any) => {
             />
           </div>
 
-          <div className="admin-create-event-modal-row">
-            <img
-              src={placeImage}
-              className="admin-create-event-modal-icon"
-              alt="people"
-            />
-            <Select
-              options={places}
-              className="admin-create-event-modal-select_small"
-              classNamePrefix="select"
-              placeholder="Добавить локацию"
-              onChange={handleChangeAddress}
-            />
-            <input
-              type="text"
-              className="admin-create-event-modal-select-place"
-              placeholder="Адрес"
-              disabled={addressDisable ? true : false}
-              required={addressDisable ? false : true}
-              value={address}
-              onChange={(e) => {
-                setAddress(e.target.value);
-              }}
-            />
+          <div className="admin-create-event-modal-row admin-create-event-modal-row_full">
+            <div className="admin-create-event-modal-row_full-block">
+              <img
+                src={placeImage}
+                className="admin-create-event-modal-icon"
+                alt="people"
+              />
+              <Select
+                options={props.roomsForSelect}
+                className="admin-create-event-modal-select_small admin-create-event-modal-row_full-block-select"
+                classNamePrefix="select"
+                placeholder="Добавить локацию"
+                onChange={handleChangeAddress}
+              />
+            </div>
+            {showAddress ? (
+              <input
+                type="text"
+                className="admin-create-event-modal-select-place"
+                placeholder="Адрес"
+                disabled={addressDisable ? true : false}
+                required={addressDisable ? false : true}
+                value={address}
+                onChange={(e) => {
+                  setAddress(e.target.value);
+                }}
+              />
+            ) : null}
           </div>
 
           <div className="admin-create-event-modal-row">
@@ -354,4 +370,4 @@ const AdminEventCreateModal = (props: any) => {
   );
 };
 
-export default AdminEventCreateModal;
+export default withDataContainer(AdminEventCreateModal);

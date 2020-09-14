@@ -21,7 +21,7 @@ $margin-between-blocks: 0 0 40px 0;
         width: 30%;
       }
     }
-    &-select-container{
+    &-select-container {
       box-sizing: border-box;
       margin: 30px 0 20px 0;
     }
@@ -52,13 +52,15 @@ $margin-between-blocks: 0 0 40px 0;
       &_border {
         border: 1.5px solid #e5ecff;
         border-radius: 5px;
-        width: 90%;
+        width: 100%;
         margin: 0;
+        box-sizing: border-box;
+        margin: 10px 0 0 0;
       }
     }
     &-textarea {
       padding: 10px;
-      resize: vertical;
+      resize: none;
     }
     &-file {
       &-input {
@@ -73,10 +75,14 @@ $margin-between-blocks: 0 0 40px 0;
           background: rgba(41, 179, 154, 0.6);
           border-radius: 5px;
           color: white;
+          border: 2px solid transparent !important;
           cursor: pointer;
           padding: 10px;
-          & :hover {
-            background-color: var(--neobisColor);
+          transition: all 0.2s;
+          &:hover {
+            color: var(--neobisColor) !important;
+            border: 2px solid var(--neobisColor) !important;
+            background-color: white !important;
           }
         }
       }
@@ -93,13 +99,16 @@ $margin-between-blocks: 0 0 40px 0;
         box-sizing: border-box;
         margin: 3px 0;
       }
+      &-button{
+        margin: 3px 10px 0 3px;
+      }
     }
     &-scroll {
+      position: relative;
       background: #ffffff;
       border-radius: 40px;
       margin: 0 40px 0 0;
     }
-
     &-number {
       display: flex;
       width: 100%;
@@ -115,18 +124,33 @@ $margin-between-blocks: 0 0 40px 0;
       &_active-number {
         color: #1feac5;
         // background-color: #d4ffee;
-
       }
     }
     &-submit {
-      font-size: 18px;
+      display: inline-block;
+      background: rgba(41, 179, 154, 0.6) !important;
+      border-radius: 5px;
       color: white;
-      border-radius: 50px;
-      box-sizing: border-box;
-      padding: 10px 15px;
-      background: var(--neobisColor) !important;
+      border: 2px solid transparent !important;
+      cursor: pointer;
       width: 150px;
-      margin: 50px auto;
+      font-size: 18px;
+      margin: 30px auto;
+      padding: 10px;
+      transition: all 0.2s;
+      &:hover {
+        color: var(--neobisColor) !important;
+        border: 2px solid var(--neobisColor) !important;
+        background-color: white !important;
+      }
+      // font-size: 18px;
+      // color: white;
+      // border-radius: 50px;
+      // box-sizing: border-box;
+      // padding: 10px 15px;
+      // background: var(--neobisColor) !important;
+      // width: 150px;
+      // margin: 50px auto;
     }
   }
 }
