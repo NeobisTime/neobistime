@@ -189,8 +189,8 @@ def available_date_for_event(validated_data, **kwargs):
     """
     timezone_ = pytz.timezone('Asia/Bishkek')
 
-    start = timezone_.localize(datetime.strptime(validated_data['start_date'], "%Y-%m-%dT%H:%M:%S"))
-    end = timezone_.localize(datetime.strptime(validated_data['end_date'], "%Y-%m-%dT%H:%M:%S"))
+    start = timezone_.localize(datetime.strptime(str(validated_data['start_date']), "%Y-%m-%dT%H:%M:%S"))
+    end = timezone_.localize(datetime.strptime(str(validated_data['end_date']), "%Y-%m-%dT%H:%M:%S"))
 
     event_length = datetime.strptime(str(end - start), "%H:%M:%S")
     if event_length.minute < 30 and event_length.hour <= 0:
@@ -209,7 +209,8 @@ def available_date_for_event(validated_data, **kwargs):
 
         # checking for event owner TODO
 
-        if kwargs.get("request_user").department_id.name == "Менеджер курсов":
+        request_user = kwargs.get("request_user")
+        if request_user.department_id.name == "Менеджер курсов" or request_user.is_superuser:
             for e in existing_events:
                 event = Event.objects.get(title=e.title)
                 message = "Привет, Вам необходимо поменять время " \
