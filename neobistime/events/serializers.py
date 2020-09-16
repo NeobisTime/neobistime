@@ -208,7 +208,8 @@ def available_date_for_event(validated_data, **kwargs):
             existing_events = check_date_for_events(start, end, events.filter(place=place.pk))
 
         # checking for event owner TODO
-        if validated_data['owner'].department_id.name == 'Менеджер курсов':
+        
+        if kwargs.get("request_user").department_id.name.lower() == "менеджер курсов":
             for e in existing_events:
                 event = Event.objects.get(title=e.title)
                 message = "Привет, Вам необходимо поменять время " \
@@ -218,7 +219,7 @@ def available_date_for_event(validated_data, **kwargs):
                 telegram_notify_user(event.owner.chat_id,
                                      message,
                                      event.id)
-                existing_events.remove(event)
+            existing_events = None
         if existing_events:
             serializer = EventListSerializer(existing_events, many=True)
             raise serializers.ValidationError({"error": "place is not empty", "events": serializer.data})
@@ -230,8 +231,8 @@ class EventCreateUpdateSerializer(serializers.ModelSerializer):
     """
     owner = serializers.ReadOnlyField(source='owner.name_surname')
     place = serializers.PrimaryKeyRelatedField(queryset=Place.objects.all(), allow_null=True)
-    start = serializers.CharField(source='start_date')
-    end = serializers.CharField(source='end_date')
+    start = DateTimeFieldWihTZ(source='start_date')
+    end = DateTimeFieldWihTZ(source='end_date')
 
     class Meta:
         model = Event
@@ -241,11 +242,13 @@ class EventCreateUpdateSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
-        available_date_for_event(validated_data)
+        available_date_for_event(validated_data, request_user=self.context.get("request_user"))
         return Event.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        available_date_for_event(validated_data, event_id=instance.pk, update=True)
+        available_date_for_event(
+            validated_data, event_id=instance.pk, update=True, request_user=self.context.get("request_user")
+        )
         instance.profile_img = validated_data.get("image", instance.image)
         instance.title = validated_data.get('title', instance.title)
         instance.place = validated_data.get('place', instance.place)

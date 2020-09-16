@@ -1,4 +1,3 @@
-import re
 import uuid
 from datetime import datetime
 from itertools import chain
@@ -86,9 +85,6 @@ def create_repeated_events(request_data, weekdays, user_id, departments, users):
     group_uuid = uuid.uuid4()
     parent_event = RepeatedEvent.objects.create(weekdays=weekdays)
     parent_event.save()
-    print()
-    print(parent_event.weekdays)
-    print()
 
     owner = CustomUser.objects.get(pk=user_id)
     while end <= lc_end:

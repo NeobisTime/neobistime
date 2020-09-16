@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytz
 from django.conf import settings
@@ -73,8 +73,8 @@ class EventViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(start_date__day=day)
         elif self.request.query_params.get('period') == 'week':
             week_start = timezone.now()
-            week_start -= datetime.timedelta(days=week_start.weekday())
-            week_end = week_start + datetime.timedelta(days=7)
+            week_start -= timedelta(days=week_start.weekday())
+            week_end = week_start + timedelta(days=7)
             queryset = queryset.filter(start_date__gte=week_start, start_date__lt=week_end)
         elif self.request.query_params.get('period') == 'month':
             month_start = timezone.now().month
@@ -138,7 +138,7 @@ class EventViewSet(viewsets.ModelViewSet):
 
             return Response({"message": "Successfully created"}, status=status.HTTP_201_CREATED)
         else:
-            serializer = self.get_serializer(data=request.data)
+            serializer = self.get_serializer(data=request.data, context={"request_user": request.user})
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
             headers = self.get_success_headers(serializer.data)
@@ -280,7 +280,7 @@ class MyEventsListView(generics.ListAPIView):
         now = timezone.now()
         event_queryset = Event.objects.filter(owner=self.request.user)
         event_queryset = [event for event in event_queryset if
-                          event.end_date <= now <= event.end_date + datetime.timedelta(
+                          event.end_date <= now <= event.end_date + timedelta(
                               days=3)]
         return event_queryset
 
@@ -313,7 +313,7 @@ class TodayEvents(generics.ListAPIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
-        return Event.objects.filter(start_date__date=datetime.datetime.now().date())
+        return Event.objects.filter(start_date__date=datetime.now().date())
 
 
 class NotesViewSet(viewsets.ModelViewSet):
@@ -377,8 +377,8 @@ class NotificationEvents(generics.ListAPIView):
             queryset = queryset.filter(start_date__day=day)
         elif self.request.query_params.get('period') == 'week':
             week_start = timezone.now()
-            week_start -= datetime.timedelta(days=week_start.weekday())
-            week_end = week_start + datetime.timedelta(days=7)
+            week_start -= timedelta(days=week_start.weekday())
+            week_end = week_start + timedelta(days=7)
             queryset = queryset.filter(start_date__gte=week_start, start_date__lt=week_end)
         elif self.request.query_params.get('period') == 'month':
             month_start = timezone.now().month
