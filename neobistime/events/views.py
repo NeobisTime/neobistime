@@ -280,8 +280,8 @@ class MyEventsListView(generics.ListAPIView):
         now = timezone.now()
         event_queryset = Event.objects.filter(owner=self.request.user)
         event_queryset = [event for event in event_queryset if
-                          event.end_date <= now <= event.end_date + timedelta(
-                              days=3)]
+                          event.end_date <= now <= event.end_date + timedelta(days=3)
+                          ]
         return event_queryset
 
 

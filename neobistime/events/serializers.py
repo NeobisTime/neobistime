@@ -202,14 +202,14 @@ def available_date_for_event(validated_data, **kwargs):
         if kwargs.get("update", False):
             events = events.exclude(pk=kwargs["event_id"])
 
-        if 'Whole office' in place.name:
+        if 'Everybody at home' in place.name:
             existing_events = check_date_for_events(start, end, events)
         else:
             existing_events = check_date_for_events(start, end, events.filter(place=place.pk))
 
         # checking for event owner TODO
-        
-        if kwargs.get("request_user").department_id.name.lower() == "менеджер курсов":
+
+        if kwargs.get("request_user").department_id.name == "Менеджер курсов":
             for e in existing_events:
                 event = Event.objects.get(title=e.title)
                 message = "Привет, Вам необходимо поменять время " \

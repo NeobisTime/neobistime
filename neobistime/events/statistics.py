@@ -42,8 +42,9 @@ def stats_by_department(request):
             raise NotFound(detail='Укажите месяц от 1 до 12')
 
         if month is not None and year != 'true':
-            event_queryset = event_queryset.filter(start_date__month=month)
-            poll_queryset = poll_queryset.filter(answered_date__month=month)
+            year = timezone.now().year
+            event_queryset = event_queryset.filter(start_date__month=month, start_date__year=year)
+            poll_queryset = poll_queryset.filter(answered_date__month=month, answered_date__year=year)
         elif year == 'true':
             year = timezone.now().year
             event_queryset = event_queryset.filter(start_date__year=year)
@@ -161,7 +162,8 @@ def stats_for_all_departments(request):
     :return: json
     """
     stats = {}
-    for department in Department.objects.all():
-        stats[str(department)] = len(
-            Event.objects.all().filter(owner__department_id=department))
+    departments = Department.objects.all().\
+        exclude(name="Менеджер курсов")
+    for department in departments:
+        stats[str(department)] = len(Event.objects.all().filter(owner__department_id=department))
     return JsonResponse(stats)

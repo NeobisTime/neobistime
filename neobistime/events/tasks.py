@@ -50,7 +50,6 @@ def notify_users(departments: List, individual_users: List, event_id, user_notif
     if not place:
         place = event.address
 
-
     # Notification of users
     if user_notification:
         recipients_emails = [user.email for user in set(recipients)]
@@ -58,7 +57,7 @@ def notify_users(departments: List, individual_users: List, event_id, user_notif
         body_message = f'Здравствуй, мы организовали новое мероприятие "{event.title}" от {event.owner}\n' \
                        f'Дата {event.start_date}\n' \
                        f'Место {place}\n' \
-                       f'Ссылка <a href="{url}">{url}</a>' \
+                       f'Ссылка {url}' \
                        f'С уважением, команда Необис'
 
         send_mail('Новый Ивент от Необиса', body_message,
