@@ -197,7 +197,7 @@ def available_date_for_event(validated_data, **kwargs):
         raise serializers.ValidationError({"error": "Events can't be less than 30 minutes long."})
 
     place = validated_data['place']
-    events = Event.objects.all().exclude(place__name="Другое")
+    events = Event.objects.all().exclude(place__name="Another location")
     if place:
         if kwargs.get("update", False):
             events = events.exclude(pk=kwargs["event_id"])
