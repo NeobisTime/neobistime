@@ -1,13 +1,10 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from rest_framework import serializers
-from datetime import datetime
-import pytz
 
 from .models import Event, Place, Poll, Notes, RepeatedEvent
 from .tasks import notify_users
 from .bot import telegram_notify_user
-
 
 from django.utils import timezone
 
@@ -60,8 +57,8 @@ class PollRetrieveUpdateSerializer(serializers.ModelSerializer):
     event = serializers.ReadOnlyField(source='event.title')
     address = serializers.ReadOnlyField(source='event.address')
     place = PlaceSerializer(read_only=True, source='event.place')
-    start_date = serializers.ReadOnlyField(source='event.start_date')
-    end_date = serializers.ReadOnlyField(source='event.end_date')
+    start_date = DateTimeFieldWihTZ(source='event.start_date', read_only=True)
+    end_date = DateTimeFieldWihTZ(source='event.end_date', read_only=True)
 
     class Meta:
         model = Poll
@@ -73,8 +70,8 @@ class EventListSerializer(serializers.ModelSerializer):
     Serializing Event
     """
     owner = serializers.ReadOnlyField(source='owner.name_surname')
-    start = serializers.CharField(source='start_date')
-    end = serializers.CharField(source='end_date')
+    start = DateTimeFieldWihTZ(source='start_date')
+    end = DateTimeFieldWihTZ(source='end_date')
 
     class Meta:
         model = Event
@@ -108,8 +105,9 @@ class EventGetSerializer(serializers.ModelSerializer):
     department = serializers.SerializerMethodField()
     place = PlaceSerializer()
     my_event = serializers.SerializerMethodField()
-    start = serializers.CharField(source='start_date')
-    end = serializers.CharField(source='end_date')
+    start = DateTimeFieldWihTZ(source='start_date')
+    end = DateTimeFieldWihTZ(source='end_date')
+    deadline = DateTimeFieldWihTZ()
     group_id = serializers.CharField(read_only=True, allow_null=True)
     parent_event = ParentEventSerializer(read_only=True, allow_null=True)
 
@@ -187,13 +185,11 @@ def available_date_for_event(validated_data, **kwargs):
     :param validated_data:
     :return: information of conflict event
     """
-    timezone_ = pytz.timezone('Asia/Bishkek')
+    start = validated_data['start_date']
+    end = validated_data['end_date']
 
-    start = timezone_.localize(datetime.strptime(str(validated_data['start_date']), "%Y-%m-%dT%H:%M:%S"))
-    end = timezone_.localize(datetime.strptime(str(validated_data['end_date']), "%Y-%m-%dT%H:%M:%S"))
-
-    event_length = datetime.strptime(str(end - start), "%H:%M:%S")
-    if event_length.minute < 30 and event_length.hour <= 0:
+    event_length = (end - start).total_seconds()
+    if (event_length % 3600) // 60 < 30 and event_length // 3600 <= 0:
         raise serializers.ValidationError({"error": "Events can't be less than 30 minutes long."})
 
     place = validated_data['place']
@@ -211,8 +207,7 @@ def available_date_for_event(validated_data, **kwargs):
 
         request_user = kwargs.get("request_user")
         if request_user.department_id.name == "Менеджер курсов" or request_user.is_superuser:
-            for e in existing_events:
-                event = Event.objects.get(title=e.title)
+            for event in existing_events:
                 message = "Привет, Вам необходимо поменять время " \
                           "вашего ивента, " \
                           "так как Менеджер курсов поставил в это " \
@@ -234,6 +229,7 @@ class EventCreateUpdateSerializer(serializers.ModelSerializer):
     place = serializers.PrimaryKeyRelatedField(queryset=Place.objects.all(), allow_null=True)
     start = DateTimeFieldWihTZ(source='start_date')
     end = DateTimeFieldWihTZ(source='end_date')
+    deadline = DateTimeFieldWihTZ()
 
     class Meta:
         model = Event
@@ -243,12 +239,14 @@ class EventCreateUpdateSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
-        available_date_for_event(validated_data, request_user=self.context.get("request_user"))
+        request = self.context.get("request")
+        available_date_for_event(validated_data, request_user=request.user)
         return Event.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
+        request = self.context.get("request")
         available_date_for_event(
-            validated_data, event_id=instance.pk, update=True, request_user=self.context.get("request_user")
+            validated_data, event_id=instance.pk, update=True, request_user=request.user
         )
         instance.profile_img = validated_data.get("image", instance.image)
         instance.title = validated_data.get('title', instance.title)
@@ -286,8 +284,9 @@ class MyEventListSerializer(serializers.ModelSerializer):
     """
     owner = serializers.ReadOnlyField(source='owner.name_surname')
     place = PlaceSerializer()
-    start = serializers.CharField(source='start_date')
-    end = serializers.CharField(source='end_date')
+    start = DateTimeFieldWihTZ(source='start_date')
+    end = DateTimeFieldWihTZ(source='end_date')
+    deadline = DateTimeFieldWihTZ()
 
     class Meta:
         model = Event
@@ -317,6 +316,8 @@ class NotesSerializer(serializers.ModelSerializer):
     Class for serializing personal Notes of User's
     """
     owner = serializers.ReadOnlyField(source='owner.name_surname')
+    start = DateTimeFieldWihTZ(source='start_date')
+    end = DateTimeFieldWihTZ(source='end_date')
 
     def create(self, validated_data):
         return Notes.objects.create(**validated_data)
