@@ -57,13 +57,13 @@ const EndEventInfo = (props: any) => {
                 peoples.map((poll: any) => {
                   return (
                     <tr>
-                      <td className="bold">{poll.user}</td>
-                      <td className="bold">{poll.department}</td>
-                      <td className="end-event-info__table-tbody-date">
+                      <td data-label="Мэмбер" className="bold">{poll.user}</td>
+                      <td data-label="Департамент" className="bold">{poll.department}</td>
+                      <td data-label="Дата" className="end-event-info__table-tbody-date">
                         {date.getDate()}/{date.getMonth() + 1}/
                         {date.getFullYear()}
                       </td>
-                      <td>
+                      <td data-label="Статус">
                         <input
                           onClick={() => {
                             const data = {

@@ -39,23 +39,27 @@ const RoomsEvent = (props: any) => {
   ];
 
   useEffect(() => {
-    API.getRoomEvents(roomId, pageSize, currentPage * pageSize,period).then((data) => {
-      setEvents(data.data.results);
-      setTotalProducts(data.data.count);
-      setNext(data.data.next);
-    });
+    API.getRoomEvents(roomId, pageSize, currentPage * pageSize, period).then(
+      (data) => {
+        setEvents(data.data.results);
+        setTotalProducts(data.data.count);
+        setNext(data.data.next);
+      }
+    );
   }, [pageSize, currentPage, period]);
   return (
     <div>
       <div className="end-event-info">
         <div>
-          <div className='rooms-event__top-side'>
-            <p className="end-event-info__title">
+          <div className="rooms-event__top-side">
+            <p className="end-event-info__title rooms-event__title">
               {roomId && +roomId === 1
-                ? "Маленькая комната"
+                ? "Classroom"
                 : +roomId === 2
-                ? "Большая комната"
-                : "Весь офис"}
+                ? "Hall"
+                : +roomId === 3
+                ? "Everybody at home"
+                : "Staff room"}
             </p>
             <Select
               options={periods}
@@ -89,14 +93,14 @@ const RoomsEvent = (props: any) => {
                   let endDate = new Date(event.end);
                   return (
                     <tr>
-                      <td className="bold">{event.title}</td>
-                      <td className="bold">{event.owner}</td>
-                      <td className="end-event-info__table-tbody-date">
+                      <td data-label='Событие' className="bold">{event.title}</td>
+                      <td data-label='Создатель' className="bold">{event.owner}</td>
+                      <td data-label='Дата' className="end-event-info__table-tbody-date">
                         {(startDate.getDate() < 10 ? "0" : "") +
                           startDate.getDate()}{" "}
                         {monthNames[startDate.getMonth()]}
                       </td>
-                      <td>
+                      <td data-label='Время'>
                         {(startDate.getHours() < 10 ? "0" : "") +
                           startDate.getHours()}
                         :

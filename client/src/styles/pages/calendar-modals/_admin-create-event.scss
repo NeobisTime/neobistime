@@ -75,6 +75,10 @@
   &-icon {
     box-sizing: border-box;
     margin: 5px 10px 5px 5px;
+    &-people {
+      width: 22px;
+      height: 20px;
+    }
   }
   &-select {
     flex-basis: 100%;
@@ -115,6 +119,7 @@
     border-radius: 5px;
     flex-basis: 100%;
     font-family: "Montserrat";
+    resize: none;
     &:hover {
       background: #f9f9ff;
       border: 1px solid #f6f5ff;

@@ -149,7 +149,6 @@ const Calendar = (props: any) => {
       public: String(true),
       place: oldEvent.place.id,
     };
-    console.log("handleEventDropAndResize -> dataToPatch", dataToPatch)
     API.patchEventChangeData(dataToPatch, oldEvent.id)
       .then((response) => {
         openAlert(response);
@@ -167,6 +166,11 @@ const Calendar = (props: any) => {
 
   const handleDateSelect = (selectInfo: any) => {
     setDate(selectInfo.start);
+    if (getCookie("role") === "admin") {
+      setIsAdminEventCreate(true)
+    }
+  };
+  const handleDateClick = (selectInfo: any) => {
     if (getCookie("role") === "admin") {
       setIsAdminEventCreate(true)
     }
@@ -198,7 +202,7 @@ const Calendar = (props: any) => {
             right: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
           }}
           initialView={window.innerWidth > 600 ? "dayGridMonth" : "listMonth"}
-          dateClick={handleDateSelect} //TODO: edit
+          dateClick={handleDateClick} //TODO: edit
           editable={editable}
           firstDay={1}
           googleCalendarApiKey="AIzaSyCqbA_GExr7SrXh3ZVwCvojL_AGSnXN3X8"
