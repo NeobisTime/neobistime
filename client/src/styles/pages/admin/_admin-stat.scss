@@ -2,11 +2,31 @@
   box-sizing: border-box;
   margin: 10px 10px 0 20px;
   padding: 0 10px;
+  display: flex;
+  flex-direction: column;
+  @include media(
+    (
+      margin: (
+        mobile: 0,
+      ),
+      flex-direction: (
+        tablet: column-reverse,
+      ),
+    )
+  );
   &__row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    flex-wrap: wrap;
+    @include media(
+      (
+        justify-content: (
+          ipad: space-evenly,
+        ),
+      )
+    );
     &-info-block {
       display: flex;
       max-width: 230px;
@@ -14,6 +34,13 @@
       color: white;
       flex-direction: column;
       transition: all 0.25s ease;
+      @include media(
+        (
+          margin: (
+            ipad: 10px,
+          ),
+        )
+      );
       &-value {
         font-size: 38px;
       }
@@ -55,6 +82,7 @@
   &__charts {
     display: flex;
     box-sizing: border-box;
+    flex-wrap: wrap;
     width: 100%;
     justify-content: space-between;
     &-doughnut {
@@ -69,6 +97,13 @@
       width: 378px;
       box-sizing: border-box;
       flex-direction: column;
+      @include media(
+        (
+          margin: (
+            ipad: 20px auto,
+          ),
+        )
+      );
       &-filters {
         display: flex;
         justify-content: space-between;
@@ -114,6 +149,13 @@
       flex-direction: column;
       width: 60%;
       box-sizing: border-box;
+      @include media(
+        (
+          width: (
+            ipad: 100%,
+          ),
+        )
+      );
       &-text {
         box-sizing: border-box;
         margin: 0 0 10px 0;
@@ -122,10 +164,10 @@
   }
 }
 
-.css-tlfecz-indicatorContainer{
+.css-tlfecz-indicatorContainer {
   padding: 0 2px !important;
 }
 
-.css-g1d714-ValueContainer{
+.css-g1d714-ValueContainer {
   padding: 2px 4px !important;
 }

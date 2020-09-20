@@ -97,6 +97,7 @@ const AdminStat = (props: any) => {
     });
     API.getStatForAllDepartments().then((allDepartmentsData) => {
       let data = allDepartmentsData.data;
+      console.log("AdminStat -> data", data)
       // get data to departments chart
       let keys: any = [];
       let values: any = [];

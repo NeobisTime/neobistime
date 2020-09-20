@@ -167,7 +167,7 @@ const Notification = (props: any) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(6);
   const [totalProducts, setTotalProducts] = useState(0);
-  const [portionSize, setPortionSize] = useState(5);
+  const [portionSize, setPortionSize] = useState(4);
   const [next, setNext] = useState<string | null>("");
   let pagesCount = Math.ceil(totalProducts / pageSize);
   let pages = [];

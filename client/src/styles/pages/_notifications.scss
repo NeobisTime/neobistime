@@ -33,6 +33,13 @@ $blockWidth: 270px;
     }
     &-select {
       width: 40%;
+      @include media(
+        (
+          display: (
+            mobile: none,
+          ),
+        )
+      );
       //   styles of react select
       & .css-yk16xz-control {
         border: 1.5px solid #dbdae3;
@@ -55,6 +62,13 @@ $blockWidth: 270px;
       justify-content: center;
       align-items: center;
       cursor: pointer;
+      @include media(
+        (
+          display: (
+            mobile: none,
+          ),
+        )
+      );
     }
     &-content {
       box-sizing: border-box;
@@ -77,6 +91,13 @@ $blockWidth: 270px;
     background: #ffffff;
     border-radius: 10px;
     box-sizing: border-box;
+    @include media(
+      (
+        margin: (
+          mobile: 10px 0,
+        ),
+      )
+    );
     &-image-wrapper {
       max-width: $blockWidth;
       display: flex;

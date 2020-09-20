@@ -192,7 +192,7 @@ const EventInfo = (props: any) => {
                 Если нет, то укажите причину:
               </p>
               <textarea
-                cols={60}
+                // cols={50}
                 rows={4}
                 placeholder="Ваш ответ..."
                 disabled={willGo ? true : false}
@@ -209,7 +209,7 @@ const EventInfo = (props: any) => {
             </form>
           )}
         </div>
-        <div className="event-info__content">
+        <div className="event-info__content tablet-none">
           <img
             src={eventData.image || preview}
             alt="event"

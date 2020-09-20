@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import designPhoto from "../../../images/pages/authentication.svg";
-import "../../../styles/pages/_auth.scss";
 import { Link } from "react-router-dom";
 import eye from "../../../images/pages/password_eye.svg";
 import API, { getCookie } from "../../../API";

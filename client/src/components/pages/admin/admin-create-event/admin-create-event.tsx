@@ -307,7 +307,7 @@ const CreateEventPage = (props: any) => {
                   selectedDays={startDate}
                 />
 
-                <div className="d-flex">
+                <div className="create-event__form-section_calendar-content-wrapper">
                   <div className="create-event__form-label_wrapper">
                     <label
                       className="create-event__form-label"

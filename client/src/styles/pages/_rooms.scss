@@ -13,29 +13,40 @@
     font-size: 24px;
     padding: 10px 30px;
   }
-  &__block{
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
+  &__block {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
   }
   &__image {
-      width: 300px;
+    width: 300px;
   }
 }
-.rooms-event{
-  &__top-side{
+.rooms-event {
+  &__top-side {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
   }
-  &__select{
+  &__select {
     width: 160px;
     font-family: "Montserrat";
-    color: #1665D8;
+    color: #1665d8;
     font-weight: bold;
     letter-spacing: 2px;
+    @include media(
+      (
+        display: (
+          tablet: none,
+        ),
+      )
+    );
+  }
+  &__title {
+    font-size: 26px;
+    text-decoration: underline;
   }
 }
-.css-1uccc91-singleValue{
-  color: #1665D8 !important;
+.css-1uccc91-singleValue {
+  color: #1665d8 !important;
 }

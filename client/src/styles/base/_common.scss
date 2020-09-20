@@ -103,6 +103,25 @@ $font: "Montserrat";
   transform: rotate(180deg);
 }
 
+.tablet-none {
+  display: inherit;
+  @include media(
+    (
+      display: (
+        tablet: none !important,
+      ),
+    )
+  );
+}
+
+.m-center{
+  margin: 0 auto;
+}
+
+.justify-content-center{
+  justify-content: center;
+}
+
 @keyframes ModalOut {
   from {
     opacity: 0;

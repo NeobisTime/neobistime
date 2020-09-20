@@ -169,7 +169,7 @@ const PersonalOffice = (props: any) => {
 
   const handleDateSelect = (selectInfo: any) => {
     setDate(selectInfo.start);
-    setIsPersonalEventCreate(true)
+    setIsPersonalEventCreate(true);
   };
 
   const handleEventDropAndResize = (eventDropInfo: any) => {
@@ -233,6 +233,10 @@ const PersonalOffice = (props: any) => {
     setTimeout(() => {
       setIsAlertOpen(false);
     }, 5000);
+  };
+
+  const handleDateClick = (selectInfo: any) => {
+    setIsPersonalEventCreate(true);
   };
 
   return (
@@ -430,7 +434,7 @@ const PersonalOffice = (props: any) => {
               selectable={true}
               selectMirror={true}
               select={handleDateSelect}
-              dateClick={handleDateSelect}
+              dateClick={handleDateClick}
               eventDrop={handleEventDropAndResize}
               eventResize={handleEventDropAndResize}
               eventClick={handleEventClick}

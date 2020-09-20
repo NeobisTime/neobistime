@@ -40,6 +40,18 @@
     padding: 0 0 15px 15px;
     width: 460px;
     height: 460px;
+    @include media(
+      (
+        width: (
+          ipad: 400px,
+          tablet: 360,
+        ),
+        height: (
+          ipad: 400px,
+          tablet: 360,
+        ),
+      )
+    );
   }
   &__submit {
     box-sizing: border-box;
@@ -53,6 +65,13 @@
     border-radius: 15px;
     cursor: pointer;
     font-size: 24px;
+    @include media(
+      (
+       min-width: (
+          mobile: 180px !important,
+        ),
+      )
+    );
   }
   &__section {
     display: flex;
@@ -62,9 +81,20 @@
     margin-top: 10px;
     &_w_40 {
       width: 40%;
+      @include media(
+        (
+          width: (
+            tablet: 60%,
+            small: 80%
+          ),
+        )
+      );
     }
     &_w_60 {
       width: 60%;
+      @include media((
+        display: (tablet: none)
+      ))
     }
   }
   &__content {

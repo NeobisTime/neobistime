@@ -14,6 +14,10 @@ $blue-color: #1665d8;
   border-radius: 4px;
   padding: 30px 30px 0 30px;
   margin: 0 0 0 20px;
+  @include media((
+    margin: (small: 0),
+    padding: (small: 10px 10px 0 10px)
+  ))
   &__title {
     color: $black-color;
     font-weight: 600;
@@ -23,8 +27,13 @@ $blue-color: #1665d8;
   &__table {
     width: 100%;
     border-collapse: collapse;
-
+    @media screen and (max-width: 640px) {
+      display: block;
+    }
     &-thead {
+      @media screen and (max-width: 640px) {
+        display: none;
+      }
       & tr {
         text-align: left;
         height: $height;
@@ -37,15 +46,39 @@ $blue-color: #1665d8;
       }
     }
     &-tbody {
+      @media screen and (max-width: 640px) {
+        display: block;
+      }
       &-date {
         color: $grey-color;
       }
       & tr {
         height: $height;
+        @media screen and (max-width: 640px) {
+          display: block;
+          margin-bottom: 30px;
+          height: auto;
+        }
         & td {
           width: $col-width;
           font-size: $text-size;
           border-bottom: 1px solid #e4e7eb;
+          @media screen and (max-width: 640px) {
+            display: block;
+            width: 50%;
+            padding-left: 50%;
+            position: relative;
+            text-align: right;
+            &::before {
+              content: attr(data-label);
+              position: absolute;
+              left: 0;
+              width: 50%;
+              padding-left: 15px;
+              font-weight: bold;
+              text-align: left;
+            }
+          }
         }
         &:nth-of-type(even) {
           background-color: #fafffd;

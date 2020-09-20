@@ -1,10 +1,8 @@
 import Axios from "axios";
 
 const http = Axios.create({
-  // baseURL: "https://cors-anywhere.herokuapp.com/http://46.101.110.53/api/",
   baseURL: "https://calendar.neobis.kg/api/",
   // baseURL: "http://46.101.110.53/api/",
-  // baseURL: "http://www.220-accentuation.co/api/",
 });
 
 export function getCookie(name: string) {
