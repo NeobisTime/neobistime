@@ -15,7 +15,7 @@ from .filters import RoomTimeFilter
 from .models import Event, Notes, Place, Poll
 from .permissions import EventOwner
 from .serializers import AdminPolls, EventCreateUpdateSerializer, EventGetSerializer, MyEventListSerializer, \
-    NotesSerializer, PlaceSerializer
+    NotesSerializer, PlaceSerializer, EventListSerializer
 from .tasks import create_repeated_events
 
 timezone_ = pytz.timezone(settings.TIME_ZONE)
@@ -103,46 +103,9 @@ class EventViewSet(viewsets.ModelViewSet):
             return EventCreateUpdateSerializer
 
     def destroy(self, request, *args, **kwargs):
-        if request.data.get("repeated", "").lower() == "true":
-            group_uuid = request.data.get("uuid", "")
-            if not group_uuid:
-                raise ValidationError("To delete repeated events uuid required!")
-
-            Event.objects.filter(group_id=group_uuid).delete()
-
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            instance = self.get_object()
-            self.perform_destroy(instance)
-            return Response(status=status.HTTP_204_NO_CONTENT)
-
-    def create(self, request, *args, **kwargs):
-        """
-        Creating single or multiple instances of event objects
-        """
-        if request.data.get("repeated", "").lower() == "true":
-            weekdays = list(map(int, request.data.get("weekdays", "").split(",")))
-            if not weekdays:
-                raise ValidationError(
-                    {"detail": "weekdays required for repeated events"}, code=status.HTTP_400_BAD_REQUEST
-                )
-
-            departments_list = list(map(int, re.findall("\d+", request.data.get("departments", ""))))  # noqa
-            users_list = request.data.get("individual_users", "").split(",")
-
-            if len(departments_list) < 1 and len(users_list) < 1:
-                raise ValidationError("Attendees required")
-
-            # Create repeated events
-            create_repeated_events(request.data.copy(), weekdays, request.user.id, departments_list, users_list)
-
-            return Response({"message": "Successfully created"}, status=status.HTTP_201_CREATED)
-        else:
-            serializer = self.get_serializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            self.perform_create(serializer)
-            headers = self.get_success_headers(serializer.data)
-            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+		instance = self.get_object()
+		self.perform_destroy(instance)
+		return Response(status=status.HTTP_204_NO_CONTENT)
 
     def perform_create(self, serializer, **kwargs):
         """
@@ -152,21 +115,18 @@ class EventViewSet(viewsets.ModelViewSet):
         :param serializer:
         :return:
         """
-        if self.request.data.get("public", "").lower() == "true":
-            departments_list = list(map(int, re.findall("\d+", self.request.data.get("departments", ""))))  # noqa
-            users_list = self.request.data.get("individual_users", "").split(",")
+		departments_list = list(map(int, re.findall("\d+", self.request.data.get("departments", ""))))  # noqa
+		users_list = self.request.data.get("individual_users", "").split(",")
 
-            if len(departments_list) < 1 and len(users_list) < 1:
-                raise ValidationError("Attendees required")
+		if len(departments_list) == 0 and len(users_list) == 0:
+			raise ValidationError("Attendees required")
 
-            event_data = serializer.save(owner=self.request.user)
-            serializer = serializers.UserNotificationSerializer(
-                data={"departments": departments_list, "individual_users": users_list}
-            )
-            serializer.is_valid(raise_exception=True)
-            serializer.notify(event_data.id, user_notification=True)
-        else:
-            event_data = serializer.save(owner=self.request.user)
+		event_data = serializer.save(owner=self.request.user)
+		serializer = serializers.UserNotificationSerializer(
+			data={"departments": departments_list, "individual_users": users_list}
+		)
+		serializer.is_valid(raise_exception=True)
+		serializer.notify(event_data.id, user_notification=True)
 
         return event_data
 
@@ -185,29 +145,28 @@ class EventViewSet(viewsets.ModelViewSet):
             # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
 
-        if self.request.data.get("public", "").lower() == "true":
-            departments_list = list(map(int, re.findall("\d+", request.data.get("departments", ""))))  # noqa
-            users_list = request.data.get("individual_users", "").split(",")
+		departments_list = list(map(int, re.findall("\d+", request.data.get("departments", ""))))  # noqa
+		users_list = request.data.get("individual_users", "").split(",")
 
-            if len(departments_list) < 1 and len(users_list) < 1:
-                try:
-                    departments_list = instance.attendees.departments
-                    users_list = instance.attendees.individual_users
-                except Exception:
-                    raise ValidationError("Attendees were not given or improperly created event")
+		if len(departments_list) < 1 and len(users_list) < 1:
+			try:
+				departments_list = instance.attendees.departments
+				users_list = instance.attendees.individual_users
+			except Exception:
+				raise ValidationError("Attendees were not given or improperly created event")
 
-            serializer = serializers.UserNotificationSerializer(
-                data={"departments": departments_list, "individual_users": users_list}
-            )
-            serializer.is_valid(raise_exception=True)
-            serializer.notify(instance.id)
+		serializer = serializers.UserNotificationSerializer(
+			data={"departments": departments_list, "individual_users": users_list}
+		)
+		serializer.is_valid(raise_exception=True)
+		serializer.notify(instance.id)
 
         return Response({"message": "Successfully updated"}, status=status.HTTP_200_OK)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
-        attendees = instance.attendees
+        attendees = instance.attendees111
         return Response(
             {**serializer.data,
              "attendees": {"departments": attendees.departments, "individual_users": attendees.individual_users}}
@@ -384,3 +343,11 @@ class NotificationEvents(generics.ListAPIView):
             month_start = timezone.now().month
             queryset = queryset.filter(start_date__month=month_start)
         return queryset.filter(end_date__gt=timezone.now())
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def user_attending_events(request):
+	events = Event.objects.filter(polls__answer=True)
+	serializer = EventListSerializer(events)
+	return Response(serializer.data, status=status.HTTP_200_OK)

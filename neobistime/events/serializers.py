@@ -208,13 +208,14 @@ def available_date_for_event(validated_data, **kwargs):
         request_user = kwargs.get("request_user")
         if request_user.department_id.name == "Менеджер курсов" or request_user.is_superuser:
             for event in existing_events:
+				chat_id = event.owner.chat_id
                 message = "Привет, Вам необходимо поменять время " \
                           "вашего ивента, " \
                           "так как Менеджер курсов поставил в это " \
                           "время курсы."
-                telegram_notify_user(event.owner.chat_id,
-                                     message,
-                                     event.id)
+				
+				if chat_id:
+                	telegram_notify_user(chat_id, message, event.id)
             existing_events = None
         if existing_events:
             serializer = EventListSerializer(existing_events, many=True)
