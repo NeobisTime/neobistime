@@ -82,7 +82,7 @@ $text-color: rgba(33, 51, 54, 0.8);
         margin: 5px 0;
       }
       &-textarea {
-        resize: vertical;
+        resize: none;
         max-width: 400px;
         min-width: 250px;
         box-sizing: border-box;

@@ -105,6 +105,7 @@ const PersonalEventCreateModal = (props: any) => {
                 type="text"
                 name=""
                 placeholder="00"
+                maxLength={2}
                 className="admin-create-event-modal__time-picker"
                 onChange={(e) => {
                   setStartDateHours(parseInt(e.target.value));
@@ -112,10 +113,11 @@ const PersonalEventCreateModal = (props: any) => {
               />
               {/* // colon- двоеточие */}
               <div className="admin-create-event-modal__time-picker-colon">
-                .
+                :
               </div>
               <input
                 type="text"
+                maxLength={2}
                 name=""
                 placeholder="00"
                 className="admin-create-event-modal__time-picker"
@@ -127,6 +129,7 @@ const PersonalEventCreateModal = (props: any) => {
               <input
                 type="text"
                 name=""
+                maxLength={2}
                 placeholder="00"
                 className="admin-create-event-modal__time-picker"
                 onChange={(e) => {
@@ -135,11 +138,12 @@ const PersonalEventCreateModal = (props: any) => {
               />
               {/* // colon- двоеточие */}
               <div className="admin-create-event-modal__time-picker-colon">
-                .
+                :
               </div>
               <input
                 type="text"
                 name=""
+                maxLength={2}
                 placeholder="00"
                 className="admin-create-event-modal__time-picker"
                 onChange={(e) => {

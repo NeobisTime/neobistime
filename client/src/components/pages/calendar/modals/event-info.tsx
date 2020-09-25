@@ -112,7 +112,7 @@ const EventInfoModal = (props: any) => {
             {event.title}
           </p>
           <p className="event-info__content-date" style={{ fontSize: "14px" }}>
-            {(startDate.getHours() < 10 ? "0" : "") + startDate.getHours()}.
+            {(startDate.getHours() < 10 ? "0" : "") + startDate.getHours()}:
             {(startDate.getMinutes() < 10 ? "0" : "") + startDate.getMinutes()}{" "}
             {days[startDate.getDay()]}, {months[startDate.getMonth()]}{" "}
             {startDate.getDate()}
