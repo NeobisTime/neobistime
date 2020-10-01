@@ -138,7 +138,7 @@ const EventInfo = (props: any) => {
         <div className="event-info__content">
           <p className="event-info__content-title">{eventData.title}</p>
           <p className="event-info__content-date" style={{fontWeight: 'bold'}}>
-            {startDate.getHours()}.
+            {startDate.getHours()}:
             {(startDate.getMinutes() < 10 ? "0" : "") + startDate.getMinutes()}{" "}
             {props.days[startDate.getDay()]},{" "}
             {props.monthListRus[startDate.getMonth()]} {startDate.getDate()}

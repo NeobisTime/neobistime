@@ -141,6 +141,7 @@ const AdminEventCreateModal = (props: any) => {
 
     API.postEventCreateData(formData)
       .then((response) => {
+        props.onClose();
         props.OpenAlert(response);
       })
       .catch((error) => {
@@ -199,7 +200,7 @@ const AdminEventCreateModal = (props: any) => {
               />
               {/* // colon- двоеточие */}
               <div className="admin-create-event-modal__time-picker-colon">
-                .
+                :
               </div>
               <input
                 type="text"
@@ -224,7 +225,7 @@ const AdminEventCreateModal = (props: any) => {
               />
               {/* // colon- двоеточие */}
               <div className="admin-create-event-modal__time-picker-colon">
-                .
+                :
               </div>
               <input
                 type="text"

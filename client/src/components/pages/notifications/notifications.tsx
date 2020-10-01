@@ -81,7 +81,7 @@ const BlockEventNotification = (props: any) => {
       <Link to={`/today/${event.id}`} className="link">
         <div className="notifications__content-block">
           <p className="notifications__content-date">
-            {(startDate.getHours() < 10 ? "0" : "") + startDate.getHours()}.
+            {(startDate.getHours() < 10 ? "0" : "") + startDate.getHours()}:
             {(startDate.getMinutes() < 10 ? "0" : "") + startDate.getMinutes()}{" "}
             {props.days[startDate.getDay()]},{" "}
             {props.monthListRus[startDate.getMonth()]} {startDate.getDate()}
