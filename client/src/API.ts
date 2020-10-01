@@ -193,6 +193,7 @@ export default {
   getEventPoll: (id: number | string, limit: number, offset: number) =>
     getData(`my_events/${id}/?limit=${limit}&offset=${offset}`),
   getNotes: () => getData("notes/"),
+  getPublicChoosenNotes: () => getData("user-attending-events/"),
   getPersonalStats: (period: string) =>
     getData(`self-statistic/?period=${period}`),
   getStatByDepartment: (department: number, month: number, year: boolean) =>

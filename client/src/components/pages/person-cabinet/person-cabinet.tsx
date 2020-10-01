@@ -36,6 +36,9 @@ const PersonalOffice = (props: any) => {
   // calendar data
   const [currentEvent, setCurrentEvent] = useState<any>({});
   const [serverEvents, setServerEvents] = useState([]);
+  console.log("PersonalOffice -> serverEvents", serverEvents)
+  const [publicEvents, setPublicEvents] = useState([]);
+  console.log("PersonalOffice -> publicEvents", publicEvents)
   const [date, setDate] = useState(new Date());
 
   // stats data
@@ -157,6 +160,9 @@ const PersonalOffice = (props: any) => {
     API.getNotes().then((data) => {
       setServerEvents(data.data);
     });
+    API.getPublicChoosenNotes().then((data) => {
+      setPublicEvents(data.data);
+    });
   }, []);
 
   let [isPersonalEventCreate, setIsPersonalEventCreate] = useState<boolean>(
@@ -204,7 +210,15 @@ const PersonalOffice = (props: any) => {
     let eventId = Number(eventClickInfo.event._def.publicId);
     let findCurrentEvent = serverEvents.filter(
       (event: any) => event.id === eventId
-    );
+    )
+    console.log("handleEventClick -> findCurrentEvent", findCurrentEvent)
+
+    if (!findCurrentEvent[0]) {
+      findCurrentEvent = publicEvents.filter(
+        (event: any) => event.id === eventId
+      )
+    }
+
     setCurrentEvent(findCurrentEvent[0]);
     toggleEventInfoOpen();
   };
@@ -427,7 +441,8 @@ const PersonalOffice = (props: any) => {
                 right: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
               }}
               initialView="dayGridMonth"
-              events={serverEvents}
+              // events={serverEvents}
+              eventSources={[publicEvents, serverEvents]}
               editable={true}
               firstDay={1}
               dayMaxEventRows={true}
