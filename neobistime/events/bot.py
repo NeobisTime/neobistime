@@ -14,13 +14,11 @@ bot = telebot.TeleBot(config('BOT_TOKEN'))
 @csrf_exempt
 def django_bot(request):
     if request.META['CONTENT_TYPE'] == 'application/json':
-
         json_data = request.body.decode('utf-8')
         update = telebot.types.Update.de_json(json_data)
         bot.process_new_updates([update])
 
         return HttpResponse("")
-
     else:
         raise PermissionDenied
 

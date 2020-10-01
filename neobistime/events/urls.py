@@ -25,6 +25,7 @@ urlpatterns = [
     path('place/<int:pk>/', views.EventsInPlaceView().as_view(), name='events-in-place'),
     path('bot/', bot.django_bot, name='bot'),
     path('notification/', views.NotificationEvents().as_view(), name='notification-events'),
+    path('user-attending-events/', views.UserAttendingEvents.as_view(), name='user-attending-events')
 ]
 
 urlpatterns += router.urls

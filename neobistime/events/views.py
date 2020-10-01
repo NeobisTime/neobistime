@@ -14,7 +14,8 @@ from . import permissions as custom_permissions, serializers
 from .filters import RoomTimeFilter
 from .models import Event, Notes, Place, Poll
 from .permissions import EventOwner
-from .serializers import AdminPolls, EventCreateUpdateSerializer, EventGetSerializer, MyEventListSerializer, \
+from .serializers import AdminPolls, EventCreateUpdateSerializer, EventGetSerializer, EventListSerializer, \
+    MyEventListSerializer, \
     NotesSerializer, PlaceSerializer
 from .tasks import create_repeated_events
 
@@ -120,29 +121,11 @@ class EventViewSet(viewsets.ModelViewSet):
         """
         Creating single or multiple instances of event objects
         """
-        if request.data.get("repeated", "").lower() == "true":
-            weekdays = list(map(int, request.data.get("weekdays", "").split(",")))
-            if not weekdays:
-                raise ValidationError(
-                    {"detail": "weekdays required for repeated events"}, code=status.HTTP_400_BAD_REQUEST
-                )
-
-            departments_list = list(map(int, re.findall("\d+", request.data.get("departments", ""))))  # noqa
-            users_list = request.data.get("individual_users", "").split(",")
-
-            if len(departments_list) < 1 and len(users_list) < 1:
-                raise ValidationError("Attendees required")
-
-            # Create repeated events
-            create_repeated_events(request.data.copy(), weekdays, request.user.id, departments_list, users_list)
-
-            return Response({"message": "Successfully created"}, status=status.HTTP_201_CREATED)
-        else:
-            serializer = self.get_serializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            self.perform_create(serializer)
-            headers = self.get_success_headers(serializer.data)
-            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer, **kwargs):
         """
@@ -154,9 +137,9 @@ class EventViewSet(viewsets.ModelViewSet):
         """
         if self.request.data.get("public", "").lower() == "true":
             departments_list = list(map(int, re.findall("\d+", self.request.data.get("departments", ""))))  # noqa
-            users_list = self.request.data.get("individual_users", "").split(",")
+            users_list = self.request.data.get("individual_users", '').split(",")
 
-            if len(departments_list) < 1 and len(users_list) < 1:
+            if len(departments_list) < 1 and users_list[0] == '':
                 raise ValidationError("Attendees required")
 
             event_data = serializer.save(owner=self.request.user)
@@ -384,3 +367,11 @@ class NotificationEvents(generics.ListAPIView):
             month_start = timezone.now().month
             queryset = queryset.filter(start_date__month=month_start)
         return queryset.filter(end_date__gt=timezone.now())
+
+
+class UserAttendingEvents(generics.ListAPIView):
+    serializer_class = EventListSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        return Event.objects.filter(polls__user=self.request.user, polls__answer=True)

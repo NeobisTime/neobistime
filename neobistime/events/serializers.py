@@ -76,8 +76,10 @@ class EventListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = (
+            "id",
             "title",
             "start",
+            "description",
             "end",
             "owner",
         )
@@ -122,8 +124,6 @@ class EventGetSerializer(serializers.ModelSerializer):
         """
         Method that returns the desired color for a calendar
         depending on user, and his answer
-        :param obj:
-        :return color:
         """
         try:
             poll = Poll.objects.get(event=obj, user=self.context['request'].user)
@@ -212,9 +212,11 @@ def available_date_for_event(validated_data, **kwargs):
                           "вашего ивента, " \
                           "так как Менеджер курсов поставил в это " \
                           "время курсы."
-                telegram_notify_user(event.owner.chat_id,
-                                     message,
-                                     event.id)
+                try:
+                    telegram_notify_user(event.owner.chat_id, message, event.id)
+                except Exception:
+                    pass
+
             existing_events = None
         if existing_events:
             serializer = EventListSerializer(existing_events, many=True)
@@ -316,11 +318,8 @@ class NotesSerializer(serializers.ModelSerializer):
     Class for serializing personal Notes of User's
     """
     owner = serializers.ReadOnlyField(source='owner.name_surname')
-    start = DateTimeFieldWihTZ(source='start_date')
-    end = DateTimeFieldWihTZ(source='end_date')
-
-    def create(self, validated_data):
-        return Notes.objects.create(**validated_data)
+    start = DateTimeFieldWihTZ()
+    end = DateTimeFieldWihTZ()
 
     class Meta:
         model = Notes
