@@ -146,7 +146,7 @@ const Registration = (props: any) => {
             <p className="auth__title-text">Добро пожаловать в Neobis Time</p>
           </div>
 
-          <section className="registration__section registration__section_w_40 ">
+          <section className="registration__section registration__section_w_40 m-center">
             <form className="auth__form" onSubmit={handleSubmit}>
               <label className="registration__label" htmlFor="name">
                 ФИО
@@ -171,7 +171,7 @@ const Registration = (props: any) => {
                 Департамент
               </label>
               <Select
-                options={props.departments}
+                options={props.registrationDepartments}
                 className="registration__select"
                 required
                 onChange={(e: any) => {

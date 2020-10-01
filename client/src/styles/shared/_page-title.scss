@@ -5,5 +5,8 @@
     font-size: 36px;
     box-sizing: border-box;
     padding: 10px 0 10px 30px;
+    @include media((
+      font-size: (mobile: 28px)
+    ))
   }
 }

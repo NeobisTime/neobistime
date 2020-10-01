@@ -26,6 +26,14 @@ $borderRadius: 12px;
     &-text {
       font-size: $titleTextSize;
       color: #213336;
+      padding: 5px;
+      @include media(
+        (
+          font-size: (
+            mobile: 26px,
+          ),
+        )
+      );
     }
     &-description {
       font-size: $descTextSize;
@@ -36,6 +44,17 @@ $borderRadius: 12px;
   &__section {
     display: flex;
     width: 50%;
+    margin: 0 auto;
+    @include media(
+      (
+        width: (
+          tablet: 75%,
+        ),
+        margin: (
+          tablet: 0 auto,
+        ),
+      )
+    );
   }
   &__form {
     display: flex;
@@ -53,7 +72,7 @@ $borderRadius: 12px;
     border-radius: $borderRadius;
     padding: 10px 0 10px 10px;
     outline: none;
-    font-family: "Montserrat",sans-serif;
+    font-family: "Montserrat", sans-serif;
     font-size: 16px;
     &_password {
       background-image: url("/public/favicon.ico");
@@ -79,6 +98,13 @@ $borderRadius: 12px;
     left: 0;
     &_last {
       bottom: 0;
+      @include media(
+        (
+          display: (
+            tablet: none,
+          ),
+        )
+      );
     }
   }
   &__text_small_green {
@@ -89,8 +115,16 @@ $borderRadius: 12px;
     color: var(--neobisColor);
     &_last {
       bottom: 0;
+      @media screen and (max-width: 768px) {
+        position: absolute;
+        margin-left: auto;
+        margin-right: auto;
+        left: 0;
+        right: 0;
+        text-align: center;
+      }
     }
-    &:hover{
+    &:hover {
       text-shadow: 1px 1px 4px grey;
     }
   }
@@ -112,5 +146,12 @@ $borderRadius: 12px;
     padding: 0 0 15px 15px;
     width: 400px;
     height: 400px;
+    @include media(
+      (
+        display: (
+          tablet: none,
+        ),
+      )
+    );
   }
 }

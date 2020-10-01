@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { CloseModalButton } from "../calendar";
 import DayPickerInput from "react-day-picker/DayPickerInput";
-import MomentLocaleUtils from "react-day-picker/moment";
-import "moment/locale/ru";
-
 import "react-day-picker/lib/style.css";
+
 import Select from "react-select";
 import API from "../../../../API";
 import dateFnsFormat from "date-fns/format";
@@ -12,7 +10,8 @@ import withDataContainer from "../../../../HOC/withData";
 
 // icons
 import time from "../../../../images/shared/modal-clock.svg";
-import people from "../../../../images/shared/modal-peoples.svg";
+import peoples from "../../../../images/shared/modal-peoples.svg";
+import people from "../../../../images/shared/modal-people.svg";
 import placeImage from "../../../../images/shared/modal-address.svg";
 import descriptionImage from "../../../../images/shared/modal-description.svg";
 import fileImage from "../../../../images/shared/modal-file.svg";
@@ -191,6 +190,7 @@ const AdminEventCreateModal = (props: any) => {
               <input
                 type="text"
                 name=""
+                maxLength={2}
                 placeholder="00"
                 className="admin-create-event-modal__time-picker"
                 onChange={(e) => {
@@ -204,6 +204,7 @@ const AdminEventCreateModal = (props: any) => {
               <input
                 type="text"
                 name=""
+                maxLength={2}
                 placeholder="00"
                 className="admin-create-event-modal__time-picker"
                 onChange={(e) => {
@@ -214,6 +215,7 @@ const AdminEventCreateModal = (props: any) => {
               <input
                 type="text"
                 name=""
+                maxLength={2}
                 placeholder="00"
                 className="admin-create-event-modal__time-picker"
                 onChange={(e) => {
@@ -227,6 +229,7 @@ const AdminEventCreateModal = (props: any) => {
               <input
                 type="text"
                 name=""
+                maxLength={2}
                 placeholder="00"
                 className="admin-create-event-modal__time-picker"
                 onChange={(e) => {
@@ -238,7 +241,7 @@ const AdminEventCreateModal = (props: any) => {
 
           <div className="admin-create-event-modal-row">
             <img
-              src={people}
+              src={peoples}
               className="admin-create-event-modal-icon"
               alt="people"
             />
@@ -259,7 +262,7 @@ const AdminEventCreateModal = (props: any) => {
           <div className="admin-create-event-modal-row">
             <img
               src={people}
-              className="admin-create-event-modal-icon"
+              className="admin-create-event-modal-icon admin-create-event-modal-icon-people"
               alt="people"
             />
             <Select
@@ -314,7 +317,7 @@ const AdminEventCreateModal = (props: any) => {
             />
             <textarea
               cols={30}
-              rows={1}
+              rows={2}
               name="description"
               required
               value={description}

@@ -15,9 +15,24 @@ const withDataContainer = (Component: any) => {
     { value: "2", label: "NodeJS" },
     { value: "3", label: "PM" },
     { value: "1", label: "Python" },
+  ];
+  const registrationDepartments = [
+    ...departments,
     { value: "10", label: "Courses Manager" },
   ];
   const selectDepartments = [{ value: "all", label: "All" }, ...departments];
+  const departmentsForNavbar = [
+    { value: "8", label: "Android department" },
+    { value: "6", label: "C# department" },
+    { value: "7", label: "Design department" },
+    { value: "5", label: "Frontend department" },
+    { value: "9", label: "IOS department" },
+    { value: "4", label: "Java/Kotlin department" },
+    { value: "2", label: "NodeJS department" },
+    { value: "3", label: "PM department" },
+    { value: "1", label: "Python department" },
+    { value: "10", label: "Courses Manager" },
+  ];
   let days = [
     "Воскресенье",
     "Понедельник",
@@ -59,7 +74,7 @@ const withDataContainer = (Component: any) => {
   const roomsNames: roomType[] = [
     { id: 1, name: "Classroom" },
     { id: 2, name: "Hall" },
-    { id: 3, name: "Whole Office" },
+    { id: 3, name: "Everybody at home" },
     { id: 4, name: "Staff Room" },
   ];
   const rooms: roomType[] = [
@@ -78,6 +93,7 @@ const withDataContainer = (Component: any) => {
     return (
       <Component
         days={days}
+        registrationDepartments={registrationDepartments}
         monthListRus={months}
         departments={departments}
         selectDepartments={selectDepartments}
@@ -85,6 +101,7 @@ const withDataContainer = (Component: any) => {
         rooms={rooms}
         roomsNames={roomsNames}
         roomsForSelect={roomsForSelect}
+        departmentsForNavbar={departmentsForNavbar}
         {...props}
       />
     );

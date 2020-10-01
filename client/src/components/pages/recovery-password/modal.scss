@@ -16,6 +16,9 @@
     width: 340px;
     box-sizing: border-box;
     margin: 70px 0;
+    @media screen and (max-width: 500px) {
+      width: 220px;
+    }
   }
   &_close{
     position: absolute;

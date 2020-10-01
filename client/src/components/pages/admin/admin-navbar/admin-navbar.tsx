@@ -34,7 +34,7 @@ const AdminNavbar = (props: any) => {
   useEffect(() => {
     API.getUserInfo().then((data) => {
       setUserInfo(data.data);
-      let departmentNumber = props.departments.filter(
+      let departmentNumber = props.departmentsForNavbar.filter(
         (department: any) => +department.value === +data.data.department_id
       );
       setDepartment(departmentNumber[0]);
@@ -86,7 +86,7 @@ const AdminNavbar = (props: any) => {
                 {userInfo.name_surname}
               </p>
               <p className="navbar__person-info-text">
-                {department.label || "Neobis"} department{" "}
+                {department.label || "Neobis"}
               </p>
               <p className="navbar__person-info-text">{userInfo.email}</p>
             </div>

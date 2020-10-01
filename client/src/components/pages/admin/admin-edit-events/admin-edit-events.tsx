@@ -65,16 +65,16 @@ const EditEventsPage = () => {
                 let date = new Date(event.start);
                 return (
                   <tr key={event.id}>
-                    <td className="bold">{event.title}</td>
-                    <td className="bold">{event.department}</td>
-                    <td className="end-event-info__table-tbody-date">
+                    <td data-label='Событие' className="bold">{event.title}</td>
+                    <td data-label='Департамент' className="bold">{event.department}</td>
+                    <td data-label='Дата' className="end-event-info__table-tbody-date">
                       {date.getDate()}/{date.getMonth() + 1}/
                       {date.getFullYear()}
                     </td>
-                    <td>
+                    <td data-label='Адрес'>
                       {event.place.name} {event.address}
                     </td>
-                    <td className="all-events__edit-wrapper">
+                    <td data-label='Изменить' className="all-events__edit-wrapper">
                       {event.my_event ? (
                         <div className="d-flex">
                           <Link

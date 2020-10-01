@@ -44,7 +44,7 @@ const Navbar = (props: any) => {
     setRole(getCookie("role"));
     API.getUserInfo().then((data) => {
       setUserInfo(data.data);
-      let departmentNumber = props.departments.filter(
+      let departmentNumber = props.departmentsForNavbar.filter(
         (department: any) => +department.value === +data.data.department_id
       );
       setDepartment(departmentNumber[0]);
@@ -91,7 +91,7 @@ const Navbar = (props: any) => {
                 {userInfo.name_surname}
               </p>
               <p className="navbar__person-info-text">
-                {department.label || "Neobis"} department{" "}
+                {department.label || "Neobis"}
               </p>
               <p className="navbar__person-info-text">{userInfo.email}</p>
             </div>
@@ -122,9 +122,10 @@ const Navbar = (props: any) => {
               />
               <li className="navbar__list-item">Личный кабинет</li>
             </NavLink>
-            {links.map((item: any) => (
+            {links.map((item: any, id: any) => (
               <NavLink
                 exact
+                key={id}
                 to={item.link}
                 activeStyle={{ backgroundColor: "#1DA48B" }}
                 className="navbar__list-link"
@@ -169,4 +170,4 @@ const Navbar = (props: any) => {
   );
 };
 
-export default withDataContainer(withRouter(Navbar));
+export default withRouter(withDataContainer(Navbar));

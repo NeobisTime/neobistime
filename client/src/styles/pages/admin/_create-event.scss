@@ -9,16 +9,37 @@ $margin-between-blocks: 0 0 40px 0;
     padding: 10px 0 0 0;
     display: flex;
     justify-content: space-evenly;
+    flex-wrap: wrap;
     &-section {
       display: flex;
       flex-direction: column;
       flex-basis: 27%;
       box-sizing: border-box;
+      margin-bottom: 20px;
+      @include media(
+        (
+          flex-basis: (
+            mobile: 350px,
+          ),
+        )
+      );
       &_calendar {
         display: flex;
         flex-direction: column;
         box-sizing: border-box;
-        width: 30%;
+        flex-basis: 30%;
+        &-content-wrapper {
+          display: flex;
+          align-items: center;
+          justify-content: center;  
+          @include media(
+            (
+              flex-wrap: (
+                mobile: wrap,
+              ),
+            )
+          );
+        }
       }
     }
     &-select-container {
@@ -99,7 +120,7 @@ $margin-between-blocks: 0 0 40px 0;
         box-sizing: border-box;
         margin: 3px 0;
       }
-      &-button{
+      &-button {
         margin: 3px 10px 0 3px;
       }
     }
