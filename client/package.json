@@ -31,7 +31,7 @@
     "date-fns": "^2.16.1",
     "fullcalendar": "^5.1.0",
     "moment-js": "^1.1.15",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "react": "^16.13.1",
     "react-chartjs-2": "^2.9.0",
     "react-custom-scrollbars": "^4.2.1",
